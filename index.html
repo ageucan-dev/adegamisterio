@@ -25,6 +25,26 @@
       .logo-wrap {
         transform: translateY(-1px);
       }
+
+      .product-copy .eyebrow {
+        display: none;
+      }
+
+      .product-copy {
+        padding: 18px 22px 20px !important;
+      }
+
+      .product-copy p {
+        margin-bottom: 14px;
+      }
+
+      .product-build-btn {
+        margin-top: 14px;
+      }
+
+      .builder-card.is-hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -65,14 +85,14 @@
           <div class="cup-shape"></div>
         </div>
         <div class="product-copy">
-          <p class="eyebrow">Produto inicial</p>
           <h2>Ethernity Mix</h2>
           <p>Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energetico, gelo e quantidade.</p>
           <div class="price-badge">A partir de R$ 25,20</div>
+          <button id="showBuilder" class="btn btn-primary btn-wide product-build-btn" type="button">Montar Copo</button>
         </div>
       </section>
 
-      <section class="section-card builder-card">
+      <section id="personalizacao" class="section-card builder-card is-hidden">
         <div class="section-title"><p class="eyebrow">Personalizacao</p><h2>Monte seu copo</h2></div>
         <form id="customForm" class="custom-form">
           <fieldset><legend>Tamanho</legend><div id="sizeOptions" class="option-grid"></div></fieldset>
@@ -127,5 +147,14 @@
       <nav class="bottom-bar" aria-label="Acoes rapidas"><a href="#produto">Montar</a><a href="#carrinho">Carrinho <span id="bottomCartCount">0</span></a><a href="#finalizar">Finalizar</a></nav>
     </main>
     <script src="app.js"></script>
+    <script>
+      const builderButton = document.querySelector("#showBuilder");
+      const builderCard = document.querySelector("#personalizacao");
+
+      builderButton?.addEventListener("click", () => {
+        builderCard?.classList.remove("is-hidden");
+        builderCard?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    </script>
   </body>
 </html>
