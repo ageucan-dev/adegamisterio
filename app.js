@@ -6,8 +6,8 @@ const catalog = {
     { id: "700ml", label: "700ml", price: 12.5 }
   ],
   bases: [
-    { id: "citrico", label: "Citrico", price: 5.9 },
-    { id: "maca-verde", label: "Maca Verde", price: 5.9 },
+    { id: "citrico", label: "Cítrico", price: 5.9 },
+    { id: "maca-verde", label: "Maçã Verde", price: 5.9 },
     { id: "melancia", label: "Melancia", price: 5.9 },
     { id: "morango", label: "Morango", price: 5.9 },
     { id: "sevilla", label: "Sevilla", price: 5.9 },
@@ -15,12 +15,12 @@ const catalog = {
   ],
   energies: [
     { id: "baly-tradicional", label: "Baly Tradicional", price: 3.9 },
-    { id: "baly-maca-verde", label: "Baly Maca Verde", price: 3.9 },
+    { id: "baly-maca-verde", label: "Baly Maçã Verde", price: 3.9 },
     { id: "baly-melancia", label: "Baly Melancia", price: 3.9 },
     { id: "baly-tropical", label: "Baly Tropical", price: 3.9 },
     { id: "red-bull-tradicional", label: "Red Bull Tradicional", price: 14.9 },
     { id: "red-bull-tropical", label: "Red Bull Tropical", price: 14.9 },
-    { id: "red-bull-morango-pessego", label: "Red Bull Morango e Pessego", price: 14.9 },
+    { id: "red-bull-morango-pessego", label: "Red Bull Morango e Pêssego", price: 14.9 },
     { id: "monster-tradicional", label: "Monster Tradicional", price: 8.9 },
     { id: "monster-mango", label: "Monster Mango Loco", price: 8.9 },
     { id: "monster-pipeline", label: "Monster Pipeline Punch", price: 8.9 },
@@ -28,13 +28,13 @@ const catalog = {
   ],
   ices: [
     { id: "gelo-melancia", label: "Gelo de Melancia", price: 3.9 },
-    { id: "gelo-maracuja", label: "Gelo de Maracuja", price: 3.9 },
-    { id: "gelo-coco", label: "Gelo de Agua de Coco", price: 3.9 },
+    { id: "gelo-maracuja", label: "Gelo de Maracujá", price: 3.9 },
+    { id: "gelo-coco", label: "Gelo de Água de Coco", price: 3.9 },
     { id: "gelo-morango", label: "Gelo de Morango", price: 3.9 }
   ]
 };
 
-const state = { quantity: 1, cart: [] };
+var state = { quantity: 1, cart: [] };
 
 const els = {
   sizeOptions: document.querySelector("#sizeOptions"),
@@ -70,15 +70,16 @@ function money(value) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-function optionMarkup(groupName, item, checked = false) {
-  return `<label class="option-card"><input type="radio" name="${groupName}" value="${item.id}" ${checked ? "checked" : ""} /><span>${item.label}</span><small>${money(item.price)}</small></label>`;
+function optionMarkup(groupName, item) {
+  return `<label class="option-card"><input type="radio" name="${groupName}" value="${item.id}" /><span>${item.label}</span><small>${money(item.price)}</small></label>`;
 }
 
 function renderOptions() {
-  els.sizeOptions.innerHTML = catalog.sizes.map((item, index) => optionMarkup("size", item, index === 0)).join("");
-  els.baseOptions.innerHTML = catalog.bases.map((item, index) => optionMarkup("base", item, index === 0)).join("");
-  els.energyOptions.innerHTML = catalog.energies.map((item, index) => optionMarkup("energy", item, index === 0)).join("");
-  els.iceOptions.innerHTML = catalog.ices.map((item, index) => optionMarkup("ice", item, index === 0)).join("");
+  els.sizeOptions.innerHTML = catalog.sizes.map((item) => optionMarkup("size", item)).join("");
+  els.baseOptions.innerHTML = catalog.bases.map((item) => optionMarkup("base", item)).join("");
+  els.energyOptions.innerHTML = catalog.energies.map((item) => optionMarkup("energy", item)).join("");
+  els.iceOptions.innerHTML = catalog.ices.map((item) => optionMarkup("ice", item)).join("");
+  document.querySelectorAll('input[name="intensity"]').forEach((input) => { input.checked = false; });
 }
 
 function selectedValue(name) {
@@ -93,12 +94,25 @@ function makeId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+function missingSelections() {
+  const missing = [];
+  if (!selectedValue("size")) missing.push("tamanho");
+  if (!selectedValue("base")) missing.push("sabor da base");
+  if (!selectedValue("intensity")) missing.push("intensidade");
+  if (!selectedValue("energy")) missing.push("energético");
+  if (!selectedValue("ice")) missing.push("gelo saborizado");
+  return missing;
+}
+
 function currentCup() {
   const size = findById(catalog.sizes, selectedValue("size"));
   const base = findById(catalog.bases, selectedValue("base"));
   const energy = findById(catalog.energies, selectedValue("energy"));
   const ice = findById(catalog.ices, selectedValue("ice"));
-  const intensity = selectedValue("intensity") || "Leve";
+  const intensity = selectedValue("intensity");
+
+  if (!size || !base || !energy || !ice || !intensity) return null;
+
   const unitPrice = size.price + base.price + energy.price + ice.price;
   return { id: makeId(), product: "Ethernity Mix", size, base, energy, ice, intensity, notes: els.notes.value.trim(), quantity: state.quantity, unitPrice };
 }
@@ -106,7 +120,7 @@ function currentCup() {
 function updateLiveTotal() {
   const item = currentCup();
   els.quantityValue.textContent = state.quantity;
-  els.itemTotal.textContent = money(item.unitPrice * state.quantity);
+  els.itemTotal.textContent = item ? money(item.unitPrice * state.quantity) : money(0);
 }
 
 function cartTotals() {
@@ -124,21 +138,39 @@ function renderCart() {
   els.subtotalValue.textContent = money(totals.subtotal);
   els.discountValue.textContent = `-${money(totals.discount)}`;
   els.orderTotal.textContent = money(totals.total);
+
   if (!state.cart.length) {
     els.cartItems.className = "cart-items empty-state";
-    els.cartItems.textContent = "Seu carrinho ainda esta vazio.";
+    els.cartItems.textContent = "Seu carrinho ainda está vazio.";
     return;
   }
+
   els.cartItems.className = "cart-items";
   els.cartItems.innerHTML = state.cart.map((item) => `<article class="cart-item"><div class="cart-item-header"><div><h3>${item.product} - ${item.size.label}</h3><p>${item.base.label} | ${item.intensity} | ${item.energy.label} | ${item.ice.label}</p>${item.notes ? `<p>Obs: ${item.notes}</p>` : ""}</div><strong>${money(item.unitPrice * item.quantity)}</strong></div><div class="cart-item-actions"><div class="quantity-control"><button class="item-action" type="button" data-action="minus" data-id="${item.id}">-</button><strong>${item.quantity}</strong><button class="item-action" type="button" data-action="plus" data-id="${item.id}">+</button></div><button class="item-action" type="button" data-action="remove" data-id="${item.id}">Remover</button></div></article>`).join("");
 }
 
-function addCurrentToCart() {
-  state.cart.push(currentCup());
+function resetCustomization() {
   state.quantity = 1;
   els.notes.value = "";
+  document.querySelectorAll('.custom-form input[type="radio"]').forEach((input) => { input.checked = false; });
+  document.querySelectorAll(".custom-form fieldset").forEach((fieldset) => { fieldset.classList.remove("is-collapsed"); });
   updateLiveTotal();
+}
+
+function addCurrentToCart() {
+  const missing = missingSelections();
+  if (missing.length) {
+    alert(`Escolha: ${missing.join(", ")} antes de adicionar ao carrinho.`);
+    return false;
+  }
+
+  const cup = currentCup();
+  if (!cup) return false;
+
+  state.cart.push(cup);
   renderCart();
+  resetCustomization();
+  return true;
 }
 
 function changeCartItem(id, action) {
@@ -166,32 +198,23 @@ function deliveryData() {
 function validateBeforeSend() {
   const data = deliveryData();
   if (!state.cart.length) return "Adicione pelo menos um copo ao carrinho.";
-  if (!data.name || !data.phone || !data.street || !data.number || !data.district) return "Preencha nome, contato, rua, numero e bairro antes de finalizar.";
+  if (!data.name || !data.phone || !data.street || !data.number || !data.district) return "Preencha nome, contato, rua, número e bairro antes de finalizar.";
   return "";
 }
 
 function buildSummary() {
   const totals = cartTotals();
   const data = deliveryData();
-  const items = state.cart.map((item, index) => [`Item ${index + 1}:`, `Produto: ${item.product}`, `Tamanho: ${item.size.label}`, `Base: ${item.base.label}`, `Intensidade: ${item.intensity}`, `Energetico: ${item.energy.label}`, `Gelo: ${item.ice.label}`, `Quantidade: ${item.quantity}`, `Valor unitario: ${money(item.unitPrice)}`, `Subtotal: ${money(item.unitPrice * item.quantity)}`, item.notes ? `Observacoes: ${item.notes}` : ""].filter(Boolean).join("\n")).join("\n\n");
-  return ["Ola, Adega Misterio! Segue minha ficha:", "", items, "", "Resumo:", `Subtotal: ${money(totals.subtotal)}`, `Desconto progressivo: -${money(totals.discount)}`, `Total: ${money(totals.total)}`, "", "Dados de entrega:", `Nome: ${data.name}`, `Contato: ${data.phone}`, `Endereco: ${data.street}, ${data.number} - ${data.district}`, data.complement ? `Complemento: ${data.complement}` : "", data.reference ? `Referencia: ${data.reference}` : "", data.notes ? `Obs entrega: ${data.notes}` : ""].filter(Boolean).join("\n");
+  const items = state.cart.map((item, index) => [`*${index + 1}. ${item.product} - ${item.size.label}*`, `• Base: ${item.base.label}`, `• Intensidade: ${item.intensity}`, `• Energético: ${item.energy.label}`, `• Gelo: ${item.ice.label}`, `• Quantidade: ${item.quantity}`, `• Valor unitário: ${money(item.unitPrice)}`, `• Subtotal: ${money(item.unitPrice * item.quantity)}`, item.notes ? `• Observações: ${item.notes}` : ""].filter(Boolean).join("\n")).join("\n\n");
+
+  return ["*🍸 ADEGA MISTÉRIO | NOVO PEDIDO*", "_Ficha organizada para preparo e conferência._", "", "*🛒 ITENS DO CARRINHO*", items, "", "*💰 RESUMO DO PEDIDO*", `• Subtotal: ${money(totals.subtotal)}`, `• Desconto progressivo: -${money(totals.discount)}`, `• *Total: ${money(totals.total)}*`, "", "*📍 DADOS DE ENTREGA*", `• Nome: ${data.name}`, `• Contato: ${data.phone}`, `• Endereço: ${data.street}, ${data.number} - ${data.district}`, data.complement ? `• Complemento: ${data.complement}` : "", data.reference ? `• Referência: ${data.reference}` : "", data.notes ? `• Observação: ${data.notes}` : "", "", "✅ Aguardo confirmação para preparo."].filter(Boolean).join("\n");
 }
 
 function finish() {
   const error = validateBeforeSend();
-
-  if (error) {
-    alert(error);
-    return;
-  }
-
+  if (error) { alert(error); return; }
   const summary = encodeURIComponent(buildSummary());
-
-  window.open(
-    `https://wa.me/5516996396543?text=${summary}`,
-    "_blank",
-    "noopener,noreferrer"
-  );
+  window.open(`https://wa.me/5516996396543?text=${summary}`, "_blank", "noopener,noreferrer");
 }
 
 renderOptions();
@@ -209,7 +232,7 @@ document.addEventListener("change", (event) => {
 els.decreaseQty.addEventListener("click", () => { state.quantity = Math.max(1, state.quantity - 1); updateLiveTotal(); });
 els.increaseQty.addEventListener("click", () => { state.quantity += 1; updateLiveTotal(); });
 els.addToCart.addEventListener("click", addCurrentToCart);
-els.buyNow.addEventListener("click", () => { addCurrentToCart(); document.querySelector("#carrinho").scrollIntoView({ behavior: "smooth" }); });
+els.buyNow.addEventListener("click", () => { if (addCurrentToCart()) document.querySelector("#carrinho").scrollIntoView({ behavior: "smooth" }); });
 els.clearCart.addEventListener("click", () => { state.cart = []; renderCart(); });
 els.cartItems.addEventListener("click", (event) => { const button = event.target.closest("button[data-action]"); if (!button) return; changeCartItem(button.dataset.id, button.dataset.action); });
 els.sendWhatsApp.addEventListener("click", finish);
