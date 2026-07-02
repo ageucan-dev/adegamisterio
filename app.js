@@ -177,16 +177,21 @@ function buildSummary() {
   return ["Ola, Adega Misterio! Segue minha ficha:", "", items, "", "Resumo:", `Subtotal: ${money(totals.subtotal)}`, `Desconto progressivo: -${money(totals.discount)}`, `Total: ${money(totals.total)}`, "", "Dados de entrega:", `Nome: ${data.name}`, `Contato: ${data.phone}`, `Endereco: ${data.street}, ${data.number} - ${data.district}`, data.complement ? `Complemento: ${data.complement}` : "", data.reference ? `Referencia: ${data.reference}` : "", data.notes ? `Obs entrega: ${data.notes}` : ""].filter(Boolean).join("\n");
 }
 
-async function finish() {
+function finish() {
   const error = validateBeforeSend();
-  if (error) { alert(error); return; }
-  const summary = buildSummary();
-  try {
-    await navigator.clipboard.writeText(summary);
-    alert("Ficha copiada. Cole no canal de atendimento para finalizar.");
-  } catch (err) {
-    alert(summary);
+
+  if (error) {
+    alert(error);
+    return;
   }
+
+  const summary = encodeURIComponent(buildSummary());
+
+  window.open(
+    `https://wa.me/5516996396543?text=${summary}`,
+    "_blank",
+    "noopener,noreferrer"
+  );
 }
 
 renderOptions();
