@@ -34,3 +34,121 @@
   width: 100% !important;
   margin-bottom: 12px !important;
 }
+
+/* Nova identidade visual - Copão na Mão */
+body {
+  background: linear-gradient(180deg, #fffdf2 0%, #fff9db 100%) !important;
+  color: #0b1d3a !important;
+}
+
+body::before {
+  opacity: 0.15 !important;
+}
+
+.topbar {
+  background: linear-gradient(
+    180deg,
+    rgba(255,253,242,.98),
+    rgba(255,253,242,.82),
+    transparent
+  ) !important;
+}
+
+.section-card {
+  background: rgba(255,255,255,.95) !important;
+  border: 1px solid rgba(11,29,58,.12) !important;
+  box-shadow: 0 18px 45px rgba(11,29,58,.1) !important;
+  color: #0b1d3a !important;
+}
+
+h1, h2, h3, strong, legend, #orderTotal, #itemTotal {
+  color: #0b1d3a !important;
+}
+
+p, span, small, label {
+  color: #4f5d75 !important;
+}
+
+.eyebrow {
+  color: #ff7a00 !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ffd100, #ffc400) !important;
+  color: #0b1d3a !important;
+  box-shadow: 0 14px 30px rgba(255,209,0,.3) !important;
+}
+
+.btn-ghost,
+.btn-secondary,
+.mini-btn {
+  background: rgba(255,255,255,.9) !important;
+  color: #0b1d3a !important;
+  border: 1px solid rgba(11,29,58,.12) !important;
+}
+
+input,
+textarea,
+.option-card,
+.quantity-row,
+.live-total,
+.cart-item {
+  background: #ffffff !important;
+  color: #0b1d3a !important;
+  border: 1px solid rgba(11,29,58,.12) !important;
+}
+
+.option-card span,
+.option-card small {
+  color: #0b1d3a !important;
+}
+
+label.option-card:has(input:checked) {
+  background: linear-gradient(
+    180deg,
+    rgba(255,209,0,.22),
+    rgba(255,255,255,.96)
+  ) !important;
+  border-color: #ff7a00 !important;
+  box-shadow: 0 0 0 2px rgba(255,122,0,.14) !important;
+}
+
+.summary-box {
+  background: linear-gradient(180deg, #ffffff, #fffbea) !important;
+  border: 1px solid rgba(11,29,58,.12) !important;
+}
+
+.bottom-bar {
+  background: rgba(255,255,255,.94) !important;
+  border: 1px solid rgba(11,29,58,.12) !important;
+}
+
+.bottom-bar a {
+  background: rgba(255,209,0,.12) !important;
+  color: #0b1d3a !important;
+}
+
+.logo-img {
+  filter: drop-shadow(0 12px 24px rgba(11,29,58,.14)) !important;
+}
+
+.product-visual {
+  background: linear-gradient(135deg, #fff7cc, #ffe784) !important;
+}
+
+.price-badge {
+  background: rgba(255,209,0,.16) !important;
+  color: #0b1d3a !important;
+  border: 1px solid rgba(255,209,0,.6) !important;
+}
+
+.cart-toast {
+  background: rgba(11,29,58,.96) !important;
+  color: #ffffff !important;
+}
+
+.step-toggle {
+  background: rgba(255,209,0,.18) !important;
+  color: #0b1d3a !important;
+  border: 1px solid rgba(11,29,58,.1) !important;
+}
