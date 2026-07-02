@@ -34,3 +34,22 @@
   width: 100% !important;
   margin-bottom: 12px !important;
 }
+
+
+.hero-text {
+  max-width: 28ch !important;
+  margin: 0 auto !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+.hero-text::after {
+  content: "⚠️ Cada copo adicionado acima de 1 receberá R$9,00 de desconto.";
+  display: block;
+  color: #fde68a;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.45;
+  text-align: center;
+}
