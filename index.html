@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#09060f" />
-    <meta name="description" content="Misterio Mix: copos personalizados com experiencia rapida e digital." />
-    <title>Misterio Mix</title>
+    <meta name="description" content="Misterio Mix: copos personalizados com experiência rápida e digital." />
+    <title>Mistério Mix</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="product-card.css" />
+    <link rel="stylesheet" href="ux-upgrades.css" />
     <style>
       .topbar {
         top: -30px;
@@ -50,7 +51,7 @@
   <body>
     <main class="app-shell" id="app">
       <header class="topbar">
-        <a class="logo-wrap" href="#inicio" aria-label="Misterio Mix">
+        <a class="logo-wrap" href="#inicio" aria-label="Mistério Mix">
           <div class="logo-symbol">
             <img class="logo-img" src="assets/logo-adega-misterio.png" alt="Adega Mistério" onerror="this.style.display='none'" />
             <span>AM</span>
@@ -64,15 +65,15 @@
       </header>
 
       <section id="inicio" class="hero section-card">
-        <p class="eyebrow">Experiencia rapida e digital</p>
-        <h1>Receba seu copo em ate 25 minutos.</h1>
-        <p class="hero-text">Escolha, personalize e envie sua ficha pronta pelo atendimento. Sem perder tempo, sem complicação.</p>
+        <p class="eyebrow">Experiência rápida e digital</p>
+        <h1>Receba seu copo em até 25 minutos.</h1>
+        <p class="hero-text">⚠️ Cada copo adicionado acima de 1 receberá R$9,00 de desconto.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#produto">Montar meu copo</a>
           <a class="btn btn-ghost" href="#carrinho">Ver carrinho</a>
         </div>
         <div class="trust-row" aria-label="Destaques">
-          <span>⚡ Rapido</span>
+          <span>⚡ Rápido</span>
           <span>📲 Pelo celular</span>
           <span>🥤 Personalizado</span>
         </div>
@@ -85,19 +86,19 @@
           <div class="cup-shape"></div>
         </div>
         <div class="product-copy">
-<div class="product-title-row">
-  <h2>Ethernity Mix</h2>
-  <span class="delivery-badge">Entrega grátis</span>
-</div>
+          <div class="product-title-row">
+            <h2>Ethernity Mix</h2>
+            <span class="delivery-badge">Entrega grátis</span>
+          </div>
 
-<p>Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energetico, gelo e quantidade.</p>
+          <p>Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.</p>
           <div class="price-badge">A partir de R$ 25,20</div>
-          <button id="showBuilder" class="btn btn-primary btn-wide product-build-btn" type="button">Montar Copo</button>
+          <button id="showBuilder" class="btn btn-primary btn-wide product-build-btn" type="button">Montar copo</button>
         </div>
       </section>
 
       <section id="personalizacao" class="section-card builder-card is-hidden">
-        <div class="section-title"><p class="eyebrow">Personalizacao</p><h2>Monte seu copo</h2></div>
+        <div class="section-title"><p class="eyebrow">Personalização</p><h2>Monte seu copo</h2></div>
         <form id="customForm" class="custom-form">
           <fieldset><legend>Tamanho</legend><div id="sizeOptions" class="option-grid"></div></fieldset>
           <fieldset><legend>Sabor da base</legend><div id="baseOptions" class="option-grid"></div></fieldset>
@@ -105,13 +106,13 @@
             <legend>Intensidade</legend>
             <div class="option-grid intensity-grid">
               <label class="option-card"><input type="radio" name="intensity" value="Leve" checked /><span>Leve</span><small>Mais suave</small></label>
-              <label class="option-card"><input type="radio" name="intensity" value="Medio" /><span>Medio</span><small>Equilibrado</small></label>
+              <label class="option-card"><input type="radio" name="intensity" value="Medio" /><span>Médio</span><small>Equilibrado</small></label>
               <label class="option-card"><input type="radio" name="intensity" value="Forte" /><span>Forte</span><small>Mais marcante</small></label>
             </div>
           </fieldset>
-          <fieldset><legend>Energetico</legend><div id="energyOptions" class="option-grid"></div></fieldset>
+          <fieldset><legend>Energético</legend><div id="energyOptions" class="option-grid"></div></fieldset>
           <fieldset><legend>Gelo saborizado</legend><div id="iceOptions" class="option-grid"></div></fieldset>
-          <label class="input-group" for="notes">Observacoes<textarea id="notes" rows="3" placeholder="Ex: menos gelo, mais suave, energetico separado..."></textarea></label>
+          <label class="input-group" for="notes">Observações<textarea id="notes" rows="3" placeholder="Ex: menos gelo, mais suave, energético separado..."></textarea></label>
           <div class="quantity-row"><span>Quantidade</span><div class="quantity-control"><button id="decreaseQty" type="button">-</button><strong id="quantityValue">1</strong><button id="increaseQty" type="button">+</button></div></div>
           <div class="live-total"><span>Total deste item</span><strong id="itemTotal">R$ 0,00</strong></div>
           <div class="form-actions"><button id="addToCart" class="btn btn-primary" type="button">Adicionar ao carrinho</button><button id="buyNow" class="btn btn-secondary" type="button">Adicionar e finalizar</button></div>
@@ -120,12 +121,12 @@
 
       <section id="carrinho" class="section-card cart-card">
         <div class="section-title split-title"><div><p class="eyebrow">Carrinho</p><h2>Resumo</h2></div><button id="clearCart" class="mini-btn" type="button">Limpar</button></div>
-        <div id="cartItems" class="cart-items empty-state">Seu carrinho ainda esta vazio.</div>
+        <div id="cartItems" class="cart-items empty-state">Seu carrinho ainda está vazio.</div>
         <div class="summary-box">
           <div><span>Subtotal</span><strong id="subtotalValue">R$ 0,00</strong></div>
           <div><span>Desconto progressivo</span><strong id="discountValue">-R$ 0,00</strong></div>
           <div class="summary-total"><span>Total</span><strong id="orderTotal">R$ 0,00</strong></div>
-          <small>Cada copo adicional apos o primeiro recebe R$ 9,00 de desconto.</small>
+          <small>Cada copo adicional após o primeiro recebe R$ 9,00 de desconto.</small>
         </div>
       </section>
 
@@ -135,22 +136,23 @@
           <label class="input-group">Nome<input id="customerName" type="text" placeholder="Seu nome" required /></label>
           <label class="input-group">Contato<input id="customerPhone" type="tel" placeholder="(16) 99999-9999" required /></label>
           <label class="input-group">Rua<input id="street" type="text" placeholder="Nome da rua" required /></label>
-          <div class="input-row"><label class="input-group">Numero<input id="number" type="text" placeholder="123" required /></label><label class="input-group">Bairro<input id="district" type="text" placeholder="Bairro" required /></label></div>
+          <div class="input-row"><label class="input-group">Número<input id="number" type="text" placeholder="123" required /></label><label class="input-group">Bairro<input id="district" type="text" placeholder="Bairro" required /></label></div>
           <label class="input-group">Complemento<input id="complement" type="text" placeholder="Apto, bloco, casa, etc." /></label>
-          <label class="input-group">Referencia<input id="reference" type="text" placeholder="Proximo a..." /></label>
-          <label class="input-group">Observacao<textarea id="deliveryNotes" rows="3" placeholder="Ex: chamar ao chegar"></textarea></label>
+          <label class="input-group">Referência<input id="reference" type="text" placeholder="Próximo a..." /></label>
+          <label class="input-group">Observação<textarea id="deliveryNotes" rows="3" placeholder="Ex: chamar ao chegar"></textarea></label>
         </form>
       </section>
 
       <section id="finalizar" class="section-card finish-card">
-        <p class="eyebrow">Finalizacao</p><h2>Enviar ficha</h2>
-        <p>A ficha sera organizada para facilitar preparo, conferencia e atendimento.</p>
-        <button id="sendWhatsApp" class="btn btn-primary btn-wide" type="button">Finalizar Compra</button>
+        <p class="eyebrow">Finalização</p><h2>Enviar ficha</h2>
+        <p>A ficha será organizada para facilitar preparo, conferência e atendimento.</p>
+        <button id="sendWhatsApp" class="btn btn-primary btn-wide" type="button">Finalizar compra</button>
       </section>
 
-      <nav class="bottom-bar" aria-label="Acoes rapidas"><a href="#produto">Montar</a><a href="#carrinho">Carrinho <span id="bottomCartCount">0</span></a><a href="#finalizar">Finalizar</a></nav>
+      <nav class="bottom-bar" aria-label="Ações rápidas"><a href="#produto">Montar</a><a href="#carrinho">Carrinho <span id="bottomCartCount">0</span></a><a href="#finalizar">Finalizar</a></nav>
     </main>
     <script src="app.js"></script>
+    <script src="ux-upgrades.js"></script>
     <script>
       const builderButton = document.querySelector("#showBuilder");
       const builderCard = document.querySelector("#personalizacao");
