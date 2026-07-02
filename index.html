@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09060f" />
+    <meta
+      name="description"
+      content="Adega Mistério: experiência digital, rápida e prática para maiores de 18 anos."
+    />
+    <title>Adega Mistério</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
+      <div class="age-card">
+        <div class="brand-mark">AM</div>
+        <p class="eyebrow">Adega Mistério</p>
+        <h1 id="ageTitle">Você tem 18 anos ou mais?</h1>
+        <p>
+          Este ambiente é destinado exclusivamente a pessoas maiores de idade.
+          O acesso confirma que você possui idade legal para visualizar o conteúdo.
+        </p>
+        <div class="age-actions">
+          <button id="confirmAge" class="btn btn-primary">Sim, tenho 18+</button>
+          <button id="denyAge" class="btn btn-secondary">Não tenho</button>
+        </div>
+        <small>Beba com moderação. A entrega poderá exigir conferência de documento.</small>
+      </div>
+    </div>
+
+    <main class="app-shell is-blurred" id="siteContent">
+      <header class="topbar">
+        <div class="logo-wrap" aria-label="Adega Mistério">
+          <div class="logo-symbol">AM</div>
+          <div>
+            <strong>Adega Mistério</strong>
+            <span>100% digital</span>
+          </div>
+        </div>
+        <span class="pill">18+</span>
+      </header>
+
+      <section class="hero section-card">
+        <p class="eyebrow">Experiência rápida e digital</p>
+        <h1>Receba seu copo em até 15 minutos.</h1>
+        <p class="hero-text">
+          Atendimento ágil pelo WhatsApp, experiência moderna e praticidade para quem não quer perder tempo.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#atendimento">Falar com atendimento</a>
+          <a class="btn btn-ghost" href="#como-funciona">Como funciona</a>
+        </div>
+        <div class="trust-row" aria-label="Destaques da Adega Mistério">
+          <span>⚡ Rápido</span>
+          <span>📲 Pelo celular</span>
+          <span>🔒 Maioridade verificada</span>
+        </div>
+      </section>
+
+      <section id="como-funciona" class="section-card flow-card">
+        <p class="eyebrow">Como funciona</p>
+        <h2>Simples como um app.</h2>
+        <div class="steps">
+          <article>
+            <span>1</span>
+            <h3>Entre em contato</h3>
+            <p>O atendimento acontece pelo WhatsApp com confirmação de disponibilidade.</p>
+          </article>
+          <article>
+            <span>2</span>
+            <h3>Confirme os detalhes</h3>
+            <p>Endereço, tempo estimado, forma de atendimento e validação de maioridade.</p>
+          </article>
+          <article>
+            <span>3</span>
+            <h3>Receba com praticidade</h3>
+            <p>Após confirmação, a equipe segue com o preparo e a entrega responsável.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card product-preview">
+        <div class="product-visual" aria-hidden="true">
+          <div class="cup-glow"></div>
+          <div class="cup-shape"></div>
+        </div>
+        <div class="product-copy">
+          <p class="eyebrow">Catálogo inicial</p>
+          <h2>Experiência personalizada.</h2>
+          <p>
+            O catálogo completo e as condições de atendimento são informados diretamente no WhatsApp,
+            mediante confirmação de maioridade.
+          </p>
+          <div class="notice-box">
+            Não há compra automática, carrinho, pagamento ou fechamento de pedido neste site.
+          </div>
+        </div>
+      </section>
+
+      <section id="atendimento" class="section-card contact-card">
+        <p class="eyebrow">Atendimento</p>
+        <h2>Fale com a Adega Mistério</h2>
+        <p>
+          Use o botão abaixo para iniciar uma conversa. A equipe irá confirmar idade, disponibilidade,
+          endereço e condições antes de qualquer atendimento.
+        </p>
+        <button id="whatsappButton" class="btn btn-primary btn-wide">
+          Iniciar conversa no WhatsApp
+        </button>
+        <small>
+          Venda permitida apenas para maiores de 18 anos. Beba com moderação.
+        </small>
+      </section>
+
+      <footer class="footer">
+        <strong>Adega Mistério</strong>
+        <span>Receba seu copo em até 15 minutos. Não gaste tempo.</span>
+      </footer>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
