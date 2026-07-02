@@ -18,6 +18,17 @@
     return spellingMap[value] || value;
   }
 
+  function getCartQuantity() {
+    try {
+      if (typeof state !== "undefined" && Array.isArray(state.cart)) {
+        return state.cart.reduce((total, item) => total + item.quantity, 0);
+      }
+    } catch (error) {
+      return 0;
+    }
+    return 0;
+  }
+
   function fixVisibleText() {
     document.querySelectorAll("span, small, legend, h2, p, button, label, div").forEach((node) => {
       if (node.children.length) return;
@@ -45,7 +56,13 @@
 
   ["#addToCart", "#buyNow"].forEach((selector) => {
     const button = document.querySelector(selector);
-    button?.addEventListener("click", showCartToast);
+    button?.addEventListener("click", () => {
+      const before = getCartQuantity();
+      setTimeout(() => {
+        const after = getCartQuantity();
+        if (after > before) showCartToast();
+      }, 0);
+    });
   });
 
   document.querySelectorAll(".custom-form fieldset").forEach((fieldset) => {
