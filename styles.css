@@ -330,3 +330,29 @@ input:focus, textarea:focus { border-color: rgba(168,85,247,.75); box-shadow: 0 
 @media (min-width: 680px) {
   .hero-actions, .form-actions { grid-template-columns: 1fr 1fr; }
 }
+
+.topbar {
+  top: -34px;
+  min-height: 118px;
+  padding: 0 0 8px;
+  background: linear-gradient(
+    180deg,
+    rgba(9, 6, 15, 0.98),
+    rgba(9, 6, 15, 0.78),
+    rgba(9, 6, 15, 0.18),
+    transparent
+  );
+}
+
+.logo-wrap {
+  transform: translateY(-2px);
+}
+
+.logo-symbol {
+  width: min(78vw, 340px);
+  height: 100px;
+}
+
+.logo-img {
+  filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.38));
+}
