@@ -61,8 +61,8 @@
       setTimeout(() => {
         const after = getCartQuantity();
         if (after > before) showCartToast();
-      }, 0);
-    });
+      }, 30);
+    }, true);
   });
 
   document.querySelectorAll(".custom-form fieldset").forEach((fieldset) => {
