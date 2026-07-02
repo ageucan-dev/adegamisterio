@@ -1,0 +1,28 @@
+.product-preview {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.product-visual {
+  min-height: 260px !important;
+  border-radius: 28px 28px 0 0 !important;
+  background: transparent !important;
+}
+
+.product-image {
+  width: 100% !important;
+  height: 260px !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  border-radius: 28px 28px 0 0 !important;
+  filter: none !important;
+}
+
+.product-image + .cup-shape,
+.cup-glow {
+  display: none !important;
+}
+
+.product-copy {
+  padding: 22px !important;
+}
