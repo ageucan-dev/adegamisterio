@@ -1,4 +1,36 @@
 (() => {
+  const spellingMap = {
+    "Citrico": "Cítrico",
+    "Maca Verde": "Maçã Verde",
+    "Medio": "Médio",
+    "Energetico": "Energético",
+    "Gelo de Agua de Coco": "Gelo de Água de Coco",
+    "Red Bull Morango e Pessego": "Red Bull Morango e Pêssego",
+    "Seu carrinho ainda esta vazio.": "Seu carrinho ainda está vazio.",
+    "Observacoes": "Observações",
+    "Referencia": "Referência",
+    "Numero": "Número",
+    "Finalizacao": "Finalização",
+    "Personalizacao": "Personalização"
+  };
+
+  function fixText(value = "") {
+    return spellingMap[value] || value;
+  }
+
+  function fixVisibleText() {
+    document.querySelectorAll("span, small, legend, h2, p, button, label, div").forEach((node) => {
+      if (node.children.length) return;
+      const value = node.textContent.trim();
+      if (spellingMap[value]) node.textContent = spellingMap[value];
+    });
+  }
+
+  fixVisibleText();
+
+  const observer = new MutationObserver(() => fixVisibleText());
+  observer.observe(document.body, { childList: true, subtree: true });
+
   const toast = document.createElement("div");
   toast.className = "cart-toast";
   toast.textContent = "✅ Produto adicionado";
@@ -21,7 +53,7 @@
     if (!legend || legend.querySelector(".step-toggle")) return;
 
     const label = document.createElement("span");
-    label.textContent = legend.textContent.trim();
+    label.textContent = fixText(legend.textContent.trim());
 
     const toggle = document.createElement("button");
     toggle.type = "button";
@@ -49,6 +81,19 @@
     return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
+  function label(item) {
+    return fixText(item?.label || "");
+  }
+
+  function getCartItems() {
+    try {
+      if (typeof state !== "undefined" && Array.isArray(state.cart)) return state.cart;
+    } catch (error) {
+      return [];
+    }
+    return [];
+  }
+
   function getFormattedWhatsAppMessage() {
     if (typeof cartTotals !== "function" || typeof deliveryData !== "function") {
       return "Olá, Adega Mistério! Quero finalizar meu pedido.";
@@ -56,15 +101,15 @@
 
     const totals = cartTotals();
     const data = deliveryData();
-    const cart = window.state?.cart || state?.cart || [];
+    const cart = getCartItems();
 
     const items = cart.map((item, index) => {
       return [
-        `*${index + 1}. ${item.product} - ${item.size.label}*`,
-        `• Base: ${item.base.label}`,
-        `• Intensidade: ${item.intensity}`,
-        `• Energético: ${item.energy.label}`,
-        `• Gelo: ${item.ice.label}`,
+        `*${index + 1}. ${item.product} - ${label(item.size)}*`,
+        `• Base: ${label(item.base)}`,
+        `• Intensidade: ${fixText(item.intensity)}`,
+        `• Energético: ${label(item.energy)}`,
+        `• Gelo: ${label(item.ice)}`,
         `• Quantidade: ${item.quantity}`,
         `• Valor unitário: ${safeMoney(item.unitPrice)}`,
         `• Subtotal: ${safeMoney(item.unitPrice * item.quantity)}`,
