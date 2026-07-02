@@ -1,0 +1,70 @@
+/* Ajustes de experiência e interação */
+
+.cart-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 92px;
+  z-index: 200;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 210px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.94);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 900;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 18px) scale(0.96);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  backdrop-filter: blur(18px);
+}
+
+.cart-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.custom-form fieldset {
+  position: relative;
+}
+
+.custom-form fieldset legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.step-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.custom-form fieldset.is-collapsed legend {
+  cursor: pointer;
+}
+
+.custom-form fieldset.is-collapsed .step-toggle {
+  display: inline-flex;
+}
+
+.custom-form fieldset.is-collapsed > *:not(legend) {
+  display: none !important;
+}
