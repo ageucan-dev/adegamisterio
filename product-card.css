@@ -30,26 +30,7 @@
 .product-copy h2 {
   display: flex !important;
   align-items: flex-start !important;
-  justify-content: space-between !important;
   gap: 10px !important;
   width: 100% !important;
   margin-bottom: 12px !important;
-}
-
-.product-copy h2::after {
-  content: "Entrega grátis";
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 7px 10px;
-  border-radius: 999px;
-  background: #16a34a;
-  color: #ffffff;
-  font-size: 0.68rem;
-  font-weight: 900;
-  line-height: 1;
-  white-space: nowrap;
-  transform: translateY(-7px);
-  box-shadow: 0 10px 24px rgba(22, 163, 74, 0.32);
 }
