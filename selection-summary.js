@@ -1,4 +1,35 @@
 (() => {
+  const style = document.createElement("style");
+  style.textContent = `
+    .custom-form legend {
+      display: grid !important;
+      grid-template-columns: 1fr auto !important;
+      align-items: center !important;
+      column-gap: 10px !important;
+      row-gap: 2px !important;
+      width: 100% !important;
+    }
+
+    .custom-form legend .step-summary {
+      grid-column: 1 / -1 !important;
+      display: block !important;
+      margin-top: 2px !important;
+      color: #ff7a00 !important;
+      font-size: 0.82rem !important;
+      font-weight: 900 !important;
+      line-height: 1.2 !important;
+    }
+
+    .custom-form legend .step-summary[hidden] {
+      display: none !important;
+    }
+
+    .custom-form fieldset.is-collapsed legend {
+      margin-bottom: 10px !important;
+    }
+  `;
+  document.head.appendChild(style);
+
   function selectedLabel(input) {
     const card = input.closest(".option-card");
     return card?.querySelector("span")?.textContent?.trim() || input.value || "";
