@@ -51,6 +51,7 @@ const els = {
   cartItems: document.querySelector("#cartItems"),
   cartCount: document.querySelector("#cartCount"),
   bottomCartCount: document.querySelector("#bottomCartCount"),
+  bottomTotalValue: document.querySelector("#bottomTotalValue"),
   subtotalValue: document.querySelector("#subtotalValue"),
   discountValue: document.querySelector("#discountValue"),
   orderTotal: document.querySelector("#orderTotal"),
@@ -135,6 +136,7 @@ function renderCart() {
   const totals = cartTotals();
   els.cartCount.textContent = totals.totalCups;
   els.bottomCartCount.textContent = totals.totalCups;
+  if (els.bottomTotalValue) els.bottomTotalValue.textContent = money(totals.total);
   els.subtotalValue.textContent = money(totals.subtotal);
   els.discountValue.textContent = `-${money(totals.discount)}`;
   els.orderTotal.textContent = money(totals.total);
