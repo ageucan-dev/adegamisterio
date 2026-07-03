@@ -6,16 +6,16 @@
     }
 
     .more-options-notice {
-      margin: -4px 0 22px !important;
-      padding: 16px 18px !important;
-      border: 1px dashed rgba(255, 122, 0, .42) !important;
-      border-radius: 22px !important;
-      background: rgba(255, 246, 214, .88) !important;
+      margin: -2px 0 22px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
       color: #0b1d3a !important;
       font-size: .98rem !important;
       font-weight: 900 !important;
       text-align: center !important;
-      box-shadow: 0 10px 24px rgba(11, 29, 58, .06) !important;
+      box-shadow: none !important;
     }
 
     .more-options-notice.is-hidden {
