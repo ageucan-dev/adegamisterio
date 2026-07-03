@@ -175,3 +175,96 @@ label.option-card:has(input:checked) {
 .logo-wrap {
   transform: translateY(0) !important;
 }
+
+/* Correções de contraste e visibilidade */
+.delivery-badge {
+  background: #16a34a !important;
+  color: #ffffff !important;
+  border: 0 !important;
+  box-shadow: 0 10px 24px rgba(22, 163, 74, .28) !important;
+}
+
+.price-badge,
+.price-badge * {
+  color: #0b1d3a !important;
+  font-weight: 900 !important;
+}
+
+.quantity-control strong,
+.cart-item strong,
+.summary-box strong,
+#subtotalValue,
+#discountValue,
+#orderTotal,
+#quantityValue,
+#bottomCartCount,
+#cartCount {
+  color: #0b1d3a !important;
+  font-weight: 900 !important;
+}
+
+.quantity-control button,
+.item-action,
+.mini-btn,
+#clearCart {
+  min-width: 38px !important;
+  min-height: 38px !important;
+  background: #ffd100 !important;
+  color: #0b1d3a !important;
+  border: 1px solid rgba(11,29,58,.18) !important;
+  border-radius: 12px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 8px 18px rgba(11,29,58,.08) !important;
+}
+
+.cart-item-actions .item-action[data-action="remove"],
+#clearCart {
+  background: #fff4cc !important;
+  color: #0b1d3a !important;
+  border: 1px solid #ff7a00 !important;
+}
+
+.cart-item-actions .item-action[data-action="plus"],
+.cart-item-actions .item-action[data-action="minus"] {
+  background: #0b1d3a !important;
+  color: #ffffff !important;
+  border-color: #0b1d3a !important;
+}
+
+.cart-item h3,
+.cart-item p,
+.cart-item span,
+.cart-item small {
+  color: #0b1d3a !important;
+}
+
+.summary-box span,
+.live-total span,
+.quantity-row span {
+  color: #4f5d75 !important;
+  font-weight: 800 !important;
+}
+
+.bottom-bar a,
+.bottom-bar a span {
+  color: #0b1d3a !important;
+  font-weight: 900 !important;
+}
+
+.btn-secondary,
+.btn-ghost,
+.btn-secondary *,
+.btn-ghost * {
+  color: #0b1d3a !important;
+  font-weight: 900 !important;
+}
+
+.step-toggle {
+  color: #0b1d3a !important;
+  font-weight: 900 !important;
+}
+
+.cart-toast,
+.cart-toast * {
+  color: #ffffff !important;
+}
