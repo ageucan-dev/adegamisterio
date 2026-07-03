@@ -142,7 +142,7 @@
 
     setTimeout(() => {
       syncAllSummaries();
-      if (event.target.matches("#addToCart, #buyNow")) scrollBuilderTop(420);
+      if (event.target.matches("#addToCart")) scrollBuilderTop(420);
     }, 140);
   }, true);
 
