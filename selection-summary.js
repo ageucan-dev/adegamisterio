@@ -92,15 +92,42 @@
     document.querySelectorAll(".custom-form fieldset").forEach(updateFieldsetSummary);
   }
 
+  function scrollWithOffset(target, delay = 0) {
+    if (!target) return;
+    window.setTimeout(() => {
+      const headerOffset = 92;
+      const targetTop = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: Math.max(targetTop, 0), behavior: "smooth" });
+    }, delay);
+  }
+
   function scrollBuilderTop(delay = 220) {
     const builder = document.querySelector("#personalizacao");
     if (!builder || builder.classList.contains("is-hidden")) return;
+    scrollWithOffset(builder, delay);
+  }
 
-    window.setTimeout(() => {
-      const headerOffset = 92;
-      const targetTop = builder.getBoundingClientRect().top + window.scrollY - headerOffset;
-      window.scrollTo({ top: Math.max(targetTop, 0), behavior: "smooth" });
-    }, delay);
+  function deliveryComplete() {
+    const requiredFields = ["#customerName", "#customerPhone", "#street", "#number", "#district"];
+    return requiredFields.every((selector) => document.querySelector(selector)?.value.trim());
+  }
+
+  function handleBottomFinish(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!deliveryComplete()) {
+      scrollWithOffset(document.querySelector(".checkout-card"), 80);
+      setTimeout(() => document.querySelector("#customerName")?.focus({ preventScroll: true }), 520);
+      return;
+    }
+
+    if (typeof finish === "function") {
+      finish();
+      return;
+    }
+
+    document.querySelector("#sendWhatsApp")?.click();
   }
 
   function installBuilderClose() {
@@ -119,6 +146,14 @@
     });
 
     builder.appendChild(close);
+  }
+
+  function installBottomFinishFlow() {
+    const bottomFinish = document.querySelector(".bottom-finish-link");
+    if (!bottomFinish || bottomFinish.dataset.deliveryFlow === "true") return;
+
+    bottomFinish.dataset.deliveryFlow = "true";
+    bottomFinish.addEventListener("click", handleBottomFinish);
   }
 
   document.addEventListener("change", (event) => {
@@ -148,9 +183,11 @@
 
   window.addEventListener("load", () => {
     installBuilderClose();
+    installBottomFinishFlow();
     syncAllSummaries();
   });
 
   installBuilderClose();
+  installBottomFinishFlow();
   syncAllSummaries();
 })();
