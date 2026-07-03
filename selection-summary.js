@@ -92,10 +92,15 @@
     document.querySelectorAll(".custom-form fieldset").forEach(updateFieldsetSummary);
   }
 
-  function scrollBuilderTop() {
+  function scrollBuilderTop(delay = 220) {
     const builder = document.querySelector("#personalizacao");
     if (!builder || builder.classList.contains("is-hidden")) return;
-    builder.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    window.setTimeout(() => {
+      const headerOffset = 92;
+      const targetTop = builder.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: Math.max(targetTop, 0), behavior: "smooth" });
+    }, delay);
   }
 
   function installBuilderClose() {
@@ -130,15 +135,15 @@
     if (event.target.matches("#showBuilder")) {
       setTimeout(() => {
         installBuilderClose();
-        scrollBuilderTop();
+        scrollBuilderTop(80);
       }, 80);
       return;
     }
 
     setTimeout(() => {
       syncAllSummaries();
-      if (event.target.matches("#addToCart, #buyNow")) scrollBuilderTop();
-    }, 100);
+      if (event.target.matches("#addToCart, #buyNow")) scrollBuilderTop(420);
+    }, 140);
   }, true);
 
   window.addEventListener("load", () => {
