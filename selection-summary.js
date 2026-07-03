@@ -161,6 +161,10 @@
     document.querySelector(".more-options-notice")?.classList.add("is-hidden");
   }
 
+  function showMoreOptionsNotice() {
+    document.querySelector(".more-options-notice")?.classList.remove("is-hidden");
+  }
+
   function installBuilderClose() {
     const builder = document.querySelector("#personalizacao");
     if (!builder || builder.querySelector(".builder-close")) return;
@@ -173,6 +177,7 @@
 
     close.addEventListener("click", () => {
       builder.classList.add("is-hidden");
+      showMoreOptionsNotice();
       document.querySelector("#produto")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
