@@ -22,6 +22,35 @@
       display: none !important;
     }
 
+    .cart-price {
+      display: inline-flex !important;
+      flex-direction: column !important;
+      align-items: flex-end !important;
+      justify-content: flex-start !important;
+      gap: 2px !important;
+      color: #0b1d3a !important;
+      font-weight: 900 !important;
+      line-height: 1.05 !important;
+      white-space: nowrap !important;
+      text-align: right !important;
+    }
+
+    .cart-old-price {
+      color: #7a879c !important;
+      font-size: .72rem !important;
+      font-weight: 900 !important;
+      text-decoration: line-through !important;
+      text-decoration-thickness: 2px !important;
+      line-height: 1 !important;
+    }
+
+    .cart-current-price {
+      color: #0b1d3a !important;
+      font-size: 1rem !important;
+      font-weight: 900 !important;
+      line-height: 1 !important;
+    }
+
     .builder-close {
       position: absolute !important;
       top: 18px !important;
