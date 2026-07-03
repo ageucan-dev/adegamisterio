@@ -268,3 +268,67 @@ label.option-card:has(input:checked) {
 .cart-toast * {
   color: #ffffff !important;
 }
+
+/* Barra inferior com total no botão de finalizar */
+.bottom-bar {
+  display: grid !important;
+  grid-template-columns: 0.78fr 1.62fr !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+.bottom-bar a {
+  min-width: 0 !important;
+  height: 56px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  border-radius: 18px !important;
+  white-space: nowrap !important;
+}
+
+.bottom-cart-link {
+  font-size: 0 !important;
+  padding: 0 10px !important;
+}
+
+.bottom-cart-link::first-letter,
+.bottom-cart-link span {
+  font-size: 1.02rem !important;
+}
+
+.bottom-finish-link {
+  padding: 0 14px !important;
+  background: #fff6d6 !important;
+}
+
+#bottomTotalValue,
+.bottom-separator,
+.bottom-finish-link strong {
+  color: #0b1d3a !important;
+  font-weight: 900 !important;
+  font-size: 0.98rem !important;
+  line-height: 1 !important;
+}
+
+.bottom-separator {
+  opacity: .55 !important;
+}
+
+@media (max-width: 380px) {
+  .bottom-bar {
+    grid-template-columns: 0.68fr 1.72fr !important;
+    gap: 8px !important;
+  }
+
+  #bottomTotalValue,
+  .bottom-finish-link strong {
+    font-size: 0.88rem !important;
+  }
+
+  .bottom-finish-link {
+    gap: 6px !important;
+    padding: 0 10px !important;
+  }
+}
