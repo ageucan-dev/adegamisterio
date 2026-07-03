@@ -5,6 +5,23 @@
       position: relative !important;
     }
 
+    .more-options-notice {
+      margin: -4px 0 22px !important;
+      padding: 16px 18px !important;
+      border: 1px dashed rgba(255, 122, 0, .42) !important;
+      border-radius: 22px !important;
+      background: rgba(255, 246, 214, .88) !important;
+      color: #0b1d3a !important;
+      font-size: .98rem !important;
+      font-weight: 900 !important;
+      text-align: center !important;
+      box-shadow: 0 10px 24px rgba(11, 29, 58, .06) !important;
+    }
+
+    .more-options-notice.is-hidden {
+      display: none !important;
+    }
+
     .builder-close {
       position: absolute !important;
       top: 18px !important;
@@ -130,6 +147,20 @@
     document.querySelector("#sendWhatsApp")?.click();
   }
 
+  function installMoreOptionsNotice() {
+    const product = document.querySelector("#produto");
+    if (!product || document.querySelector(".more-options-notice")) return;
+
+    const notice = document.createElement("div");
+    notice.className = "more-options-notice";
+    notice.textContent = "Mais opções em breve";
+    product.insertAdjacentElement("afterend", notice);
+  }
+
+  function hideMoreOptionsNotice() {
+    document.querySelector(".more-options-notice")?.classList.add("is-hidden");
+  }
+
   function installBuilderClose() {
     const builder = document.querySelector("#personalizacao");
     if (!builder || builder.querySelector(".builder-close")) return;
@@ -168,6 +199,7 @@
     if (!event.target.matches("#showBuilder, #addToCart, #buyNow, #clearCart")) return;
 
     if (event.target.matches("#showBuilder")) {
+      hideMoreOptionsNotice();
       setTimeout(() => {
         installBuilderClose();
         scrollBuilderTop(80);
@@ -182,11 +214,13 @@
   }, true);
 
   window.addEventListener("load", () => {
+    installMoreOptionsNotice();
     installBuilderClose();
     installBottomFinishFlow();
     syncAllSummaries();
   });
 
+  installMoreOptionsNotice();
   installBuilderClose();
   installBottomFinishFlow();
   syncAllSummaries();
