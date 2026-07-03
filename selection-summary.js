@@ -43,6 +43,7 @@
     if (!summary) {
       summary = document.createElement("small");
       summary.className = "step-summary";
+      summary.hidden = true;
       legend.appendChild(summary);
     }
     return summary;
@@ -53,7 +54,8 @@
     const summary = ensureSummary(fieldset);
     if (!summary) return;
 
-    summary.textContent = checked ? selectedLabel(checked) : "";
+    const nextText = checked ? selectedLabel(checked) : "";
+    if (summary.textContent !== nextText) summary.textContent = nextText;
     summary.hidden = !checked;
   }
 
@@ -66,18 +68,14 @@
     const fieldset = event.target.closest("fieldset");
     if (!fieldset) return;
 
-    setTimeout(() => updateFieldsetSummary(fieldset), 0);
+    updateFieldsetSummary(fieldset);
   });
 
   document.addEventListener("click", (event) => {
     if (!event.target.matches("#addToCart, #buyNow, #clearCart")) return;
-    setTimeout(syncAllSummaries, 60);
+    setTimeout(syncAllSummaries, 80);
   }, true);
 
-  new MutationObserver(syncAllSummaries).observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-
+  window.addEventListener("load", syncAllSummaries);
   syncAllSummaries();
 })();
