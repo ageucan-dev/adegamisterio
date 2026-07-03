@@ -132,6 +132,31 @@ function cartTotals() {
   return { subtotal, totalCups, discount, total };
 }
 
+function cartItemsWithDiscount() {
+  let cupPosition = 0;
+
+  return state.cart.map((item) => {
+    let discountedCups = 0;
+
+    for (let index = 0; index < item.quantity; index += 1) {
+      cupPosition += 1;
+      if (cupPosition > 1) discountedCups += 1;
+    }
+
+    const originalTotal = item.unitPrice * item.quantity;
+    const discount = discountedCups * DISCOUNT_PER_EXTRA_CUP;
+    const finalTotal = Math.max(originalTotal - discount, 0);
+
+    return { ...item, originalTotal, discount, finalTotal };
+  });
+}
+
+function cartPriceMarkup(item) {
+  if (!item.discount) return `<strong class="cart-price">${money(item.finalTotal)}</strong>`;
+
+  return `<strong class="cart-price cart-price-discounted"><small class="cart-old-price">${money(item.originalTotal)}</small><span class="cart-current-price">${money(item.finalTotal)}</span></strong>`;
+}
+
 function renderCart() {
   const totals = cartTotals();
   els.cartCount.textContent = totals.totalCups;
@@ -148,7 +173,7 @@ function renderCart() {
   }
 
   els.cartItems.className = "cart-items";
-  els.cartItems.innerHTML = state.cart.map((item) => `<article class="cart-item"><div class="cart-item-header"><div><h3>${item.product} - ${item.size.label}</h3><p>${item.base.label} | ${item.intensity} | ${item.energy.label} | ${item.ice.label}</p>${item.notes ? `<p>Obs: ${item.notes}</p>` : ""}</div><strong>${money(item.unitPrice * item.quantity)}</strong></div><div class="cart-item-actions"><div class="quantity-control"><button class="item-action" type="button" data-action="minus" data-id="${item.id}">-</button><strong>${item.quantity}</strong><button class="item-action" type="button" data-action="plus" data-id="${item.id}">+</button></div><button class="item-action" type="button" data-action="remove" data-id="${item.id}">Remover</button></div></article>`).join("");
+  els.cartItems.innerHTML = cartItemsWithDiscount().map((item) => `<article class="cart-item"><div class="cart-item-header"><div><h3>${item.product} - ${item.size.label}</h3><p>${item.base.label} | ${item.intensity} | ${item.energy.label} | ${item.ice.label}</p>${item.notes ? `<p>Obs: ${item.notes}</p>` : ""}</div>${cartPriceMarkup(item)}</div><div class="cart-item-actions"><div class="quantity-control"><button class="item-action" type="button" data-action="minus" data-id="${item.id}">-</button><strong>${item.quantity}</strong><button class="item-action" type="button" data-action="plus" data-id="${item.id}">+</button></div><button class="item-action" type="button" data-action="remove" data-id="${item.id}">Remover</button></div></article>`).join("");
 }
 
 function resetCustomization() {
