@@ -26,15 +26,15 @@
   }
 
   function patchPromoStorage() {
-    if (window.__copaoDailyWheelStoragePatched) return;
+    if (window.__copaoDailyWheelStoragePatched || !window.Storage?.prototype?.setItem) return;
 
-    const originalSetItem = localStorage.setItem.bind(localStorage);
+    const originalSetItem = Storage.prototype.setItem;
 
-    localStorage.setItem = function patchedSetItem(key, value) {
+    Storage.prototype.setItem = function patchedSetItem(key, value) {
       const today = todayKey();
 
       if (key === PLAYED_KEY && value === "true") {
-        originalSetItem(PLAYED_DATE_KEY, today);
+        originalSetItem.call(this, PLAYED_DATE_KEY, today);
       }
 
       if (key === PRIZE_KEY) {
@@ -42,13 +42,13 @@
           const prize = JSON.parse(value);
           prize.day = today;
           prize.expiresAt = `${today}T23:59:59`;
-          return originalSetItem(key, JSON.stringify(prize));
+          return originalSetItem.call(this, key, JSON.stringify(prize));
         } catch (error) {
-          return originalSetItem(key, value);
+          return originalSetItem.call(this, key, value);
         }
       }
 
-      return originalSetItem(key, value);
+      return originalSetItem.call(this, key, value);
     };
 
     window.__copaoDailyWheelStoragePatched = true;
