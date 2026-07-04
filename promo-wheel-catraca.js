@@ -2,7 +2,8 @@
   const activeTimers = new WeakMap();
 
   function injectPegs(stage) {
-    if (!stage || stage.querySelector(".promo-wheel-pegs")) return;
+    const disc = stage?.querySelector(".promo-wheel-disc");
+    if (!disc || disc.querySelector(".promo-wheel-pegs")) return;
 
     const pegs = document.createElement("div");
     pegs.className = "promo-wheel-pegs";
@@ -15,12 +16,7 @@
       <span class="promo-wheel-peg peg-6"></span>
     `;
 
-    const disc = stage.querySelector(".promo-wheel-disc");
-    if (disc) {
-      stage.insertBefore(pegs, disc);
-    } else {
-      stage.appendChild(pegs);
-    }
+    disc.appendChild(pegs);
   }
 
   function clearPointerTimers(pointer) {
@@ -35,20 +31,20 @@
     clearPointerTimers(pointer);
 
     pointer.classList.add("is-clicking");
-    pointer.style.animationDuration = "0.07s";
+    pointer.style.animationDuration = "0.06s";
 
     const timers = [
       setTimeout(() => {
-        pointer.style.animationDuration = "0.09s";
-      }, 2200),
+        pointer.style.animationDuration = "0.085s";
+      }, 1900),
 
       setTimeout(() => {
         pointer.style.animationDuration = "0.12s";
-      }, 3100),
+      }, 3000),
 
       setTimeout(() => {
-        pointer.style.animationDuration = "0.17s";
-      }, 3800),
+        pointer.style.animationDuration = "0.18s";
+      }, 3700),
 
       setTimeout(() => {
         pointer.classList.remove("is-clicking");
@@ -68,15 +64,9 @@
 
     injectPegs(stage);
 
-    if (spinButton) {
-      spinButton.addEventListener(
-        "click",
-        () => {
-          startPointerRatchet(pointer);
-        },
-        true
-      );
-    }
+    spinButton?.addEventListener("click", () => {
+      startPointerRatchet(pointer);
+    }, true);
 
     modal.dataset.catracaReady = "true";
   }
@@ -85,15 +75,10 @@
     document.querySelectorAll(".promo-wheel-modal").forEach(wireWheel);
   }
 
-  const observer = new MutationObserver(() => {
-    scanWheels();
-  });
-
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
+  const observer = new MutationObserver(scanWheels);
+  observer.observe(document.body, { childList: true, subtree: true });
 
   window.addEventListener("load", scanWheels);
-  setTimeout(scanWheels, 800);
+  setTimeout(scanWheels, 300);
+  setTimeout(scanWheels, 1000);
 })();
