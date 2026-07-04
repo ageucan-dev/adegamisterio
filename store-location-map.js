@@ -1,0 +1,97 @@
+(() => {
+  const ADDRESS = "Rua Capitão Zeca de Paula, 798 - Franca/SP";
+  const MAP_QUERY = encodeURIComponent(ADDRESS);
+
+  function installLocationStyles() {
+    if (document.querySelector("#store-location-map-style")) return;
+
+    const style = document.createElement("style");
+    style.id = "store-location-map-style";
+    style.textContent = `
+      .location-card {
+        overflow: hidden !important;
+      }
+
+      .location-map-wrap {
+        position: relative !important;
+        width: 100% !important;
+        height: 230px !important;
+        margin-top: 16px !important;
+        overflow: hidden !important;
+        border: 1px solid rgba(11, 29, 58, 0.1) !important;
+        border-radius: 24px !important;
+        background: #fff4cc !important;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45) !important;
+      }
+
+      .location-map-wrap iframe {
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
+        border: 0 !important;
+      }
+
+      .location-address {
+        margin: 14px 0 0 !important;
+        color: #0b1d3a !important;
+        font-size: 0.95rem !important;
+        font-weight: 900 !important;
+        line-height: 1.35 !important;
+      }
+
+      .location-warning {
+        margin: 12px 0 0 !important;
+        padding: 13px 14px !important;
+        border: 1px solid rgba(255, 122, 0, 0.28) !important;
+        border-radius: 18px !important;
+        background: rgba(255, 244, 204, 0.72) !important;
+        color: #5c6a80 !important;
+        font-size: 0.88rem !important;
+        font-weight: 800 !important;
+        line-height: 1.35 !important;
+      }
+
+      .location-warning strong {
+        color: #0b1d3a !important;
+        font-weight: 950 !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function installLocationMap() {
+    const finishCard = document.querySelector("#finalizar");
+    if (!finishCard || document.querySelector("#localizacao")) return;
+
+    const section = document.createElement("section");
+    section.id = "localizacao";
+    section.className = "section-card location-card";
+    section.innerHTML = `
+      <p class="eyebrow">Localização</p>
+      <h2>Onde estamos</h2>
+      <p class="location-address">📍 ${ADDRESS}</p>
+      <div class="location-map-wrap" aria-label="Mapa da localização do Copão na Mão">
+        <iframe
+          title="Mapa - Copão na Mão"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps?q=${MAP_QUERY}&output=embed">
+        </iframe>
+      </div>
+      <p class="location-warning"><strong>Atenção:</strong> somos uma operação digital. Este endereço não é ponto físico para retirada de pedidos.</p>
+    `;
+
+    finishCard.insertAdjacentElement("afterend", section);
+  }
+
+  function init() {
+    installLocationStyles();
+    installLocationMap();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
+})();
