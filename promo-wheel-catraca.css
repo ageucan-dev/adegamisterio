@@ -3,92 +3,84 @@
   display: none !important;
 }
 
-/* Pinos externos visíveis */
+/* Pinos externos visíveis girando junto com a roleta */
 .promo-wheel-pegs {
   position: absolute;
-  inset: 0;
+  inset: -2px;
   z-index: 5;
+  border-radius: 50%;
   pointer-events: none;
 }
 
 .promo-wheel-peg {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #ff6b00;
   border: 3px solid #ffffff;
-  box-shadow: 0 4px 10px rgba(11, 29, 58, 0.22);
+  box-shadow: 0 4px 10px rgba(11, 29, 58, 0.24);
 }
 
 .promo-wheel-peg.peg-1 {
   left: 50%;
-  top: 8px;
+  top: -3px;
   transform: translateX(-50%);
 }
 
 .promo-wheel-peg.peg-2 {
-  right: 14px;
-  top: 32%;
+  right: 5px;
+  top: 30%;
 }
 
 .promo-wheel-peg.peg-3 {
-  right: 14px;
-  bottom: 24%;
+  right: 6px;
+  bottom: 22%;
 }
 
 .promo-wheel-peg.peg-4 {
   left: 50%;
-  bottom: 8px;
+  bottom: -3px;
   transform: translateX(-50%);
 }
 
 .promo-wheel-peg.peg-5 {
-  left: 14px;
-  bottom: 24%;
+  left: 6px;
+  bottom: 22%;
 }
 
 .promo-wheel-peg.peg-6 {
-  left: 14px;
-  top: 32%;
+  left: 5px;
+  top: 30%;
 }
 
 /* Seta estilo catraca */
 .promo-wheel-pointer {
   position: absolute !important;
-  top: -2px !important;
+  top: -4px !important;
   left: 50% !important;
   z-index: 8 !important;
   width: 0;
   height: 0;
   border-left: 15px solid transparent;
   border-right: 15px solid transparent;
-  border-top: 28px solid #ff7a00;
+  border-top: 30px solid #ff7a00;
   transform: translateX(-50%) rotate(0deg) !important;
   transform-origin: 50% 6px !important;
   filter: drop-shadow(0 5px 8px rgba(11, 29, 58, 0.24));
 }
 
 .promo-wheel-pointer.is-clicking {
-  animation: pointerRatchet 0.075s linear infinite;
+  animation: pointerRatchet 0.07s linear infinite !important;
 }
 
 @keyframes pointerRatchet {
-  0% {
-    transform: translateX(-50%) rotate(0deg);
-  }
-  35% {
-    transform: translateX(-50%) rotate(15deg);
-  }
-  55% {
-    transform: translateX(-50%) rotate(-4deg);
-  }
-  100% {
-    transform: translateX(-50%) rotate(0deg);
-  }
+  0% { transform: translateX(-50%) rotate(0deg); }
+  34% { transform: translateX(-50%) rotate(16deg); }
+  58% { transform: translateX(-50%) rotate(-5deg); }
+  100% { transform: translateX(-50%) rotate(0deg); }
 }
 
-/* Mantém os textos e centro acima do disco */
 .promo-wheel-label {
   z-index: 3 !important;
 }
