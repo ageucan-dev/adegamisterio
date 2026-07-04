@@ -128,6 +128,7 @@
   content: "GIRE";
   position: absolute;
   inset: 50% auto auto 50%;
+  z-index: 2;
   width: 76px;
   height: 76px;
   display: grid;
@@ -146,23 +147,32 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 84px;
+  z-index: 1;
+  width: 62px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
   color: #0b1d3a;
-  font-size: 0.58rem;
+  font-size: 0.52rem;
   font-weight: 950;
-  line-height: 1.05;
+  line-height: 1.02;
   text-align: center;
   text-transform: uppercase;
-  transform-origin: 0 0;
+  letter-spacing: -0.02em;
   pointer-events: none;
+  transform-origin: center center;
 }
 
-.promo-wheel-label:nth-child(1) { transform: rotate(30deg) translate(62px) rotate(60deg); }
-.promo-wheel-label:nth-child(2) { transform: rotate(90deg) translate(62px) rotate(0deg); }
-.promo-wheel-label:nth-child(3) { transform: rotate(150deg) translate(62px) rotate(-60deg); }
-.promo-wheel-label:nth-child(4) { transform: rotate(210deg) translate(62px) rotate(-120deg); color: #ffffff; }
-.promo-wheel-label:nth-child(5) { transform: rotate(270deg) translate(62px) rotate(-180deg); }
-.promo-wheel-label:nth-child(6) { transform: rotate(330deg) translate(62px) rotate(-240deg); }
+.promo-wheel-label:nth-child(1) { transform: translate(-50%, -50%) rotate(30deg) translateY(-82px) rotate(-30deg); }
+.promo-wheel-label:nth-child(2) { transform: translate(-50%, -50%) rotate(90deg) translateY(-82px) rotate(-90deg); }
+.promo-wheel-label:nth-child(3) { transform: translate(-50%, -50%) rotate(150deg) translateY(-82px) rotate(-150deg); }
+.promo-wheel-label:nth-child(4) { transform: translate(-50%, -50%) rotate(210deg) translateY(-82px) rotate(-210deg); background: rgba(255, 255, 255, 0.16); color: #ffffff; }
+.promo-wheel-label:nth-child(5) { transform: translate(-50%, -50%) rotate(270deg) translateY(-82px) rotate(-270deg); }
+.promo-wheel-label:nth-child(6) { transform: translate(-50%, -50%) rotate(330deg) translateY(-82px) rotate(-330deg); }
 
 .promo-wheel-actions {
   position: relative;
