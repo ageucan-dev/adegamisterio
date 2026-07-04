@@ -1,12 +1,10 @@
-/* Remove o anel antigo de risquinhos */
 .promo-wheel-disc::before {
   display: none !important;
 }
 
-/* Pinos externos visíveis girando junto com a roleta */
 .promo-wheel-pegs {
   position: absolute;
-  inset: -2px;
+  inset: 0;
   z-index: 5;
   border-radius: 50%;
   pointer-events: none;
@@ -14,47 +12,41 @@
 
 .promo-wheel-peg {
   position: absolute;
+  left: 50%;
+  top: 50%;
   width: 15px;
   height: 15px;
   border-radius: 50%;
   background: #ff6b00;
   border: 3px solid #ffffff;
   box-shadow: 0 4px 10px rgba(11, 29, 58, 0.24);
+  transform-origin: center center;
 }
 
 .promo-wheel-peg.peg-1 {
-  left: 50%;
-  top: -3px;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%) rotate(0deg) translateY(-130px);
 }
 
 .promo-wheel-peg.peg-2 {
-  right: 5px;
-  top: 30%;
+  transform: translate(-50%, -50%) rotate(60deg) translateY(-130px);
 }
 
 .promo-wheel-peg.peg-3 {
-  right: 6px;
-  bottom: 22%;
+  transform: translate(-50%, -50%) rotate(120deg) translateY(-130px);
 }
 
 .promo-wheel-peg.peg-4 {
-  left: 50%;
-  bottom: -3px;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%) rotate(180deg) translateY(-130px);
 }
 
 .promo-wheel-peg.peg-5 {
-  left: 6px;
-  bottom: 22%;
+  transform: translate(-50%, -50%) rotate(240deg) translateY(-130px);
 }
 
 .promo-wheel-peg.peg-6 {
-  left: 5px;
-  top: 30%;
+  transform: translate(-50%, -50%) rotate(300deg) translateY(-130px);
 }
 
-/* Seta estilo catraca */
 .promo-wheel-pointer {
   position: absolute !important;
   top: -4px !important;
@@ -70,21 +62,19 @@
   filter: drop-shadow(0 5px 8px rgba(11, 29, 58, 0.24));
 }
 
-.promo-wheel-pointer.is-clicking {
-  animation: pointerRatchet 0.07s linear infinite !important;
-}
-
-@keyframes pointerRatchet {
-  0% { transform: translateX(-50%) rotate(0deg); }
-  34% { transform: translateX(-50%) rotate(16deg); }
-  58% { transform: translateX(-50%) rotate(-5deg); }
-  100% { transform: translateX(-50%) rotate(0deg); }
-}
-
 .promo-wheel-label {
   z-index: 3 !important;
 }
 
 .promo-wheel-disc::after {
   z-index: 4 !important;
+}
+
+@media (max-width: 360px) {
+  .promo-wheel-peg.peg-1 { transform: translate(-50%, -50%) rotate(0deg) translateY(-121px); }
+  .promo-wheel-peg.peg-2 { transform: translate(-50%, -50%) rotate(60deg) translateY(-121px); }
+  .promo-wheel-peg.peg-3 { transform: translate(-50%, -50%) rotate(120deg) translateY(-121px); }
+  .promo-wheel-peg.peg-4 { transform: translate(-50%, -50%) rotate(180deg) translateY(-121px); }
+  .promo-wheel-peg.peg-5 { transform: translate(-50%, -50%) rotate(240deg) translateY(-121px); }
+  .promo-wheel-peg.peg-6 { transform: translate(-50%, -50%) rotate(300deg) translateY(-121px); }
 }
