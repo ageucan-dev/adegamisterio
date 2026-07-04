@@ -146,13 +146,41 @@
     }
   }
 
-  function getPromoLine() {
+  function getPromoDiscount(baseTotal = 0) {
+    const prize = getSavedWheelPrize();
+    if (!prize || prize.type !== "discount") return 0;
+    return Math.min(Number(prize.value || 0), Math.max(baseTotal, 0));
+  }
+
+  function getPromoLine(totals) {
     const prize = getSavedWheelPrize();
     if (!prize || prize.type === "none") return "";
 
-    if (prize.type === "discount") return `• Roleta do Copão: ${prize.label}`;
+    if (prize.type === "discount") {
+      const value = totals?.promoDiscount || Number(prize.value || 0);
+      return `• Roleta do Copão: -${safeMoney(value)} (${prize.label})`;
+    }
+
     if (prize.type === "free_cup") return `• Roleta do Copão: ${prize.label}`;
     return "";
+  }
+
+  function patchPromoTotals() {
+    if (window.__copaoPromoTotalsPatched || typeof cartTotals !== "function") return;
+
+    const originalCartTotals = cartTotals;
+    cartTotals = function patchedCartTotals() {
+      const totals = originalCartTotals();
+      const promoDiscount = getPromoDiscount(totals.total);
+      return {
+        ...totals,
+        promoDiscount,
+        total: Math.max(totals.total - promoDiscount, 0)
+      };
+    };
+
+    window.__copaoPromoTotalsPatched = true;
+    if (typeof renderCart === "function") renderCart();
   }
 
   function installPromoBadge() {
@@ -160,12 +188,16 @@
     if (!prize || prize.type === "none") return;
 
     const cartCard = document.querySelector("#carrinho");
-    if (!cartCard || cartCard.querySelector(".promo-wheel-badge")) return;
+    if (!cartCard) return;
 
-    const badge = document.createElement("div");
-    badge.className = "promo-wheel-badge";
+    let badge = cartCard.querySelector(".promo-wheel-badge");
+    if (!badge) {
+      badge = document.createElement("div");
+      badge.className = "promo-wheel-badge";
+      cartCard.insertBefore(badge, cartCard.querySelector(".summary-box"));
+    }
+
     badge.textContent = `🎁 Benefício ativo: ${prize.label}`;
-    cartCard.insertBefore(badge, cartCard.querySelector(".summary-box"));
   }
 
   function pickWheelPrize() {
@@ -251,6 +283,7 @@
         }
 
         saveWheelPrize(prize);
+        patchPromoTotals();
         installPromoBadge();
         result.textContent = `Você ganhou: ${prize.label}! O benefício será enviado junto com seu pedido.`;
         spin.textContent = "Prêmio liberado";
@@ -268,6 +301,7 @@
       alreadyPlayed = false;
     }
 
+    patchPromoTotals();
     installPromoBadge();
     if (alreadyPlayed) return;
 
@@ -285,7 +319,7 @@
     const totals = cartTotals();
     const data = deliveryData();
     const cart = getCartItems();
-    const promoLine = getPromoLine();
+    const promoLine = getPromoLine(totals);
 
     const items = cart.map((item, index) => {
       return [
@@ -326,18 +360,25 @@
     ].filter(Boolean).join("\n");
   }
 
+  function finishWithPromo() {
+    if (typeof validateBeforeSend !== "function") return;
+    const error = validateBeforeSend();
+    if (error) { alert(error); return; }
+
+    const message = encodeURIComponent(getFormattedWhatsAppMessage());
+    window.open(`https://wa.me/5516996396543?text=${message}`, "_blank", "noopener,noreferrer");
+  }
+
+  if (typeof finish === "function") finish = finishWithPromo;
+
   const finishButton = document.querySelector("#sendWhatsApp");
   finishButton?.addEventListener("click", (event) => {
-    if (typeof validateBeforeSend !== "function") return;
-
-    const error = validateBeforeSend();
+    const error = typeof validateBeforeSend === "function" ? validateBeforeSend() : "";
     if (error) return;
 
     event.preventDefault();
     event.stopImmediatePropagation();
-
-    const message = encodeURIComponent(getFormattedWhatsAppMessage());
-    window.open(`https://wa.me/5516996396543?text=${message}`, "_blank", "noopener,noreferrer");
+    finishWithPromo();
   }, true);
 
   window.addEventListener("load", maybeOpenPromoWheel);
