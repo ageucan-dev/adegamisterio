@@ -82,6 +82,17 @@
     return { subtotal: 0, discount: 0, total: 0, promoDiscount: 0 };
   }
 
+  function updateProgressiveDiscountRow() {
+    const discountValue = document.querySelector("#discountValue");
+    const row = discountValue?.parentElement;
+    if (!row) return;
+
+    const totals = getTotals();
+    const shouldShow = Number(totals.discount || 0) > 0;
+    row.hidden = !shouldShow;
+    row.style.display = shouldShow ? "" : "none";
+  }
+
   function updateBenefitRow() {
     const summaryBox = document.querySelector(".summary-box");
     const totalRow = document.querySelector(".summary-box .summary-total");
@@ -111,17 +122,22 @@
     row.innerHTML = `<span>Benefício</span><strong>${prize.label || "Prêmio ativo"}</strong>`;
   }
 
+  function updateSummaryRows() {
+    updateProgressiveDiscountRow();
+    updateBenefitRow();
+  }
+
   function patchRenderCart() {
     if (window.__copaoBenefitRowPatched || typeof renderCart !== "function") return;
 
     const originalRenderCart = renderCart;
     renderCart = function patchedRenderCart() {
       originalRenderCart();
-      window.setTimeout(updateBenefitRow, 0);
+      window.setTimeout(updateSummaryRows, 0);
     };
 
     window.__copaoBenefitRowPatched = true;
-    updateBenefitRow();
+    updateSummaryRows();
   }
 
   function installBenefitStyles() {
@@ -173,6 +189,6 @@
     installBenefitStyles();
     patchRenderCart();
     installBuyNowSoftScroll();
-    updateBenefitRow();
+    updateSummaryRows();
   });
 })();
