@@ -278,6 +278,7 @@
         if (prize.type === "none") {
           result.textContent = "Quase! Continue montando seu copo e tente em uma próxima oportunidade.";
           spin.textContent = "Giro realizado";
+          useButton.textContent = "Continuar pedido";
           useButton.hidden = false;
           return;
         }
@@ -287,6 +288,7 @@
         installPromoBadge();
         result.textContent = `Você ganhou: ${prize.label}! O benefício será enviado junto com seu pedido.`;
         spin.textContent = "Prêmio liberado";
+        useButton.textContent = "Usar no pedido";
         useButton.hidden = false;
         showCartToast(`🎁 ${prize.label} ativado`);
       }, 4200);
