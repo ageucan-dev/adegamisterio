@@ -1,6 +1,14 @@
 (() => {
   const PROMO_PRIZE_KEY = "copaoPromoWheelPrizeV1";
   const WHATSAPP_NUMBER = "5516996396543";
+  const EMOJI = {
+    cup: "\uD83E\uDD64",
+    cart: "\uD83D\uDED2",
+    money: "\uD83D\uDCB0",
+    pin: "\uD83D\uDCCD",
+    check: "\u2705",
+    gift: "\uD83C\uDF81"
+  };
 
   function brl(value) {
     return Number(value || 0).toLocaleString("pt-BR", {
@@ -107,20 +115,20 @@
     ].filter(Boolean);
 
     return [
-      "*🥤 COPÃO NA MÃO | NOVO PEDIDO*",
+      `*${EMOJI.cup} COPÃO NA MÃO | NOVO PEDIDO*`,
       "Ficha organizada para preparo e conferência.",
       "",
-      "*🛒 ITENS DO CARRINHO*",
+      `*${EMOJI.cart} ITENS DO CARRINHO*`,
       "",
       items,
       "",
-      "*💰 RESUMO DO PEDIDO*",
+      `*${EMOJI.money} RESUMO DO PEDIDO*`,
       ...summaryLines,
       "",
-      "*📍 DADOS DE ENTREGA*",
+      `*${EMOJI.pin} DADOS DE ENTREGA*`,
       ...deliveryLines,
       "",
-      "✅ Aguardo confirmação para preparo."
+      `${EMOJI.check} Aguardo confirmação para preparo.`
     ].join("\n");
   }
 
