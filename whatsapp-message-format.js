@@ -1,13 +1,14 @@
 (() => {
   const PROMO_PRIZE_KEY = "copaoPromoWheelPrizeV1";
   const WHATSAPP_NUMBER = "5516996396543";
+
   const EMOJI = {
-    cup: "\uD83E\uDD64",
-    cart: "\uD83D\uDED2",
-    money: "\uD83D\uDCB0",
-    pin: "\uD83D\uDCCD",
-    check: "\u2705",
-    gift: "\uD83C\uDF81"
+    cup: String.fromCodePoint(0x1F964),
+    cart: String.fromCodePoint(0x1F6D2),
+    money: String.fromCodePoint(0x1F4B0),
+    pin: String.fromCodePoint(0x1F4CD),
+    check: String.fromCodePoint(0x2705),
+    gift: String.fromCodePoint(0x1F381)
   };
 
   function brl(value) {
@@ -19,14 +20,14 @@
 
   function getCart() {
     try {
-      return Array.isArray(state?.cart) ? state.cart : [];
+      return Array.isArray(window.state?.cart) ? window.state.cart : [];
     } catch (error) {
       return [];
     }
   }
 
   function getTotals() {
-    if (typeof cartTotals === "function") return cartTotals();
+    if (typeof window.cartTotals === "function") return window.cartTotals();
 
     const cart = getCart();
     const subtotal = cart.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
@@ -38,7 +39,7 @@
   }
 
   function getDeliveryData() {
-    if (typeof deliveryData === "function") return deliveryData();
+    if (typeof window.deliveryData === "function") return window.deliveryData();
 
     return {
       name: document.querySelector("#customerName")?.value.trim() || "",
@@ -100,7 +101,7 @@
 
     const summaryLines = [
       `• Subtotal: ${brl(totals.subtotal)}`,
-      `• Desconto progressivo: -${brl(totals.discount)}`,
+      Number(totals.discount || 0) > 0 ? `• Desconto progressivo: -${brl(totals.discount)}` : "",
       promoLine,
       `• Total: ${brl(totals.total)}`
     ].filter(Boolean);
@@ -132,33 +133,50 @@
     ].join("\n");
   }
 
+  function openWhatsAppWithMessage(message) {
+    const url = new URL("https://api.whatsapp.com/send");
+    url.searchParams.set("phone", WHATSAPP_NUMBER);
+    url.searchParams.set("text", message);
+    window.open(url.toString(), "_blank", "noopener,noreferrer");
+  }
+
   function sendCleanWhatsAppMessage() {
-    const error = typeof validateBeforeSend === "function" ? validateBeforeSend() : "";
+    const error = typeof window.validateBeforeSend === "function" ? window.validateBeforeSend() : "";
     if (error) {
       alert(error);
       return;
     }
 
-    const message = encodeURIComponent(buildCleanWhatsAppMessage());
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank", "noopener,noreferrer");
+    openWhatsAppWithMessage(buildCleanWhatsAppMessage());
   }
 
-  window.buildCleanWhatsAppMessage = buildCleanWhatsAppMessage;
+  function installCleanSender() {
+    const button = document.querySelector("#sendWhatsApp");
 
-  if (typeof finish === "function") {
-    finish = sendCleanWhatsAppMessage;
+    if (button && typeof window.finish === "function") {
+      button.removeEventListener("click", window.finish);
+    }
+
+    window.buildCleanWhatsAppMessage = buildCleanWhatsAppMessage;
+    window.sendCleanWhatsAppMessage = sendCleanWhatsAppMessage;
+    window.finish = sendCleanWhatsAppMessage;
+
+    if (!button || button.dataset.cleanWhatsappReady === "true") return;
+
+    button.dataset.cleanWhatsappReady = "true";
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      sendCleanWhatsAppMessage();
+    }, true);
   }
 
-  document.addEventListener("click", (event) => {
-    const button = event.target.closest("#sendWhatsApp");
-    if (!button) return;
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", installCleanSender, { once: true });
+  } else {
+    installCleanSender();
+  }
 
-    const error = typeof validateBeforeSend === "function" ? validateBeforeSend() : "";
-    if (error) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    sendCleanWhatsAppMessage();
-  }, true);
+  window.addEventListener("load", installCleanSender);
 })();
