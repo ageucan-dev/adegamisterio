@@ -25,34 +25,41 @@
     activeTimers.delete(pointer);
   }
 
+  function setPointerAngle(pointer, angle) {
+    pointer.style.setProperty("transform", `translateX(-50%) rotate(${angle}deg)`, "important");
+  }
+
   function startPointerRatchet(pointer) {
     if (!pointer) return;
 
     clearPointerTimers(pointer);
-
     pointer.classList.add("is-clicking");
-    pointer.style.animationDuration = "0.06s";
 
-    const timers = [
-      setTimeout(() => {
-        pointer.style.animationDuration = "0.085s";
-      }, 1900),
+    let elapsed = 0;
+    let interval = 62;
 
-      setTimeout(() => {
-        pointer.style.animationDuration = "0.12s";
-      }, 3000),
+    function tick() {
+      setPointerAngle(pointer, 17);
+      const backTimer = setTimeout(() => setPointerAngle(pointer, -5), Math.max(24, interval * 0.35));
+      const resetTimer = setTimeout(() => setPointerAngle(pointer, 0), Math.max(42, interval * 0.62));
 
-      setTimeout(() => {
-        pointer.style.animationDuration = "0.18s";
-      }, 3700),
+      elapsed += interval;
 
-      setTimeout(() => {
+      if (elapsed < 1900) interval = 62;
+      else if (elapsed < 3000) interval = 88;
+      else if (elapsed < 3800) interval = 130;
+      else interval = 190;
+
+      if (elapsed < 4300) {
+        const nextTimer = setTimeout(tick, interval);
+        activeTimers.set(pointer, [...(activeTimers.get(pointer) || []), backTimer, resetTimer, nextTimer]);
+      } else {
         pointer.classList.remove("is-clicking");
-        pointer.style.animationDuration = "";
-      }, 4300)
-    ];
+        setPointerAngle(pointer, 0);
+      }
+    }
 
-    activeTimers.set(pointer, timers);
+    tick();
   }
 
   function wireWheel(modal) {
