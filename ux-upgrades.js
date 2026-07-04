@@ -14,6 +14,18 @@
     "Personalizacao": "Personalização"
   };
 
+  const wheelStorageKey = "copaoPromoWheelPlayedV1";
+  const wheelPrizeKey = "copaoPromoWheelPrizeV1";
+
+  const wheelPrizes = [
+    { label: "Tente na próxima", shortLabel: "Tente na próxima", chance: 80, type: "none", rotation: 30 },
+    { label: "R$ 5 de desconto", shortLabel: "R$5 OFF", chance: 10, type: "discount", value: 5, rotation: 90 },
+    { label: "R$ 10 de desconto", shortLabel: "R$10 OFF", chance: 6, type: "discount", value: 10, rotation: 150 },
+    { label: "R$ 25 de desconto", shortLabel: "R$25 OFF", chance: 3, type: "discount", value: 25, rotation: 210 },
+    { label: "1 copo Ethernity", shortLabel: "1 copo", chance: 1, type: "free_cup", value: 1, rotation: 270 },
+    { label: "3 copos Ethernity", shortLabel: "3 copos", chance: 0, type: "free_cup", value: 3, rotation: 330 }
+  ];
+
   function fixText(value = "") {
     return spellingMap[value] || value;
   }
@@ -48,8 +60,9 @@
   document.body.appendChild(toast);
 
   let toastTimer;
-  function showCartToast() {
+  function showCartToast(message = "✅ Produto adicionado") {
     clearTimeout(toastTimer);
+    toast.textContent = message;
     toast.classList.add("is-visible");
     toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 1800);
   }
@@ -111,14 +124,168 @@
     return [];
   }
 
+  function getSavedWheelPrize() {
+    try {
+      const raw = localStorage.getItem(wheelPrizeKey);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveWheelPrize(prize) {
+    try {
+      localStorage.setItem(wheelPrizeKey, JSON.stringify({
+        label: prize.label,
+        type: prize.type,
+        value: prize.value || 0,
+        savedAt: new Date().toISOString()
+      }));
+    } catch (error) {
+      return;
+    }
+  }
+
+  function getPromoLine() {
+    const prize = getSavedWheelPrize();
+    if (!prize || prize.type === "none") return "";
+
+    if (prize.type === "discount") return `• Roleta do Copão: ${prize.label}`;
+    if (prize.type === "free_cup") return `• Roleta do Copão: ${prize.label}`;
+    return "";
+  }
+
+  function installPromoBadge() {
+    const prize = getSavedWheelPrize();
+    if (!prize || prize.type === "none") return;
+
+    const cartCard = document.querySelector("#carrinho");
+    if (!cartCard || cartCard.querySelector(".promo-wheel-badge")) return;
+
+    const badge = document.createElement("div");
+    badge.className = "promo-wheel-badge";
+    badge.textContent = `🎁 Benefício ativo: ${prize.label}`;
+    cartCard.insertBefore(badge, cartCard.querySelector(".summary-box"));
+  }
+
+  function pickWheelPrize() {
+    const totalChance = wheelPrizes.reduce((sum, prize) => sum + prize.chance, 0);
+    let draw = Math.random() * totalChance;
+
+    for (const prize of wheelPrizes) {
+      draw -= prize.chance;
+      if (draw <= 0) return prize;
+    }
+
+    return wheelPrizes[0];
+  }
+
+  function createPromoWheel() {
+    if (document.querySelector(".promo-wheel-overlay")) return;
+
+    const overlay = document.createElement("div");
+    overlay.className = "promo-wheel-overlay";
+    overlay.innerHTML = `
+      <div class="promo-wheel-modal" role="dialog" aria-modal="true" aria-label="Roleta do Copão">
+        <button class="promo-wheel-close" type="button" aria-label="Fechar roleta">×</button>
+        <p class="promo-wheel-kicker">Lançamento</p>
+        <h2 class="promo-wheel-title">Roleta do Copão</h2>
+        <p class="promo-wheel-subtitle">Gire uma vez e tente ganhar um benefício para usar no pedido de hoje.</p>
+        <div class="promo-wheel-stage">
+          <div class="promo-wheel-pointer"></div>
+          <div class="promo-wheel-disc">
+            ${wheelPrizes.map((prize) => `<span class="promo-wheel-label">${prize.shortLabel}</span>`).join("")}
+          </div>
+        </div>
+        <div class="promo-wheel-actions">
+          <p class="promo-wheel-result"></p>
+          <button class="promo-wheel-spin" type="button">Girar agora</button>
+          <button class="promo-wheel-use" type="button" hidden>Usar no pedido</button>
+          <p class="promo-wheel-rule">1 giro por dispositivo. Benefício não cumulativo e sujeito à disponibilidade.</p>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const close = overlay.querySelector(".promo-wheel-close");
+    const spin = overlay.querySelector(".promo-wheel-spin");
+    const useButton = overlay.querySelector(".promo-wheel-use");
+    const result = overlay.querySelector(".promo-wheel-result");
+    const disc = overlay.querySelector(".promo-wheel-disc");
+
+    const closeWheel = () => overlay.classList.remove("is-visible");
+    close.addEventListener("click", closeWheel);
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) closeWheel();
+    });
+
+    useButton.addEventListener("click", () => {
+      closeWheel();
+      document.querySelector("#produto")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    spin.addEventListener("click", () => {
+      if (spin.disabled) return;
+
+      const prize = pickWheelPrize();
+      const finalRotation = 360 * 6 + (360 - prize.rotation);
+
+      spin.disabled = true;
+      spin.textContent = "Girando...";
+      result.textContent = "";
+      disc.style.transform = `rotate(${finalRotation}deg)`;
+
+      try {
+        localStorage.setItem(wheelStorageKey, "true");
+      } catch (error) {
+        return;
+      }
+
+      window.setTimeout(() => {
+        if (prize.type === "none") {
+          result.textContent = "Quase! Continue montando seu copo e tente em uma próxima oportunidade.";
+          spin.textContent = "Giro realizado";
+          useButton.hidden = false;
+          return;
+        }
+
+        saveWheelPrize(prize);
+        installPromoBadge();
+        result.textContent = `Você ganhou: ${prize.label}! O benefício será enviado junto com seu pedido.`;
+        spin.textContent = "Prêmio liberado";
+        useButton.hidden = false;
+        showCartToast(`🎁 ${prize.label} ativado`);
+      }, 4200);
+    });
+  }
+
+  function maybeOpenPromoWheel() {
+    let alreadyPlayed = false;
+    try {
+      alreadyPlayed = localStorage.getItem(wheelStorageKey) === "true";
+    } catch (error) {
+      alreadyPlayed = false;
+    }
+
+    installPromoBadge();
+    if (alreadyPlayed) return;
+
+    createPromoWheel();
+    setTimeout(() => {
+      document.querySelector(".promo-wheel-overlay")?.classList.add("is-visible");
+    }, 1400);
+  }
+
   function getFormattedWhatsAppMessage() {
     if (typeof cartTotals !== "function" || typeof deliveryData !== "function") {
-      return "Olá, Adega Mistério! Quero finalizar meu pedido.";
+      return "Olá, Copão na Mão! Quero finalizar meu pedido.";
     }
 
     const totals = cartTotals();
     const data = deliveryData();
     const cart = getCartItems();
+    const promoLine = getPromoLine();
 
     const items = cart.map((item, index) => {
       return [
@@ -135,7 +302,7 @@
     }).join("\n\n");
 
     return [
-      "*🍸 ADEGA MISTÉRIO | NOVO PEDIDO*",
+      "*🥤 COPÃO NA MÃO | NOVO PEDIDO*",
       "_Ficha organizada para preparo e conferência._",
       "",
       "*🛒 ITENS DO CARRINHO*",
@@ -144,6 +311,7 @@
       "*💰 RESUMO DO PEDIDO*",
       `• Subtotal: ${safeMoney(totals.subtotal)}`,
       `• Desconto progressivo: -${safeMoney(totals.discount)}`,
+      promoLine,
       `• *Total: ${safeMoney(totals.total)}*`,
       "",
       "*📍 DADOS DE ENTREGA*",
@@ -171,4 +339,7 @@
     const message = encodeURIComponent(getFormattedWhatsAppMessage());
     window.open(`https://wa.me/5516996396543?text=${message}`, "_blank", "noopener,noreferrer");
   }, true);
+
+  window.addEventListener("load", maybeOpenPromoWheel);
+  setTimeout(maybeOpenPromoWheel, 800);
 })();
