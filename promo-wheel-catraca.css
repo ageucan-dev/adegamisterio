@@ -1,39 +1,94 @@
-.promo-wheel-pointer {
-  top: -3px !important;
-  z-index: 6 !important;
-  border-top-width: 30px !important;
-  transform: translateX(-50%) rotate(0deg) !important;
-  transform-origin: 50% 8px !important;
-}
-
-.promo-wheel-pointer.is-clicking {
-  animation: pointerCatraca 0.085s ease-in-out infinite !important;
-}
-
-@keyframes pointerCatraca {
-  0% { transform: translateX(-50%) rotate(0deg); }
-  42% { transform: translateX(-50%) rotate(12deg); }
-  100% { transform: translateX(-50%) rotate(0deg); }
-}
-
+/* Remove o anel antigo de risquinhos */
 .promo-wheel-disc::before {
-  content: "";
+  display: none !important;
+}
+
+/* Pinos externos visíveis */
+.promo-wheel-pegs {
   position: absolute;
-  inset: -16px;
-  z-index: 2;
-  border-radius: 50%;
-  background: repeating-conic-gradient(
-    from 0deg,
-    transparent 0deg 7deg,
-    #ffffff 7deg 9deg,
-    transparent 9deg 14deg
-  );
-  -webkit-mask: radial-gradient(circle, transparent 0 48%, #000 49% 55%, transparent 56%);
-  mask: radial-gradient(circle, transparent 0 48%, #000 49% 55%, transparent 56%);
-  filter: drop-shadow(0 2px 2px rgba(11, 29, 58, 0.22));
+  inset: 0;
+  z-index: 5;
   pointer-events: none;
 }
 
+.promo-wheel-peg {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ff6b00;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(11, 29, 58, 0.22);
+}
+
+.promo-wheel-peg.peg-1 {
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+}
+
+.promo-wheel-peg.peg-2 {
+  right: 14px;
+  top: 32%;
+}
+
+.promo-wheel-peg.peg-3 {
+  right: 14px;
+  bottom: 24%;
+}
+
+.promo-wheel-peg.peg-4 {
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+}
+
+.promo-wheel-peg.peg-5 {
+  left: 14px;
+  bottom: 24%;
+}
+
+.promo-wheel-peg.peg-6 {
+  left: 14px;
+  top: 32%;
+}
+
+/* Seta estilo catraca */
+.promo-wheel-pointer {
+  position: absolute !important;
+  top: -2px !important;
+  left: 50% !important;
+  z-index: 8 !important;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 28px solid #ff7a00;
+  transform: translateX(-50%) rotate(0deg) !important;
+  transform-origin: 50% 6px !important;
+  filter: drop-shadow(0 5px 8px rgba(11, 29, 58, 0.24));
+}
+
+.promo-wheel-pointer.is-clicking {
+  animation: pointerRatchet 0.075s linear infinite;
+}
+
+@keyframes pointerRatchet {
+  0% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  35% {
+    transform: translateX(-50%) rotate(15deg);
+  }
+  55% {
+    transform: translateX(-50%) rotate(-4deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+}
+
+/* Mantém os textos e centro acima do disco */
 .promo-wheel-label {
   z-index: 3 !important;
 }
