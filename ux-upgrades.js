@@ -30,6 +30,10 @@
     return spellingMap[value] || value;
   }
 
+  function safeMoney(value) {
+    return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+
   function getCartQuantity() {
     try {
       if (typeof state !== "undefined" && Array.isArray(state.cart)) {
@@ -41,7 +45,7 @@
     return 0;
   }
 
-  function fixVisibleText() {
+  function fixStaticVisibleText() {
     document.querySelectorAll("span, small, legend, h2, p, button, label, div").forEach((node) => {
       if (node.children.length) return;
       const value = node.textContent.trim();
@@ -49,79 +53,69 @@
     });
   }
 
-  fixVisibleText();
+  function createToast() {
+    if (document.querySelector(".cart-toast")) return document.querySelector(".cart-toast");
 
-  const observer = new MutationObserver(() => fixVisibleText());
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  const toast = document.createElement("div");
-  toast.className = "cart-toast";
-  toast.textContent = "✅ Produto adicionado";
-  document.body.appendChild(toast);
+    const toast = document.createElement("div");
+    toast.className = "cart-toast";
+    toast.textContent = "✅ Produto adicionado";
+    document.body.appendChild(toast);
+    return toast;
+  }
 
   let toastTimer;
   function showCartToast(message = "✅ Produto adicionado") {
+    const toast = createToast();
     clearTimeout(toastTimer);
     toast.textContent = message;
     toast.classList.add("is-visible");
     toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 1800);
   }
 
-  ["#addToCart", "#buyNow"].forEach((selector) => {
-    const button = document.querySelector(selector);
-    button?.addEventListener("click", () => {
-      const before = getCartQuantity();
-      setTimeout(() => {
-        const after = getCartQuantity();
-        if (after > before) showCartToast();
-      }, 30);
-    }, true);
-  });
+  function installCartToast() {
+    ["#addToCart", "#buyNow"].forEach((selector) => {
+      const button = document.querySelector(selector);
+      if (!button || button.dataset.toastReady === "true") return;
 
-  document.querySelectorAll(".custom-form fieldset").forEach((fieldset) => {
-    const legend = fieldset.querySelector("legend");
-    if (!legend || legend.querySelector(".step-toggle")) return;
-
-    const label = document.createElement("span");
-    label.textContent = fixText(legend.textContent.trim());
-
-    const toggle = document.createElement("button");
-    toggle.type = "button";
-    toggle.className = "step-toggle";
-    toggle.setAttribute("aria-label", "Abrir etapa");
-    toggle.textContent = "+";
-
-    legend.textContent = "";
-    legend.append(label, toggle);
-
-    legend.addEventListener("click", () => {
-      if (!fieldset.classList.contains("is-collapsed")) return;
-      fieldset.classList.remove("is-collapsed");
+      button.dataset.toastReady = "true";
+      button.addEventListener("click", () => {
+        const before = getCartQuantity();
+        setTimeout(() => {
+          const after = getCartQuantity();
+          if (after > before) showCartToast();
+        }, 30);
+      }, true);
     });
-  });
-
-  document.querySelectorAll('.custom-form input[type="radio"]').forEach((input) => {
-    input.addEventListener("change", () => {
-      const fieldset = input.closest("fieldset");
-      fieldset?.classList.add("is-collapsed");
-    });
-  });
-
-  function safeMoney(value) {
-    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
-  function label(item) {
-    return fixText(item?.label || "");
-  }
+  function installStepCollapse() {
+    document.querySelectorAll(".custom-form fieldset").forEach((fieldset) => {
+      const legend = fieldset.querySelector("legend");
+      if (!legend || legend.querySelector(".step-toggle")) return;
 
-  function getCartItems() {
-    try {
-      if (typeof state !== "undefined" && Array.isArray(state.cart)) return state.cart;
-    } catch (error) {
-      return [];
-    }
-    return [];
+      const label = document.createElement("span");
+      label.textContent = fixText(legend.textContent.trim());
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "step-toggle";
+      toggle.setAttribute("aria-label", "Abrir etapa");
+      toggle.textContent = "+";
+
+      legend.textContent = "";
+      legend.append(label, toggle);
+
+      legend.addEventListener("click", () => {
+        if (!fieldset.classList.contains("is-collapsed")) return;
+        fieldset.classList.remove("is-collapsed");
+      });
+    });
+
+    document.querySelectorAll('.custom-form input[type="radio"]').forEach((input) => {
+      if (input.dataset.collapseReady === "true") return;
+      input.dataset.collapseReady = "true";
+      input.addEventListener("change", () => input.closest("fieldset")?.classList.add("is-collapsed"));
+    });
   }
 
   function getSavedWheelPrize() {
@@ -150,19 +144,6 @@
     const prize = getSavedWheelPrize();
     if (!prize || prize.type !== "discount") return 0;
     return Math.min(Number(prize.value || 0), Math.max(baseTotal, 0));
-  }
-
-  function getPromoLine(totals) {
-    const prize = getSavedWheelPrize();
-    if (!prize || prize.type === "none") return "";
-
-    if (prize.type === "discount") {
-      const value = totals?.promoDiscount || Number(prize.value || 0);
-      return `• Roleta do Copão: -${safeMoney(value)} (${prize.label})`;
-    }
-
-    if (prize.type === "free_cup") return `• Roleta do Copão: ${prize.label}`;
-    return "";
   }
 
   function patchPromoTotals() {
@@ -233,7 +214,7 @@
           <p class="promo-wheel-result"></p>
           <button class="promo-wheel-spin" type="button">Girar agora</button>
           <button class="promo-wheel-use" type="button" hidden>Usar no pedido</button>
-          <p class="promo-wheel-rule">1 giro por dispositivo. Benefício não cumulativo e sujeito à disponibilidade.</p>
+          <p class="promo-wheel-rule">1 giro por dia. Benefício não cumulativo e sujeito à disponibilidade.</p>
         </div>
       </div>
     `;
@@ -308,81 +289,24 @@
     if (alreadyPlayed) return;
 
     createPromoWheel();
-    setTimeout(() => {
-      document.querySelector(".promo-wheel-overlay")?.classList.add("is-visible");
-    }, 1400);
+    setTimeout(() => document.querySelector(".promo-wheel-overlay")?.classList.add("is-visible"), 1200);
   }
 
-  function getFormattedWhatsAppMessage() {
-    if (typeof cartTotals !== "function" || typeof deliveryData !== "function") {
-      return "Olá, Copão na Mão! Quero finalizar meu pedido.";
-    }
-
-    const totals = cartTotals();
-    const data = deliveryData();
-    const cart = getCartItems();
-    const promoLine = getPromoLine(totals);
-
-    const items = cart.map((item, index) => {
-      return [
-        `*${index + 1}. ${item.product} - ${label(item.size)}*`,
-        `• Base: ${label(item.base)}`,
-        `• Intensidade: ${fixText(item.intensity)}`,
-        `• Energético: ${label(item.energy)}`,
-        `• Gelo: ${label(item.ice)}`,
-        `• Quantidade: ${item.quantity}`,
-        `• Valor unitário: ${safeMoney(item.unitPrice)}`,
-        `• Subtotal: ${safeMoney(item.unitPrice * item.quantity)}`,
-        item.notes ? `• Observações: ${item.notes}` : ""
-      ].filter(Boolean).join("\n");
-    }).join("\n\n");
-
-    return [
-      "*🥤 COPÃO NA MÃO | NOVO PEDIDO*",
-      "_Ficha organizada para preparo e conferência._",
-      "",
-      "*🛒 ITENS DO CARRINHO*",
-      items,
-      "",
-      "*💰 RESUMO DO PEDIDO*",
-      `• Subtotal: ${safeMoney(totals.subtotal)}`,
-      `• Desconto progressivo: -${safeMoney(totals.discount)}`,
-      promoLine,
-      `• *Total: ${safeMoney(totals.total)}*`,
-      "",
-      "*📍 DADOS DE ENTREGA*",
-      `• Nome: ${data.name}`,
-      `• Contato: ${data.phone}`,
-      `• Endereço: ${data.street}, ${data.number} - ${data.district}`,
-      data.complement ? `• Complemento: ${data.complement}` : "",
-      data.reference ? `• Referência: ${data.reference}` : "",
-      data.notes ? `• Observação: ${data.notes}` : "",
-      "",
-      "✅ Aguardo confirmação para preparo."
-    ].filter(Boolean).join("\n");
+  function init() {
+    fixStaticVisibleText();
+    installCartToast();
+    installStepCollapse();
+    maybeOpenPromoWheel();
   }
 
-  function finishWithPromo() {
-    if (typeof validateBeforeSend !== "function") return;
-    const error = validateBeforeSend();
-    if (error) { alert(error); return; }
-
-    const message = encodeURIComponent(getFormattedWhatsAppMessage());
-    window.open(`https://wa.me/5516996396543?text=${message}`, "_blank", "noopener,noreferrer");
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
   }
 
-  if (typeof finish === "function") finish = finishWithPromo;
-
-  const finishButton = document.querySelector("#sendWhatsApp");
-  finishButton?.addEventListener("click", (event) => {
-    const error = typeof validateBeforeSend === "function" ? validateBeforeSend() : "";
-    if (error) return;
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    finishWithPromo();
-  }, true);
-
-  window.addEventListener("load", maybeOpenPromoWheel);
-  setTimeout(maybeOpenPromoWheel, 800);
+  window.addEventListener("load", () => {
+    patchPromoTotals();
+    installPromoBadge();
+  });
 })();
