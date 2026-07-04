@@ -1,5 +1,10 @@
 /* Ajustes de experiência e interação */
 
+.hero-text strong {
+  font-weight: 900 !important;
+  color: inherit !important;
+}
+
 .cart-toast {
   position: fixed;
   left: 50%;
