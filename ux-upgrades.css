@@ -170,7 +170,12 @@
 .promo-wheel-label:nth-child(1) { transform: translate(-50%, -50%) rotate(30deg) translateY(-82px) rotate(-30deg); }
 .promo-wheel-label:nth-child(2) { transform: translate(-50%, -50%) rotate(90deg) translateY(-82px) rotate(-90deg); }
 .promo-wheel-label:nth-child(3) { transform: translate(-50%, -50%) rotate(150deg) translateY(-82px) rotate(-150deg); }
-.promo-wheel-label:nth-child(4) { transform: translate(-50%, -50%) rotate(210deg) translateY(-82px) rotate(-210deg); background: rgba(255, 255, 255, 0.16); color: #ffffff; }
+.promo-wheel-label:nth-child(4) {
+  transform: translate(-50%, -50%) rotate(210deg) translateY(-82px) rotate(-210deg);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+}
 .promo-wheel-label:nth-child(5) { transform: translate(-50%, -50%) rotate(270deg) translateY(-82px) rotate(-270deg); }
 .promo-wheel-label:nth-child(6) { transform: translate(-50%, -50%) rotate(330deg) translateY(-82px) rotate(-330deg); }
 
