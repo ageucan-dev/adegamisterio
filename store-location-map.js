@@ -20,11 +20,25 @@
         overflow: hidden !important;
         border: 1px solid rgba(11, 29, 58, 0.1) !important;
         border-radius: 24px !important;
-        background: #fff4cc !important;
+        background: linear-gradient(135deg, #fff8d9, #ffffff) !important;
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45) !important;
       }
 
+      .location-map-placeholder {
+        position: absolute !important;
+        inset: 0 !important;
+        display: grid !important;
+        place-items: center !important;
+        padding: 18px !important;
+        color: #0b1d3a !important;
+        font-size: 0.92rem !important;
+        font-weight: 900 !important;
+        text-align: center !important;
+      }
+
       .location-map-wrap iframe {
+        position: absolute !important;
+        inset: 0 !important;
         width: 100% !important;
         height: 100% !important;
         display: block !important;
@@ -59,6 +73,19 @@
     document.head.appendChild(style);
   }
 
+  function loadMapIframe() {
+    const mapWrap = document.querySelector(".location-map-wrap");
+    if (!mapWrap || mapWrap.querySelector("iframe")) return;
+
+    const iframe = document.createElement("iframe");
+    iframe.title = "Mapa - Copão na Mão";
+    iframe.loading = "lazy";
+    iframe.referrerPolicy = "no-referrer-when-downgrade";
+    iframe.src = `https://www.google.com/maps?q=${MAP_QUERY}&output=embed`;
+
+    mapWrap.appendChild(iframe);
+  }
+
   function installLocationMap() {
     const finishCard = document.querySelector("#finalizar");
     if (!finishCard || document.querySelector("#localizacao")) return;
@@ -71,17 +98,13 @@
       <h2>Onde estamos</h2>
       <p class="location-address">📍 ${ADDRESS}</p>
       <div class="location-map-wrap" aria-label="Mapa da localização do Copão na Mão">
-        <iframe
-          title="Mapa - Copão na Mão"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          src="https://www.google.com/maps?q=${MAP_QUERY}&output=embed">
-        </iframe>
+        <div class="location-map-placeholder">Carregando mapa...</div>
       </div>
       <p class="location-warning"><strong>Atenção:</strong> somos uma operação digital. Este endereço não é ponto físico para retirada de pedidos.</p>
     `;
 
     finishCard.insertAdjacentElement("afterend", section);
+    window.setTimeout(loadMapIframe, 1200);
   }
 
   function init() {
