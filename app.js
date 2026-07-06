@@ -71,16 +71,32 @@ function money(value) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-function optionMarkup(groupName, item) {
-  return `<label class="option-card"><input type="radio" name="${groupName}" value="${item.id}" /><span>${item.label}</span><small>${money(item.price)}</small></label>`;
+function minPrice(list) {
+  return Math.min(...list.map((item) => item.price));
+}
+
+function minUnitPrice() {
+  return minPrice(catalog.sizes) + minPrice(catalog.bases) + minPrice(catalog.energies) + minPrice(catalog.ices);
+}
+
+function optionMarkup(groupName, item, groupItems) {
+  const additional = item.price - minPrice(groupItems);
+  const priceLabel = additional > 0 ? `<small class="option-additional">+${money(additional)}</small>` : "";
+  return `<label class="option-card"><input type="radio" name="${groupName}" value="${item.id}" /><span>${item.label}</span>${priceLabel}</label>`;
+}
+
+function updateStartingPrice() {
+  const badge = document.querySelector(".price-badge");
+  if (badge) badge.textContent = `A partir de ${money(minUnitPrice())}`;
 }
 
 function renderOptions() {
-  els.sizeOptions.innerHTML = catalog.sizes.map((item) => optionMarkup("size", item)).join("");
-  els.baseOptions.innerHTML = catalog.bases.map((item) => optionMarkup("base", item)).join("");
-  els.energyOptions.innerHTML = catalog.energies.map((item) => optionMarkup("energy", item)).join("");
-  els.iceOptions.innerHTML = catalog.ices.map((item) => optionMarkup("ice", item)).join("");
+  els.sizeOptions.innerHTML = catalog.sizes.map((item) => optionMarkup("size", item, catalog.sizes)).join("");
+  els.baseOptions.innerHTML = catalog.bases.map((item) => optionMarkup("base", item, catalog.bases)).join("");
+  els.energyOptions.innerHTML = catalog.energies.map((item) => optionMarkup("energy", item, catalog.energies)).join("");
+  els.iceOptions.innerHTML = catalog.ices.map((item) => optionMarkup("ice", item, catalog.ices)).join("");
   document.querySelectorAll('input[name="intensity"]').forEach((input) => { input.checked = false; });
+  updateStartingPrice();
 }
 
 function selectedValue(name) {
