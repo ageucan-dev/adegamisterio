@@ -88,8 +88,8 @@ function optionMarkup(groupName, item, groupItems) {
 }
 
 function updateStartingPrice() {
-  const badge = document.querySelector(".price-badge");
-  if (badge) badge.textContent = `A partir de ${money(minUnitPrice())}`;
+  const main = document.querySelector(".price-main");
+  if (main) main.textContent = `/ ${money(minUnitPrice()).replace("R$ ", "R$").replace("R$ ", "R$")}`;
 }
 
 function renderOptions() {
