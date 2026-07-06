@@ -15,39 +15,14 @@
     <link rel="stylesheet" href="promo-wheel-catraca.css?v=4" />
     <link rel="stylesheet" href="hero-headline-slider.css?v=1" />
     <style>
-      .topbar {
-        top: -18px;
-        min-height: 100px;
-        padding: 0 0 10px;
-      }
-
-      .logo-symbol {
-        height: 76px;
-      }
-
-      .logo-wrap {
-        transform: translateY(-1px);
-      }
-
-      .product-copy .eyebrow {
-        display: none;
-      }
-
-      .product-copy {
-        padding: 18px 22px 20px !important;
-      }
-
-      .product-copy p {
-        margin-bottom: 14px;
-      }
-
-      .product-build-btn {
-        margin-top: 14px;
-      }
-
-      .builder-card.is-hidden {
-        display: none;
-      }
+      .topbar { top: -18px; min-height: 100px; padding: 0 0 10px; }
+      .logo-symbol { height: 76px; }
+      .logo-wrap { transform: translateY(-1px); }
+      .product-copy .eyebrow { display: none; }
+      .product-copy { padding: 18px 22px 20px !important; }
+      .product-copy p { margin-bottom: 14px; }
+      .product-build-btn { margin-top: 14px; }
+      .builder-card.is-hidden { display: none; }
     </style>
   </head>
   <body>
@@ -58,10 +33,7 @@
             <img class="logo-img" src="assets/logo-copao-na-mao.png" alt="Copão na Mão" onerror="this.style.display='none'" />
             <span>CNM</span>
           </div>
-          <div>
-            <strong>Copão na Mão</strong>
-            <span>Bebidas • gelo • conveniência</span>
-          </div>
+          <div><strong>Copão na Mão</strong><span>Bebidas • gelo • conveniência</span></div>
         </a>
         <button class="cart-chip" type="button" data-scroll-to="carrinho">🛒 <span id="cartCount">0</span></button>
       </header>
@@ -70,31 +42,16 @@
         <p class="eyebrow">Fácil, Rápido e Digital</p>
         <h1>Receba seu copão em até 25 minutos.</h1>
         <p class="hero-text">⚠️ Cada copo adicionado acima de 1 receberá <strong>R$9,00</strong> de desconto.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#produto">Montar meu copo</a>
-          <a class="btn btn-ghost" href="#carrinho">Ver carrinho</a>
-        </div>
-        <div class="trust-row" aria-label="Destaques">
-          <span>⚡ Rápido</span>
-          <span>📲 Pelo celular</span>
-          <span>🥤 Personalizado</span>
-        </div>
+        <div class="hero-actions"><a class="btn btn-primary" href="#produto">Montar meu copo</a><a class="btn btn-ghost" href="#carrinho">Ver carrinho</a></div>
+        <div class="trust-row" aria-label="Destaques"><span>⚡ Rápido</span><span>📲 Pelo celular</span><span>🥤 Personalizado</span></div>
       </section>
 
       <section id="produto" class="section-card product-preview">
-        <div class="product-visual" aria-hidden="true">
-          <div class="cup-glow"></div>
-          <img class="product-image" src="assets/products/ethernity-mix.png" alt="Ethernity Mix" onerror="this.style.display='none'" />
-          <div class="cup-shape"></div>
-        </div>
+        <div class="product-visual" aria-hidden="true"><div class="cup-glow"></div><img class="product-image" src="assets/products/ethernity-mix.png" alt="Ethernity Mix" onerror="this.style.display='none'" /><div class="cup-shape"></div></div>
         <div class="product-copy">
-          <div class="product-title-row">
-            <h2>Ethernity Mix</h2>
-            <span class="delivery-badge">Entrega grátis</span>
-          </div>
-
+          <div class="product-title-row"><h2>Ethernity Mix</h2><span class="delivery-badge">Entrega grátis</span></div>
           <p>Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.</p>
-          <div class="price-badge">A partir de R$ 14,90</div>
+          <div class="price-badge">A partir de R$ 25,20</div>
           <button id="showBuilder" class="btn btn-primary btn-wide product-build-btn" type="button">Montar copo</button>
         </div>
       </section>
@@ -104,14 +61,7 @@
         <form id="customForm" class="custom-form">
           <fieldset><legend>Tamanho</legend><div id="sizeOptions" class="option-grid"></div></fieldset>
           <fieldset><legend>Sabor da base</legend><div id="baseOptions" class="option-grid"></div></fieldset>
-          <fieldset>
-            <legend>Intensidade</legend>
-            <div class="option-grid intensity-grid">
-              <label class="option-card"><input type="radio" name="intensity" value="Leve" /><span>Leve</span><small>Mais suave</small></label>
-              <label class="option-card"><input type="radio" name="intensity" value="Médio" /><span>Médio</span><small>Equilibrado</small></label>
-              <label class="option-card"><input type="radio" name="intensity" value="Forte" /><span>Forte</span><small>Mais marcante</small></label>
-            </div>
-          </fieldset>
+          <fieldset><legend>Intensidade</legend><div class="option-grid intensity-grid"><label class="option-card"><input type="radio" name="intensity" value="Leve" /><span>Leve</span><small>Mais suave</small></label><label class="option-card"><input type="radio" name="intensity" value="Médio" /><span>Médio</span><small>Equilibrado</small></label><label class="option-card"><input type="radio" name="intensity" value="Forte" /><span>Forte</span><small>Mais marcante</small></label></div></fieldset>
           <fieldset><legend>Energético</legend><div id="energyOptions" class="option-grid"></div></fieldset>
           <fieldset><legend>Gelo saborizado</legend><div id="iceOptions" class="option-grid"></div></fieldset>
           <label class="input-group" for="notes">Observações<textarea id="notes" rows="3" placeholder="Ex: menos gelo, mais suave, energético separado..."></textarea></label>
@@ -124,51 +74,25 @@
       <section id="carrinho" class="section-card cart-card">
         <div class="section-title split-title"><div><p class="eyebrow">Carrinho</p><h2>Resumo</h2></div><button id="clearCart" class="mini-btn" type="button">Limpar</button></div>
         <div id="cartItems" class="cart-items empty-state">Seu carrinho ainda está vazio.</div>
-        <div class="summary-box">
-          <div><span>Subtotal</span><strong id="subtotalValue">R$ 0,00</strong></div>
-          <div><span>Desconto progressivo</span><strong id="discountValue">-R$ 0,00</strong></div>
-          <div class="summary-total"><span>Total</span><strong id="orderTotal">R$ 0,00</strong></div>
-          <small>Cada copo adicional após o primeiro recebe R$ 9,00 de desconto.</small>
-        </div>
+        <div class="summary-box"><div><span>Subtotal</span><strong id="subtotalValue">R$ 0,00</strong></div><div><span>Desconto progressivo</span><strong id="discountValue">-R$ 0,00</strong></div><div class="summary-total"><span>Total</span><strong id="orderTotal">R$ 0,00</strong></div><small>Cada copo adicional após o primeiro recebe R$ 9,00 de desconto.</small></div>
       </section>
 
       <section class="section-card checkout-card">
         <p class="eyebrow">Entrega</p><h2>Dados de envio</h2>
-        <form id="checkoutForm" class="checkout-form">
-          <label class="input-group">Nome<input id="customerName" type="text" placeholder="Seu nome" required /></label>
-          <label class="input-group">Contato<input id="customerPhone" type="tel" placeholder="(16) 99999-9999" required /></label>
-          <label class="input-group">Rua<input id="street" type="text" placeholder="Nome da rua" required /></label>
-          <div class="input-row"><label class="input-group">Número<input id="number" type="text" placeholder="123" required /></label><label class="input-group">Bairro<input id="district" type="text" placeholder="Bairro" required /></label></div>
-          <label class="input-group">Complemento<input id="complement" type="text" placeholder="Apto, bloco, casa, etc." /></label>
-          <label class="input-group">Referência<input id="reference" type="text" placeholder="Próximo a..." /></label>
-          <label class="input-group">Observação<textarea id="deliveryNotes" rows="3" placeholder="Ex: chamar ao chegar"></textarea></label>
-        </form>
+        <form id="checkoutForm" class="checkout-form"><label class="input-group">Nome<input id="customerName" type="text" placeholder="Seu nome" required /></label><label class="input-group">Contato<input id="customerPhone" type="tel" placeholder="(16) 99999-9999" required /></label><label class="input-group">Rua<input id="street" type="text" placeholder="Nome da rua" required /></label><div class="input-row"><label class="input-group">Número<input id="number" type="text" placeholder="123" required /></label><label class="input-group">Bairro<input id="district" type="text" placeholder="Bairro" required /></label></div><label class="input-group">Complemento<input id="complement" type="text" placeholder="Apto, bloco, casa, etc." /></label><label class="input-group">Referência<input id="reference" type="text" placeholder="Próximo a..." /></label><label class="input-group">Observação<textarea id="deliveryNotes" rows="3" placeholder="Ex: chamar ao chegar"></textarea></label></form>
       </section>
 
-      <section id="finalizar" class="section-card finish-card">
-        <p class="eyebrow">Finalização</p><h2>Enviar ficha</h2>
-        <p>A ficha será organizada para facilitar preparo, conferência e atendimento.</p>
-        <button id="sendWhatsApp" class="btn btn-primary btn-wide" type="button">Finalizar compra</button>
-      </section>
-
+      <section id="finalizar" class="section-card finish-card"><p class="eyebrow">Finalização</p><h2>Enviar ficha</h2><p>A ficha será organizada para facilitar preparo, conferência e atendimento.</p><button id="sendWhatsApp" class="btn btn-primary btn-wide" type="button">Finalizar compra</button></section>
       <nav class="bottom-bar" aria-label="Ações rápidas"><a class="bottom-cart-link" href="#carrinho">🛒 <span id="bottomCartCount">0</span></a><a class="bottom-finish-link" href="#finalizar"><span id="bottomTotalValue">R$ 0,00</span><span class="bottom-separator">|</span><strong>Finalizar</strong></a></nav>
     </main>
-    <script src="app.js"></script>
+    <script src="app.js?v=3"></script>
     <script src="promo-daily-benefit-cart.js?v=3"></script>
     <script src="ux-upgrades.js?v=2"></script>
     <script src="whatsapp-message-format.js?v=4"></script>
     <script src="promo-wheel-catraca.js?v=4"></script>
     <script src="selection-summary.js"></script>
-    <script src="hero-headline-slider.js?v=1"></script>
-    <script src="store-location-map.js?v=2"></script>
-    <script>
-      const builderButton = document.querySelector("#showBuilder");
-      const builderCard = document.querySelector("#personalizacao");
-
-      builderButton?.addEventListener("click", () => {
-        builderCard?.classList.remove("is-hidden");
-        builderCard?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    </script>
+    <script src="hero-headline-slider.js?v=2"></script>
+    <script src="store-location-map.js?v=3"></script>
+    <script>const builderButton=document.querySelector("#showBuilder");const builderCard=document.querySelector("#personalizacao");builderButton?.addEventListener("click",()=>{builderCard?.classList.remove("is-hidden");builderCard?.scrollIntoView({behavior:"smooth",block:"start"});});</script>
   </body>
 </html>
