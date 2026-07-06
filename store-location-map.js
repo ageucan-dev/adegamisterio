@@ -105,6 +105,13 @@
     document.head.appendChild(style);
   }
 
+  function markCompactOptionCards() {
+    document.querySelectorAll(".option-card").forEach((card) => {
+      const hasVisiblePrice = card.querySelector("small");
+      card.classList.toggle("option-card--compact", !hasVisiblePrice);
+    });
+  }
+
   function loadMapIframe() {
     const mapWrap = document.querySelector(".location-map-wrap");
     if (!mapWrap || mapWrap.querySelector("iframe")) return;
@@ -143,6 +150,9 @@
     installLocationStyles();
     installCompactOptionStyles();
     installLocationMap();
+    markCompactOptionCards();
+    window.setTimeout(markCompactOptionCards, 300);
+    window.setTimeout(markCompactOptionCards, 900);
   }
 
   if (document.readyState === "loading") {
