@@ -1,53 +1,73 @@
 .hero h1.hero-headline-slider {
+  position: relative !important;
   overflow: hidden !important;
   display: block !important;
   width: 100% !important;
-  min-height: 2.95em !important;
+  min-height: 3.05em !important;
 }
 
 .hero-headline-track {
-  display: flex !important;
-  width: 200% !important;
-  align-items: stretch !important;
-  animation: heroHeadlineSlide 7s ease-in-out infinite !important;
-  will-change: transform;
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 3.05em !important;
+  animation: none !important;
 }
 
 .hero-headline-slide {
-  min-width: 50% !important;
+  position: absolute !important;
+  inset: 0 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  width: 100% !important;
   text-align: center !important;
   line-height: .98 !important;
-  padding: 0 .02em !important;
+  opacity: 0 !important;
+  transform: translateY(10px) scale(.98) !important;
+  animation: heroHeadlineFade 8s ease-in-out infinite !important;
+  will-change: opacity, transform;
+}
+
+.hero-headline-slide:first-child {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+.hero-headline-slide:nth-child(2) {
+  animation-delay: 4s !important;
 }
 
 .hero-headline-slide.is-short {
-  font-size: .92em !important;
+  font-size: .86em !important;
   line-height: 1.02 !important;
+  padding: 0 .05em !important;
 }
 
-@keyframes heroHeadlineSlide {
-  0%, 38% {
-    transform: translateX(0);
+@keyframes heroHeadlineFade {
+  0%, 8% {
+    opacity: 0;
+    transform: translateY(10px) scale(.98);
   }
 
-  48%, 86% {
-    transform: translateX(-50%);
+  14%, 42% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 
-  96%, 100% {
-    transform: translateX(0);
+  50%, 100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(.98);
   }
 }
 
 @media (max-width: 380px) {
-  .hero h1.hero-headline-slider {
-    min-height: 3.05em !important;
+  .hero h1.hero-headline-slider,
+  .hero-headline-track {
+    min-height: 3.15em !important;
   }
 
   .hero-headline-slide.is-short {
-    font-size: .86em !important;
+    font-size: .78em !important;
   }
 }
