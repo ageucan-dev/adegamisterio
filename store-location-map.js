@@ -84,19 +84,24 @@
       }
 
       .option-card.option-card--compact {
-        min-height: 84px !important;
-        padding-top: 18px !important;
-        padding-bottom: 18px !important;
-        justify-content: center !important;
-        gap: 0 !important;
+        align-self: start !important;
+        min-height: 68px !important;
+        padding-top: 13px !important;
+        padding-bottom: 13px !important;
+        align-content: start !important;
+        justify-content: normal !important;
+        justify-items: start !important;
+        gap: 4px !important;
+        text-align: left !important;
       }
 
       .option-card.option-card--compact span {
         margin: 0 !important;
+        text-align: left !important;
       }
 
       .option-additional {
-        margin-top: 6px !important;
+        margin-top: 4px !important;
         color: #0b1d3a !important;
         font-size: 0.95rem !important;
         font-weight: 700 !important;
