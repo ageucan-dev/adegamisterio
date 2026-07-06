@@ -81,8 +81,10 @@ function minUnitPrice() {
 
 function optionMarkup(groupName, item, groupItems) {
   const additional = item.price - minPrice(groupItems);
-  const priceLabel = additional > 0 ? `<small class="option-additional">+${money(additional)}</small>` : "";
-  return `<label class="option-card"><input type="radio" name="${groupName}" value="${item.id}" /><span>${item.label}</span>${priceLabel}</label>`;
+  const hasAdditional = additional > 0;
+  const cardClass = hasAdditional ? "option-card option-card--with-additional" : "option-card option-card--compact";
+  const priceLabel = hasAdditional ? `<small class="option-additional">+${money(additional)}</small>` : "";
+  return `<label class="${cardClass}"><input type="radio" name="${groupName}" value="${item.id}" /><span>${item.label}</span>${priceLabel}</label>`;
 }
 
 function updateStartingPrice() {
