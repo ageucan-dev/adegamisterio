@@ -1,0 +1,35 @@
+.option-grid {
+  align-items: start !important;
+}
+
+.option-card.option-card--compact {
+  height: auto !important;
+  min-height: 58px !important;
+  padding: 12px 14px !important;
+  display: grid !important;
+  align-content: start !important;
+  justify-content: stretch !important;
+  justify-items: start !important;
+  gap: 0 !important;
+  text-align: left !important;
+}
+
+.option-card.option-card--compact span {
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+  line-height: 1.12 !important;
+}
+
+.option-card.option-card--with-additional {
+  min-height: 86px !important;
+}
+
+.option-card .option-additional {
+  display: block !important;
+  margin-top: 5px !important;
+  color: #0b1d3a !important;
+  font-size: .95rem !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+}
