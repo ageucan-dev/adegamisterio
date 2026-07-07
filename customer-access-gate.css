@@ -1,0 +1,156 @@
+body.access-gate-loading #app {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.customer-gate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(255, 253, 242, 0.86);
+  backdrop-filter: blur(18px);
+}
+
+.customer-gate-box {
+  width: min(100%, 420px);
+  max-height: calc(100vh - 44px);
+  overflow: auto;
+  padding: 26px 22px 22px;
+  border: 1px solid rgba(11, 29, 58, 0.12);
+  border-radius: 30px;
+  background: #ffffff;
+  color: #0b1d3a;
+  box-shadow: 0 28px 90px rgba(11, 29, 58, 0.18);
+}
+
+.customer-gate-kicker {
+  margin: 0 0 8px;
+  color: #ff7a00;
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.customer-gate-box h2 {
+  margin: 0 0 10px;
+  color: #0b1d3a;
+  font-size: 2rem;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.customer-gate-box p {
+  margin: 0 0 18px;
+  color: #5c6a80;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.42;
+}
+
+.customer-gate-actions,
+.customer-register-form {
+  display: grid;
+  gap: 12px;
+}
+
+.customer-register-form label,
+.customer-terms-label {
+  display: grid;
+  gap: 7px;
+  color: #0b1d3a;
+  font-size: 0.92rem;
+  font-weight: 850;
+}
+
+.customer-register-form input {
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 14px;
+  border: 1px solid rgba(11, 29, 58, 0.14);
+  border-radius: 16px;
+  outline: none;
+  background: #ffffff;
+  color: #0b1d3a;
+  font: inherit;
+}
+
+.customer-register-form input:focus {
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.14);
+}
+
+.customer-terms-label {
+  grid-template-columns: 22px 1fr;
+  align-items: start;
+  gap: 10px;
+  color: #5c6a80;
+  font-size: 0.86rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.customer-terms-label input {
+  width: 18px;
+  min-height: 18px;
+  margin-top: 2px;
+}
+
+.customer-gate-primary,
+.customer-gate-secondary,
+.customer-gate-danger {
+  width: 100%;
+  min-height: 54px;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.customer-gate-primary {
+  border: 0;
+  background: linear-gradient(135deg, #ffd100, #ffb800);
+  color: #0b1d3a;
+  box-shadow: 0 14px 30px rgba(255, 209, 0, 0.28);
+}
+
+.customer-gate-secondary {
+  border: 1px solid rgba(11, 29, 58, 0.12);
+  background: #ffffff;
+  color: #0b1d3a;
+}
+
+.customer-gate-danger {
+  border: 0;
+  background: #0b1d3a;
+  color: #ffffff;
+}
+
+.customer-gate-status {
+  min-height: 18px;
+  margin: 4px 0 0;
+  color: #ff7a00;
+  font-size: 0.86rem;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.customer-gate-user {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 18px;
+  background: #fff8dd;
+  color: #0b1d3a;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.customer-gate-hidden {
+  display: none !important;
+}
