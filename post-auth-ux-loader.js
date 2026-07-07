@@ -58,7 +58,7 @@
 
       const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = `${href}?v=6`;
+      link.href = `${href}?v=8`;
       link.onload = resolve;
       link.onerror = resolve;
       document.head.appendChild(link);
@@ -70,7 +70,7 @@
       if (document.querySelector(`script[src^="${src}"]`)) return resolve();
 
       const script = document.createElement("script");
-      script.src = `${src}?v=6`;
+      script.src = `${src}?v=8`;
       script.onload = resolve;
       script.onerror = reject;
       document.body.appendChild(script);
@@ -96,7 +96,9 @@
     loaded = true;
     try {
       await loadStyle("ux-upgrades.css");
+      await loadStyle("promo-wheel-catraca.css");
       await loadScript("ux-upgrades.js");
+      await loadScript("promo-wheel-catraca.js");
     } catch (error) {
       loaded = false;
     }
