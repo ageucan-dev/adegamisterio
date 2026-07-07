@@ -74,6 +74,43 @@ body.access-gate-loading #app {
   margin-top: 0 !important;
 }
 
+.customer-register-box h2 {
+  margin-bottom: 15px !important;
+  line-height: 1.04 !important;
+}
+
+.customer-register-box .customer-gate-user {
+  margin-bottom: 14px !important;
+}
+
+.customer-register-box .customer-register-form {
+  gap: 11px !important;
+}
+
+.customer-register-box .customer-terms-label {
+  display: grid !important;
+  grid-template-columns: 20px 1fr !important;
+  align-items: start !important;
+  column-gap: 11px !important;
+  row-gap: 0 !important;
+  margin: 2px 0 5px !important;
+}
+
+.customer-register-box .customer-terms-label input {
+  width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  margin: 2px 0 0 !important;
+  padding: 0 !important;
+}
+
+.customer-register-box .customer-terms-label span {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.22 !important;
+}
+
 .customer-gate-kicker {
   margin: 0 0 7px;
   color: #ff7a00;
@@ -258,6 +295,30 @@ body.access-gate-loading #app {
     display: block !important;
     margin-bottom: 20px !important;
     font-size: 0.84rem !important;
+  }
+
+  .customer-register-box h2 {
+    margin-bottom: 12px !important;
+    font-size: 1.54rem !important;
+  }
+
+  .customer-register-box .customer-register-form {
+    gap: 9px !important;
+  }
+
+  .customer-register-box .customer-terms-label {
+    grid-template-columns: 18px 1fr !important;
+    column-gap: 10px !important;
+    margin: 2px 0 5px !important;
+    font-size: 0.74rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .customer-register-box .customer-terms-label input {
+    width: 16px !important;
+    height: 16px !important;
+    min-height: 16px !important;
+    margin-top: 1px !important;
   }
 
   .customer-gate-kicker {
