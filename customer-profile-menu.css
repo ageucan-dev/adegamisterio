@@ -1,6 +1,6 @@
 .customer-profile-widget {
   position: fixed;
-  top: calc(env(safe-area-inset-top, 0px) + 88px);
+  top: calc(env(safe-area-inset-top, 0px) + 60px);
   left: 18px;
   z-index: 9000;
   opacity: 0;
@@ -114,7 +114,7 @@
 
 @media (max-width: 480px) {
   .customer-profile-widget {
-    top: calc(env(safe-area-inset-top, 0px) + 78px);
+    top: calc(env(safe-area-inset-top, 0px) + 52px);
     left: 14px;
   }
 
