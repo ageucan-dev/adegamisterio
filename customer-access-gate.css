@@ -1,3 +1,8 @@
+body.access-gate-loading {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
 body.access-gate-loading #app {
   opacity: 0 !important;
   pointer-events: none !important;
@@ -10,70 +15,75 @@ body.access-gate-loading #app {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 22px;
+  padding: 18px;
+  overflow: hidden;
   background: rgba(255, 253, 242, 0.86);
   backdrop-filter: blur(18px);
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 .customer-gate-box {
   width: min(100%, 420px);
-  max-height: calc(100vh - 44px);
-  overflow: auto;
-  padding: 26px 22px 22px;
+  max-height: calc(100svh - 36px);
+  overflow: hidden;
+  padding: 22px 20px 20px;
   border: 1px solid rgba(11, 29, 58, 0.12);
   border-radius: 30px;
   background: #ffffff;
   color: #0b1d3a;
   box-shadow: 0 28px 90px rgba(11, 29, 58, 0.18);
+  overscroll-behavior: contain;
+  touch-action: manipulation;
 }
 
 .customer-gate-kicker {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
   color: #ff7a00;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .customer-gate-box h2 {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   color: #0b1d3a;
-  font-size: 2rem;
+  font-size: 1.86rem;
   font-weight: 950;
-  line-height: 1;
+  line-height: 0.98;
   letter-spacing: -0.06em;
 }
 
 .customer-gate-box p {
-  margin: 0 0 18px;
+  margin: 0 0 14px;
   color: #5c6a80;
-  font-size: 0.98rem;
+  font-size: 0.94rem;
   font-weight: 700;
-  line-height: 1.42;
+  line-height: 1.34;
 }
 
 .customer-gate-actions,
 .customer-register-form {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .customer-register-form label,
 .customer-terms-label {
   display: grid;
-  gap: 7px;
+  gap: 6px;
   color: #0b1d3a;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 850;
 }
 
 .customer-register-form input {
   width: 100%;
-  min-height: 50px;
-  padding: 13px 14px;
+  min-height: 46px;
+  padding: 11px 13px;
   border: 1px solid rgba(11, 29, 58, 0.14);
-  border-radius: 16px;
+  border-radius: 15px;
   outline: none;
   background: #ffffff;
   color: #0b1d3a;
@@ -86,28 +96,28 @@ body.access-gate-loading #app {
 }
 
 .customer-terms-label {
-  grid-template-columns: 22px 1fr;
+  grid-template-columns: 20px 1fr;
   align-items: start;
-  gap: 10px;
+  gap: 9px;
   color: #5c6a80;
-  font-size: 0.86rem;
+  font-size: 0.8rem;
   font-weight: 750;
-  line-height: 1.35;
+  line-height: 1.24;
 }
 
 .customer-terms-label input {
-  width: 18px;
-  min-height: 18px;
-  margin-top: 2px;
+  width: 17px;
+  min-height: 17px;
+  margin-top: 1px;
 }
 
 .customer-gate-primary,
 .customer-gate-secondary,
 .customer-gate-danger {
   width: 100%;
-  min-height: 54px;
-  border-radius: 18px;
-  font-size: 1rem;
+  min-height: 50px;
+  border-radius: 17px;
+  font-size: 0.96rem;
   font-weight: 950;
   cursor: pointer;
 }
@@ -159,25 +169,134 @@ body.access-gate-loading #app {
 }
 
 .customer-gate-status {
-  min-height: 18px;
-  margin: 4px 0 0;
+  min-height: 16px;
+  margin: 2px 0 0;
   color: #ff7a00;
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 900;
-  line-height: 1.35;
+  line-height: 1.25;
 }
 
 .customer-gate-user {
-  margin: 0 0 14px;
-  padding: 12px 14px;
+  margin: 0 0 10px;
+  padding: 10px 12px;
   border: 1px solid rgba(255, 122, 0, 0.18);
-  border-radius: 18px;
+  border-radius: 16px;
   background: #fff8dd;
   color: #0b1d3a;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   font-weight: 900;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .customer-gate-hidden {
   display: none !important;
+}
+
+@media (max-width: 480px) {
+  .customer-gate-overlay {
+    align-items: center;
+    padding: 12px;
+  }
+
+  .customer-gate-box {
+    width: 100%;
+    max-height: calc(100svh - 24px);
+    padding: 18px 18px 16px;
+    border-radius: 26px;
+  }
+
+  .customer-gate-kicker {
+    margin-bottom: 5px;
+    font-size: 0.7rem;
+    letter-spacing: 0.11em;
+  }
+
+  .customer-gate-box h2 {
+    margin-bottom: 7px;
+    font-size: 1.58rem;
+    line-height: 0.98;
+  }
+
+  .customer-gate-box p {
+    margin-bottom: 10px;
+    font-size: 0.84rem;
+    line-height: 1.28;
+  }
+
+  .customer-register-form {
+    gap: 8px;
+  }
+
+  .customer-register-form label,
+  .customer-terms-label {
+    gap: 5px;
+    font-size: 0.78rem;
+  }
+
+  .customer-register-form input {
+    min-height: 40px;
+    padding: 9px 11px;
+    border-radius: 13px;
+    font-size: 0.9rem;
+  }
+
+  .customer-gate-user {
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    font-size: 0.76rem;
+  }
+
+  .customer-terms-label {
+    grid-template-columns: 18px 1fr;
+    gap: 8px;
+    font-size: 0.72rem;
+    line-height: 1.18;
+  }
+
+  .customer-terms-label input {
+    width: 16px;
+    min-height: 16px;
+  }
+
+  .customer-gate-primary,
+  .customer-gate-secondary,
+  .customer-gate-danger {
+    min-height: 44px;
+    border-radius: 15px;
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-height: 680px) {
+  .customer-gate-box {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .customer-gate-box h2 {
+    font-size: 1.42rem;
+  }
+
+  .customer-gate-box p {
+    display: none;
+  }
+
+  .customer-register-form {
+    gap: 7px;
+  }
+
+  .customer-register-form input {
+    min-height: 38px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .customer-gate-primary,
+  .customer-gate-secondary,
+  .customer-gate-danger {
+    min-height: 42px;
+  }
 }
