@@ -1,18 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
-const popupFixConfig = {
-  apiKey: "AIzaSyD8gAtsn_9B-OmkJKidFFj8VUU91gG_6Vs",
-  authDomain: "copao-na-mao.firebaseapp.com",
-  projectId: "copao-na-mao",
-  storageBucket: "copao-na-mao.firebasestorage.app",
-  messagingSenderId: "122784714195",
-  appId: "1:122784714195:web:9313db74fe2fa3078b7326",
-  measurementId: "G-DB7HSLZ7W9"
-};
-
-const popupFixApp = initializeApp(popupFixConfig, "popupFixApp");
-const popupFixAuth = getAuth(popupFixApp);
+const popupFixAuth = getAuth(getApp());
 const popupFixProvider = new GoogleAuthProvider();
 popupFixProvider.setCustomParameters({ prompt: "select_account" });
 
@@ -42,7 +31,6 @@ document.addEventListener("click", async (event) => {
     setGateStatus("Abrindo login do Google...");
     await signInWithPopup(popupFixAuth, popupFixProvider);
     setGateStatus("Login realizado. Validando cadastro...");
-    window.location.reload();
   } catch (error) {
     console.error(error);
     setGateStatus(friendlyLoginError(error));
