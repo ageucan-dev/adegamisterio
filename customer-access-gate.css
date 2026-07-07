@@ -1,11 +1,11 @@
 body.access-gate-loading {
-  overflow: hidden !important;
-  overscroll-behavior: none !important;
+  overflow: auto !important;
+  overscroll-behavior: auto !important;
 }
 
 body.access-gate-loading #app {
-  opacity: 0 !important;
-  pointer-events: none !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .customer-gate-overlay {
@@ -17,7 +17,7 @@ body.access-gate-loading #app {
   justify-content: center;
   padding: 18px;
   overflow: hidden;
-  background: rgba(255, 253, 242, 0.86);
+  background: rgba(255, 253, 242, 0.92);
   backdrop-filter: blur(18px);
   overscroll-behavior: none;
   touch-action: none;
