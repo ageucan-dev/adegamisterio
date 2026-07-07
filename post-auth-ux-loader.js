@@ -52,6 +52,19 @@
     }, true);
   }
 
+  function loadStyle(href) {
+    return new Promise((resolve) => {
+      if (document.querySelector(`link[href^="${href}"]`)) return resolve();
+
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = `${href}?v=6`;
+      link.onload = resolve;
+      link.onerror = resolve;
+      document.head.appendChild(link);
+    });
+  }
+
   function loadScript(src) {
     return new Promise((resolve, reject) => {
       if (document.querySelector(`script[src^="${src}"]`)) return resolve();
@@ -69,7 +82,7 @@
       document.body.classList.contains("access-gate-loading");
   }
 
-  function tryLoad() {
+  async function tryLoad() {
     attempts += 1;
     installPersonalizationAutoCollapse();
     installPersonalizationStyles();
@@ -81,9 +94,12 @@
     if (!waitedLongEnoughForAccessGate) return false;
 
     loaded = true;
-    loadScript("ux-upgrades.js").catch(() => {
+    try {
+      await loadStyle("ux-upgrades.css");
+      await loadScript("ux-upgrades.js");
+    } catch (error) {
       loaded = false;
-    });
+    }
 
     return true;
   }
@@ -93,8 +109,8 @@
   document.addEventListener("DOMContentLoaded", installPersonalizationAutoCollapse, { once: true });
   installPersonalizationAutoCollapse();
 
-  const timer = setInterval(() => {
-    const done = tryLoad();
+  const timer = setInterval(async () => {
+    const done = await tryLoad();
     if (done || attempts >= 1800) clearInterval(timer);
   }, 1000);
 })();
