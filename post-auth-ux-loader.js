@@ -2,6 +2,33 @@
   let loaded = false;
   let attempts = 0;
 
+  function installPersonalizationAutoCollapse() {
+    if (window.__copaoAutoCollapseReady) return;
+    window.__copaoAutoCollapseReady = true;
+
+    document.addEventListener("change", (event) => {
+      const input = event.target.closest('.custom-form input[type="radio"]');
+      if (!input) return;
+
+      const fieldset = input.closest("fieldset");
+      if (!fieldset) return;
+
+      window.setTimeout(() => {
+        fieldset.classList.add("is-collapsed");
+      }, 120);
+    }, true);
+
+    document.addEventListener("click", (event) => {
+      const legend = event.target.closest(".custom-form legend");
+      if (!legend) return;
+
+      const fieldset = legend.closest("fieldset");
+      if (!fieldset) return;
+
+      fieldset.classList.remove("is-collapsed");
+    }, true);
+  }
+
   function loadScript(src) {
     return new Promise((resolve, reject) => {
       if (document.querySelector(`script[src^="${src}"]`)) return resolve();
@@ -21,6 +48,7 @@
 
   function tryLoad() {
     attempts += 1;
+    installPersonalizationAutoCollapse();
 
     if (loaded) return true;
     if (accessIsOpen()) return false;
@@ -34,7 +62,8 @@
   }
 
   window.addEventListener("copao:customer-approved", tryLoad);
-  window.addEventListener("load", () => setTimeout(tryLoad, 1200));
+  window.addEventListener("load", () => setTimeout(tryLoad, 600));
+  installPersonalizationAutoCollapse();
 
   const timer = setInterval(() => {
     const done = tryLoad();
