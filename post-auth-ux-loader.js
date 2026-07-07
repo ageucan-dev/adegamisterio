@@ -1,6 +1,7 @@
 (() => {
   let loaded = false;
   let attempts = 0;
+  const startedAt = Date.now();
 
   function installPersonalizationStyles() {
     if (document.querySelector("#copao-auto-collapse-style")) return;
@@ -56,7 +57,7 @@
       if (document.querySelector(`script[src^="${src}"]`)) return resolve();
 
       const script = document.createElement("script");
-      script.src = `${src}?v=5`;
+      script.src = `${src}?v=6`;
       script.onload = resolve;
       script.onerror = reject;
       document.body.appendChild(script);
@@ -76,6 +77,9 @@
     if (loaded) return true;
     if (accessIsOpen()) return false;
 
+    const waitedLongEnoughForAccessGate = Date.now() - startedAt > 2500;
+    if (!waitedLongEnoughForAccessGate) return false;
+
     loaded = true;
     loadScript("ux-upgrades.js").catch(() => {
       loaded = false;
@@ -85,12 +89,12 @@
   }
 
   window.addEventListener("copao:customer-approved", tryLoad);
-  window.addEventListener("load", () => setTimeout(tryLoad, 300));
+  window.addEventListener("load", () => setTimeout(tryLoad, 2600));
   document.addEventListener("DOMContentLoaded", installPersonalizationAutoCollapse, { once: true });
   installPersonalizationAutoCollapse();
 
   const timer = setInterval(() => {
     const done = tryLoad();
-    if (done || attempts >= 30) clearInterval(timer);
-  }, 600);
+    if (done || attempts >= 1800) clearInterval(timer);
+  }, 1000);
 })();
