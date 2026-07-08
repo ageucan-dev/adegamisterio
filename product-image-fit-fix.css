@@ -1,0 +1,17 @@
+.product-carousel .product-slide:nth-child(2) .product-visual {
+  height: 260px !important;
+  min-height: 260px !important;
+  overflow: hidden !important;
+  border-radius: 28px 28px 0 0 !important;
+}
+
+.product-carousel .product-slide:nth-child(2) .product-image {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  transform: scale(1.08) !important;
+  transform-origin: center center !important;
+  border-radius: 28px 28px 0 0 !important;
+}
