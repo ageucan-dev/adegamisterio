@@ -67,18 +67,64 @@
         <div class="trust-row" aria-label="Destaques"><span>⚡ Rápido</span><span>📲 Pelo celular</span><span>🥤 Personalizado</span></div>
       </section>
 
-      <section id="produto" class="section-card product-preview">
-        <div class="product-visual" aria-hidden="true"><div class="cup-glow"></div><img class="product-image" src="assets/products/ethernity-mix.png" alt="Ethernity Mix" onerror="this.style.display='none'" /><div class="cup-shape"></div></div>
-        <div class="product-copy">
-          <div class="product-title-row"><h2>Ethernity Mix</h2><span class="delivery-badge">Entrega grátis</span></div>
-          <p>Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.</p>
-          <div class="price-inline"><span class="price-prefix">A partir</span><strong class="price-main">/ R$25,20</strong></div>
-          <button id="showBuilder" class="btn btn-primary btn-wide product-build-btn" type="button">Montar copo</button>
+      <section id="produto" class="section-card product-carousel-wrap">
+  <div class="section-title">
+    <p class="eyebrow">Produtos</p>
+    <h2>Escolha seu copo</h2>
+  </div>
+
+  <div class="product-carousel" id="productCarousel">
+    <article class="product-preview product-slide" data-product="ethernity-mix">
+      <div class="product-visual" aria-hidden="true">
+        <div class="cup-glow"></div>
+        <img class="product-image" src="assets/products/ethernity-mix.png" alt="Ethernity Mix" onerror="this.style.display='none'" />
+        <div class="cup-shape"></div>
+      </div>
+      <div class="product-copy">
+        <div class="product-title-row">
+          <h2>Ethernity Mix</h2>
+          <span class="delivery-badge">Entrega grátis</span>
         </div>
-      </section>
+        <p>Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.</p>
+        <div class="price-inline">
+          <span class="price-prefix">A partir</span>
+          <strong class="price-main" data-product-price="ethernity-mix">/ R$25,20</strong>
+        </div>
+        <button class="btn btn-primary btn-wide product-build-btn choose-product" type="button" data-product="ethernity-mix">
+          Montar copo
+        </button>
+      </div>
+    </article>
+
+    <article class="product-preview product-slide" data-product="ballantines-mix">
+      <div class="product-visual" aria-hidden="true">
+        <div class="cup-glow"></div>
+        <img class="product-image" src="assets/products/ballantines.png" alt="Ballantines Mix" onerror="this.style.display='none'" />
+        <div class="cup-shape"></div>
+      </div>
+      <div class="product-copy">
+        <div class="product-title-row">
+          <h2>Ballantines Mix</h2>
+          <span class="delivery-badge">Entrega grátis</span>
+        </div>
+        <p>Mesmo processo de montagem, com a base fixa Ballantines. Escolha tamanho, intensidade, energético, gelo e quantidade.</p>
+        <div class="price-inline">
+          <span class="price-prefix">A partir</span>
+          <strong class="price-main" data-product-price="ballantines-mix">/ R$31,20</strong>
+        </div>
+        <button class="btn btn-primary btn-wide product-build-btn choose-product" type="button" data-product="ballantines-mix">
+          Montar copo
+        </button>
+      </div>
+    </article>
+  </div>
+</section>
 
       <section id="personalizacao" class="section-card builder-card is-hidden">
-        <div class="section-title"><p class="eyebrow">Personalização</p><h2>Monte seu copo</h2></div>
+        <div class="section-title">
+  <p class="eyebrow">Personalização</p>
+  <h2 id="builderTitle">Monte seu copo</h2>
+</div>
         <form id="customForm" class="custom-form">
           <fieldset><legend>Tamanho</legend><div id="sizeOptions" class="option-grid"></div></fieldset>
           <fieldset><legend>Sabor da base</legend><div id="baseOptions" class="option-grid"></div></fieldset>
