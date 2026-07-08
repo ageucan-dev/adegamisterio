@@ -332,3 +332,47 @@ label.option-card:has(input:checked) {
     padding: 0 10px !important;
   }
 }
+.product-carousel-wrap {
+  padding: 22px !important;
+}
+
+.product-carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.product-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.product-carousel::-webkit-scrollbar-thumb {
+  background: rgba(11,29,58,.18);
+  border-radius: 999px;
+}
+
+.product-slide {
+  min-width: 100%;
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+
+.product-slide .product-copy {
+  padding: 22px !important;
+}
+
+.product-slide .product-visual {
+  min-height: 260px !important;
+  border-radius: 28px 28px 0 0 !important;
+}
+
+.product-slide .product-image {
+  width: 100% !important;
+  height: 260px !important;
+  object-fit: cover !important;
+  border-radius: 28px 28px 0 0 !important;
+}
