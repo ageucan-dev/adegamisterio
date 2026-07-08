@@ -44,13 +44,13 @@ const products = {
     ices: sharedIces
   },
 
-  "ballantines-mix": {
-    id: "ballantines-mix",
-    name: "Ballantines Mix",
-    description: "Mesmo processo de montagem, com a base fixa Ballantines. Escolha tamanho, intensidade, energético, gelo e quantidade.",
+  "mix-gold": {
+    id: "mix-gold",
+    name: "Mix Gold",
+    description: "Base fixa Mix Gold com a mesma montagem rápida: escolha tamanho, intensidade, energético, gelo e quantidade.",
     sizes: sharedSizes,
     bases: [
-      { id: "ballantines", label: "Ballantines", price: 11.9 }
+      { id: "mix-gold", label: "Mix Gold", price: 11.9 }
     ],
     energies: sharedEnergies,
     ices: sharedIces
@@ -62,6 +62,9 @@ var state = {
   cart: [],
   selectedProductId: "ethernity-mix"
 };
+
+window.state = state;
+window.products = products;
 
 const els = {
   sizeOptions: document.querySelector("#sizeOptions"),
@@ -93,7 +96,8 @@ const els = {
   reference: document.querySelector("#reference"),
   deliveryNotes: document.querySelector("#deliveryNotes"),
   builderTitle: document.querySelector("#builderTitle"),
-  builderCard: document.querySelector("#personalizacao")
+  builderCard: document.querySelector("#personalizacao"),
+  carousel: document.querySelector("#productCarousel")
 };
 
 function money(value) {
@@ -101,7 +105,7 @@ function money(value) {
 }
 
 function currentCatalog() {
-  return products[state.selectedProductId];
+  return products[state.selectedProductId] || products["ethernity-mix"];
 }
 
 function minPrice(list) {
@@ -129,6 +133,19 @@ function updateProductPrices() {
   });
 }
 
+function autoSelectSingleBase(catalog) {
+  const isSingleBase = catalog.bases.length === 1;
+  els.baseOptions.classList.toggle("option-grid--single", isSingleBase);
+
+  if (!isSingleBase) return;
+
+  const input = els.baseOptions.querySelector('input[name="base"]');
+  if (!input) return;
+
+  input.checked = true;
+  window.setTimeout(() => input.dispatchEvent(new Event("change", { bubbles: true })), 0);
+}
+
 function renderOptions() {
   const catalog = currentCatalog();
 
@@ -140,6 +157,8 @@ function renderOptions() {
   document.querySelectorAll('input[name="intensity"]').forEach((input) => {
     input.checked = false;
   });
+
+  autoSelectSingleBase(catalog);
 
   if (els.builderTitle) {
     els.builderTitle.textContent = `Monte seu copo - ${catalog.name}`;
@@ -287,9 +306,40 @@ function resetCustomization() {
   updateLiveTotal();
 }
 
+function setActiveProduct(productId) {
+  document.querySelectorAll(".product-slide").forEach((slide) => {
+    slide.classList.toggle("is-active", slide.dataset.product === productId);
+  });
+
+  document.querySelectorAll(".choose-product").forEach((button) => {
+    button.classList.toggle("is-selected", button.dataset.product === productId);
+  });
+}
+
+function setActiveCarouselDot(index) {
+  document.querySelectorAll("[data-carousel-dot]").forEach((dot) => {
+    dot.classList.toggle("is-active", Number(dot.dataset.carouselDot) === index);
+  });
+}
+
+function syncCarouselState() {
+  if (!els.carousel) return;
+
+  const slides = [...document.querySelectorAll(".product-slide")];
+  if (!slides.length) return;
+
+  const slideWidth = slides[0].getBoundingClientRect().width || els.carousel.clientWidth || 1;
+  const index = Math.max(0, Math.min(slides.length - 1, Math.round(els.carousel.scrollLeft / slideWidth)));
+  const productId = slides[index]?.dataset.product || "ethernity-mix";
+
+  setActiveCarouselDot(index);
+  setActiveProduct(productId);
+}
+
 function openBuilder(productId) {
   if (!products[productId]) return;
   state.selectedProductId = productId;
+  setActiveProduct(productId);
   resetCustomization();
   renderOptions();
   els.builderCard?.classList.remove("is-hidden");
@@ -359,7 +409,7 @@ function buildSummary() {
   ].filter(Boolean).join("\n")).join("\n\n");
 
   return [
-    "*🍸 ADEGA MISTÉRIO | NOVO PEDIDO*",
+    "*🥤 COPÃO NA MÃO | NOVO PEDIDO*",
     "_Ficha organizada para preparo e conferência._",
     "",
     "*🛒 ITENS DO CARRINHO*",
@@ -393,10 +443,43 @@ function finish() {
   window.open(`https://wa.me/5516996396543?text=${summary}`, "_blank", "noopener,noreferrer");
 }
 
+function initProductCarousel() {
+  document.querySelectorAll("[data-carousel-dot]").forEach((dot) => {
+    dot.addEventListener("click", () => {
+      const index = Number(dot.dataset.carouselDot);
+      const slide = document.querySelectorAll(".product-slide")[index];
+      if (!slide || !els.carousel) return;
+
+      els.carousel.scrollTo({ left: slide.offsetLeft - els.carousel.offsetLeft, behavior: "smooth" });
+      setActiveCarouselDot(index);
+      setActiveProduct(slide.dataset.product);
+    });
+  });
+
+  if (!els.carousel) return;
+
+  let scrollTimer = null;
+  els.carousel.addEventListener("scroll", () => {
+    window.clearTimeout(scrollTimer);
+    scrollTimer = window.setTimeout(syncCarouselState, 90);
+  }, { passive: true });
+
+  window.addEventListener("resize", syncCarouselState);
+  syncCarouselState();
+}
+
 updateProductPrices();
 renderOptions();
 updateLiveTotal();
 renderCart();
+initProductCarousel();
+
+window.cartTotals = cartTotals;
+window.deliveryData = deliveryData;
+window.validateBeforeSend = validateBeforeSend;
+window.finish = finish;
+window.renderCart = renderCart;
+
 
 document.querySelectorAll("[data-scroll-to]").forEach((button) => {
   button.addEventListener("click", () => document.querySelector(`#${button.dataset.scrollTo}`)?.scrollIntoView({ behavior: "smooth" }));
