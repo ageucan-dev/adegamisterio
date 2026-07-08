@@ -163,6 +163,15 @@
       <nav class="bottom-bar" aria-label="Ações rápidas"><a class="bottom-cart-link" href="#carrinho">🛒 <span id="bottomCartCount">0</span></a><a class="bottom-finish-link" href="#finalizar"><span id="bottomTotalValue">R$ 0,00</span><span class="bottom-separator">|</span><strong>Finalizar</strong></a></nav>
     </main>
     <script src="app.js?v=8"></script>
+    <script>
+      (function () {
+        const product = window.products && window.products['mix-gold'];
+        if (!product) return;
+        product.name = 'Gold Mix';
+        product.description = 'Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.';
+        if (product.bases && product.bases[0]) product.bases[0].label = 'Gold Mix';
+      })();
+    </script>
     <script src="promo-daily-benefit-cart.js?v=3"></script>
     <script src="whatsapp-message-format.js?v=4"></script>
     <script src="selection-summary.js?v=2"></script>
