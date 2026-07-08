@@ -21,6 +21,11 @@
   margin-top: 10px !important;
 }
 
+.product-carousel .product-slide .cup-shape,
+.product-carousel .product-slide .cup-glow {
+  display: none !important;
+}
+
 .product-carousel .product-slide:nth-child(2) .product-visual {
   height: 260px !important;
   min-height: 260px !important;
@@ -38,6 +43,7 @@
   transform-origin: center center !important;
   border-radius: 28px 28px 0 0 !important;
 }
+
 .product-slide .product-visual {
   position: relative !important;
 }
