@@ -77,20 +77,6 @@
   background: linear-gradient(180deg, rgba(255,209,0,.18), #ffffff) !important;
 }
 
-.option-grid--single .option-card::after {
-  content: "Base fixa" !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  width: max-content !important;
-  margin-top: 2px !important;
-  padding: 4px 8px !important;
-  border-radius: 999px !important;
-  background: #fff4cc !important;
-  color: #0b1d3a !important;
-  font-size: .72rem !important;
-  font-weight: 900 !important;
-}
-
 .more-options-notice {
   display: none !important;
 }
