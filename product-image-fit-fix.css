@@ -1,3 +1,26 @@
+.product-carousel .product-slide .product-copy {
+  padding: 10px 22px 16px !important;
+}
+
+.product-carousel .product-slide .product-title-row {
+  margin: 0 0 8px !important;
+  align-items: flex-start !important;
+}
+
+.product-carousel .product-slide .product-title-row h2 {
+  margin: 0 !important;
+  line-height: 0.96 !important;
+}
+
+.product-carousel .product-slide .product-copy p {
+  margin: 0 0 12px !important;
+  line-height: 1.45 !important;
+}
+
+.product-carousel .product-slide .product-build-btn {
+  margin-top: 10px !important;
+}
+
 .product-carousel .product-slide:nth-child(2) .product-visual {
   height: 260px !important;
   min-height: 260px !important;
