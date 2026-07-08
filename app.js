@@ -1,40 +1,67 @@
 const DISCOUNT_PER_EXTRA_CUP = 9;
 
-const catalog = {
-  sizes: [
-    { id: "500ml", label: "500ml", price: 11.5 },
-    { id: "700ml", label: "700ml", price: 12.5 }
-  ],
-  bases: [
-    { id: "citrico", label: "Cítrico", price: 5.9 },
-    { id: "maca-verde", label: "Maçã Verde", price: 5.9 },
-    { id: "melancia", label: "Melancia", price: 5.9 },
-    { id: "morango", label: "Morango", price: 5.9 },
-    { id: "sevilla", label: "Sevilla", price: 5.9 },
-    { id: "tropical", label: "Tropical", price: 5.9 }
-  ],
-  energies: [
-    { id: "baly-tradicional", label: "Baly Tradicional", price: 3.9 },
-    { id: "baly-maca-verde", label: "Baly Maçã Verde", price: 3.9 },
-    { id: "baly-melancia", label: "Baly Melancia", price: 3.9 },
-    { id: "baly-tropical", label: "Baly Tropical", price: 3.9 },
-    { id: "red-bull-tradicional", label: "Red Bull Tradicional", price: 14.9 },
-    { id: "red-bull-tropical", label: "Red Bull Tropical", price: 14.9 },
-    { id: "red-bull-morango-pessego", label: "Red Bull Morango e Pêssego", price: 14.9 },
-    { id: "monster-tradicional", label: "Monster Tradicional", price: 8.9 },
-    { id: "monster-mango", label: "Monster Mango Loco", price: 8.9 },
-    { id: "monster-pipeline", label: "Monster Pipeline Punch", price: 8.9 },
-    { id: "monster-pacific", label: "Monster Pacific Punch", price: 8.9 }
-  ],
-  ices: [
-    { id: "gelo-melancia", label: "Gelo de Melancia", price: 3.9 },
-    { id: "gelo-maracuja", label: "Gelo de Maracujá", price: 3.9 },
-    { id: "gelo-coco", label: "Gelo de Água de Coco", price: 3.9 },
-    { id: "gelo-morango", label: "Gelo de Morango", price: 3.9 }
-  ]
+const sharedSizes = [
+  { id: "500ml", label: "500ml", price: 11.5 },
+  { id: "700ml", label: "700ml", price: 12.5 }
+];
+
+const sharedEnergies = [
+  { id: "baly-tradicional", label: "Baly Tradicional", price: 3.9 },
+  { id: "baly-maca-verde", label: "Baly Maçã Verde", price: 3.9 },
+  { id: "baly-melancia", label: "Baly Melancia", price: 3.9 },
+  { id: "baly-tropical", label: "Baly Tropical", price: 3.9 },
+  { id: "red-bull-tradicional", label: "Red Bull Tradicional", price: 14.9 },
+  { id: "red-bull-tropical", label: "Red Bull Tropical", price: 14.9 },
+  { id: "red-bull-morango-pessego", label: "Red Bull Morango e Pêssego", price: 14.9 },
+  { id: "monster-tradicional", label: "Monster Tradicional", price: 8.9 },
+  { id: "monster-mango", label: "Monster Mango Loco", price: 8.9 },
+  { id: "monster-pipeline", label: "Monster Pipeline Punch", price: 8.9 },
+  { id: "monster-pacific", label: "Monster Pacific Punch", price: 8.9 }
+];
+
+const sharedIces = [
+  { id: "gelo-melancia", label: "Gelo de Melancia", price: 3.9 },
+  { id: "gelo-maracuja", label: "Gelo de Maracujá", price: 3.9 },
+  { id: "gelo-coco", label: "Gelo de Água de Coco", price: 3.9 },
+  { id: "gelo-morango", label: "Gelo de Morango", price: 3.9 }
+];
+
+const products = {
+  "ethernity-mix": {
+    id: "ethernity-mix",
+    name: "Ethernity Mix",
+    description: "Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.",
+    sizes: sharedSizes,
+    bases: [
+      { id: "citrico", label: "Cítrico", price: 5.9 },
+      { id: "maca-verde", label: "Maçã Verde", price: 5.9 },
+      { id: "melancia", label: "Melancia", price: 5.9 },
+      { id: "morango", label: "Morango", price: 5.9 },
+      { id: "sevilla", label: "Sevilla", price: 5.9 },
+      { id: "tropical", label: "Tropical", price: 5.9 }
+    ],
+    energies: sharedEnergies,
+    ices: sharedIces
+  },
+
+  "ballantines-mix": {
+    id: "ballantines-mix",
+    name: "Ballantines Mix",
+    description: "Mesmo processo de montagem, com a base fixa Ballantines. Escolha tamanho, intensidade, energético, gelo e quantidade.",
+    sizes: sharedSizes,
+    bases: [
+      { id: "ballantines", label: "Ballantines", price: 11.9 }
+    ],
+    energies: sharedEnergies,
+    ices: sharedIces
+  }
 };
 
-var state = { quantity: 1, cart: [] };
+var state = {
+  quantity: 1,
+  cart: [],
+  selectedProductId: "ethernity-mix"
+};
 
 const els = {
   sizeOptions: document.querySelector("#sizeOptions"),
@@ -64,19 +91,25 @@ const els = {
   district: document.querySelector("#district"),
   complement: document.querySelector("#complement"),
   reference: document.querySelector("#reference"),
-  deliveryNotes: document.querySelector("#deliveryNotes")
+  deliveryNotes: document.querySelector("#deliveryNotes"),
+  builderTitle: document.querySelector("#builderTitle"),
+  builderCard: document.querySelector("#personalizacao")
 };
 
 function money(value) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+function currentCatalog() {
+  return products[state.selectedProductId];
+}
+
 function minPrice(list) {
   return Math.min(...list.map((item) => item.price));
 }
 
-function minUnitPrice() {
-  return minPrice(catalog.sizes) + minPrice(catalog.bases) + minPrice(catalog.energies) + minPrice(catalog.ices);
+function minUnitPrice(product) {
+  return minPrice(product.sizes) + minPrice(product.bases) + minPrice(product.energies) + minPrice(product.ices);
 }
 
 function optionMarkup(groupName, item, groupItems) {
@@ -87,18 +120,32 @@ function optionMarkup(groupName, item, groupItems) {
   return `<label class="${cardClass}"><input type="radio" name="${groupName}" value="${item.id}" /><span>${item.label}</span>${priceLabel}</label>`;
 }
 
-function updateStartingPrice() {
-  const main = document.querySelector(".price-main");
-  if (main) main.textContent = `/ ${money(minUnitPrice()).replace("R$ ", "R$").replace("R$ ", "R$")}`;
+function updateProductPrices() {
+  document.querySelectorAll("[data-product-price]").forEach((el) => {
+    const productId = el.dataset.productPrice;
+    const product = products[productId];
+    if (!product) return;
+    el.textContent = `/ ${money(minUnitPrice(product)).replace("R$ ", "R$").replace("R$ ", "R$")}`;
+  });
 }
 
 function renderOptions() {
+  const catalog = currentCatalog();
+
   els.sizeOptions.innerHTML = catalog.sizes.map((item) => optionMarkup("size", item, catalog.sizes)).join("");
   els.baseOptions.innerHTML = catalog.bases.map((item) => optionMarkup("base", item, catalog.bases)).join("");
   els.energyOptions.innerHTML = catalog.energies.map((item) => optionMarkup("energy", item, catalog.energies)).join("");
   els.iceOptions.innerHTML = catalog.ices.map((item) => optionMarkup("ice", item, catalog.ices)).join("");
-  document.querySelectorAll('input[name="intensity"]').forEach((input) => { input.checked = false; });
-  updateStartingPrice();
+
+  document.querySelectorAll('input[name="intensity"]').forEach((input) => {
+    input.checked = false;
+  });
+
+  if (els.builderTitle) {
+    els.builderTitle.textContent = `Monte seu copo - ${catalog.name}`;
+  }
+
+  updateLiveTotal();
 }
 
 function selectedValue(name) {
@@ -124,6 +171,8 @@ function missingSelections() {
 }
 
 function currentCup() {
+  const catalog = currentCatalog();
+
   const size = findById(catalog.sizes, selectedValue("size"));
   const base = findById(catalog.bases, selectedValue("base"));
   const energy = findById(catalog.energies, selectedValue("energy"));
@@ -133,7 +182,20 @@ function currentCup() {
   if (!size || !base || !energy || !ice || !intensity) return null;
 
   const unitPrice = size.price + base.price + energy.price + ice.price;
-  return { id: makeId(), product: "Ethernity Mix", size, base, energy, ice, intensity, notes: els.notes.value.trim(), quantity: state.quantity, unitPrice };
+
+  return {
+    id: makeId(),
+    product: catalog.name,
+    productId: catalog.id,
+    size,
+    base,
+    energy,
+    ice,
+    intensity,
+    notes: els.notes.value.trim(),
+    quantity: state.quantity,
+    unitPrice
+  };
 }
 
 function updateLiveTotal() {
@@ -191,15 +253,47 @@ function renderCart() {
   }
 
   els.cartItems.className = "cart-items";
-  els.cartItems.innerHTML = cartItemsWithDiscount().map((item) => `<article class="cart-item"><div class="cart-item-header"><div><h3>${item.product} - ${item.size.label}</h3><p>${item.base.label} | ${item.intensity} | ${item.energy.label} | ${item.ice.label}</p>${item.notes ? `<p>Obs: ${item.notes}</p>` : ""}</div>${cartPriceMarkup(item)}</div><div class="cart-item-actions"><div class="quantity-control"><button class="item-action" type="button" data-action="minus" data-id="${item.id}">-</button><strong>${item.quantity}</strong><button class="item-action" type="button" data-action="plus" data-id="${item.id}">+</button></div><button class="item-action" type="button" data-action="remove" data-id="${item.id}">Remover</button></div></article>`).join("");
+  els.cartItems.innerHTML = cartItemsWithDiscount().map((item) => `
+    <article class="cart-item">
+      <div class="cart-item-header">
+        <div>
+          <h3>${item.product} - ${item.size.label}</h3>
+          <p>${item.base.label} | ${item.intensity} | ${item.energy.label} | ${item.ice.label}</p>
+          ${item.notes ? `<p>Obs: ${item.notes}</p>` : ""}
+        </div>
+        ${cartPriceMarkup(item)}
+      </div>
+      <div class="cart-item-actions">
+        <div class="quantity-control">
+          <button class="item-action" type="button" data-action="minus" data-id="${item.id}">-</button>
+          <strong>${item.quantity}</strong>
+          <button class="item-action" type="button" data-action="plus" data-id="${item.id}">+</button>
+        </div>
+        <button class="item-action" type="button" data-action="remove" data-id="${item.id}">Remover</button>
+      </div>
+    </article>
+  `).join("");
 }
 
 function resetCustomization() {
   state.quantity = 1;
   els.notes.value = "";
-  document.querySelectorAll('.custom-form input[type="radio"]').forEach((input) => { input.checked = false; });
-  document.querySelectorAll(".custom-form fieldset").forEach((fieldset) => { fieldset.classList.remove("is-collapsed"); });
+  document.querySelectorAll('.custom-form input[type="radio"]').forEach((input) => {
+    input.checked = false;
+  });
+  document.querySelectorAll(".custom-form fieldset").forEach((fieldset) => {
+    fieldset.classList.remove("is-collapsed");
+  });
   updateLiveTotal();
+}
+
+function openBuilder(productId) {
+  if (!products[productId]) return;
+  state.selectedProductId = productId;
+  resetCustomization();
+  renderOptions();
+  els.builderCard?.classList.remove("is-hidden");
+  els.builderCard?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function addCurrentToCart() {
@@ -215,6 +309,7 @@ function addCurrentToCart() {
   state.cart.push(cup);
   renderCart();
   resetCustomization();
+  renderOptions();
   return true;
 }
 
@@ -250,18 +345,55 @@ function validateBeforeSend() {
 function buildSummary() {
   const totals = cartTotals();
   const data = deliveryData();
-  const items = state.cart.map((item, index) => [`*${index + 1}. ${item.product} - ${item.size.label}*`, `• Base: ${item.base.label}`, `• Intensidade: ${item.intensity}`, `• Energético: ${item.energy.label}`, `• Gelo: ${item.ice.label}`, `• Quantidade: ${item.quantity}`, `• Valor unitário: ${money(item.unitPrice)}`, `• Subtotal: ${money(item.unitPrice * item.quantity)}`, item.notes ? `• Observações: ${item.notes}` : ""].filter(Boolean).join("\n")).join("\n\n");
 
-  return ["*🍸 ADEGA MISTÉRIO | NOVO PEDIDO*", "_Ficha organizada para preparo e conferência._", "", "*🛒 ITENS DO CARRINHO*", items, "", "*💰 RESUMO DO PEDIDO*", `• Subtotal: ${money(totals.subtotal)}`, `• Desconto progressivo: -${money(totals.discount)}`, `• *Total: ${money(totals.total)}*`, "", "*📍 DADOS DE ENTREGA*", `• Nome: ${data.name}`, `• Contato: ${data.phone}`, `• Endereço: ${data.street}, ${data.number} - ${data.district}`, data.complement ? `• Complemento: ${data.complement}` : "", data.reference ? `• Referência: ${data.reference}` : "", data.notes ? `• Observação: ${data.notes}` : "", "", "✅ Aguardo confirmação para preparo."].filter(Boolean).join("\n");
+  const items = state.cart.map((item, index) => [
+    `*${index + 1}. ${item.product} - ${item.size.label}*`,
+    `• Base: ${item.base.label}`,
+    `• Intensidade: ${item.intensity}`,
+    `• Energético: ${item.energy.label}`,
+    `• Gelo: ${item.ice.label}`,
+    `• Quantidade: ${item.quantity}`,
+    `• Valor unitário: ${money(item.unitPrice)}`,
+    `• Subtotal: ${money(item.unitPrice * item.quantity)}`,
+    item.notes ? `• Observações: ${item.notes}` : ""
+  ].filter(Boolean).join("\n")).join("\n\n");
+
+  return [
+    "*🍸 ADEGA MISTÉRIO | NOVO PEDIDO*",
+    "_Ficha organizada para preparo e conferência._",
+    "",
+    "*🛒 ITENS DO CARRINHO*",
+    items,
+    "",
+    "*💰 RESUMO DO PEDIDO*",
+    `• Subtotal: ${money(totals.subtotal)}`,
+    `• Desconto progressivo: -${money(totals.discount)}`,
+    `• *Total: ${money(totals.total)}*`,
+    "",
+    "*📍 DADOS DE ENTREGA*",
+    `• Nome: ${data.name}`,
+    `• Contato: ${data.phone}`,
+    `• Endereço: ${data.street}, ${data.number} - ${data.district}`,
+    data.complement ? `• Complemento: ${data.complement}` : "",
+    data.reference ? `• Referência: ${data.reference}` : "",
+    data.notes ? `• Observação: ${data.notes}` : "",
+    "",
+    "✅ Aguardo confirmação para preparo."
+  ].filter(Boolean).join("\n");
 }
 
 function finish() {
   const error = validateBeforeSend();
-  if (error) { alert(error); return; }
+  if (error) {
+    alert(error);
+    return;
+  }
+
   const summary = encodeURIComponent(buildSummary());
   window.open(`https://wa.me/5516996396543?text=${summary}`, "_blank", "noopener,noreferrer");
 }
 
+updateProductPrices();
 renderOptions();
 updateLiveTotal();
 renderCart();
@@ -274,10 +406,39 @@ document.addEventListener("change", (event) => {
   if (event.target.matches('input[type="radio"]')) updateLiveTotal();
 });
 
-els.decreaseQty.addEventListener("click", () => { state.quantity = Math.max(1, state.quantity - 1); updateLiveTotal(); });
-els.increaseQty.addEventListener("click", () => { state.quantity += 1; updateLiveTotal(); });
+document.querySelectorAll(".choose-product").forEach((button) => {
+  button.addEventListener("click", () => {
+    openBuilder(button.dataset.product);
+  });
+});
+
+els.decreaseQty.addEventListener("click", () => {
+  state.quantity = Math.max(1, state.quantity - 1);
+  updateLiveTotal();
+});
+
+els.increaseQty.addEventListener("click", () => {
+  state.quantity += 1;
+  updateLiveTotal();
+});
+
 els.addToCart.addEventListener("click", addCurrentToCart);
-els.buyNow.addEventListener("click", () => { if (addCurrentToCart()) document.querySelector("#carrinho").scrollIntoView({ behavior: "smooth" }); });
-els.clearCart.addEventListener("click", () => { state.cart = []; renderCart(); });
-els.cartItems.addEventListener("click", (event) => { const button = event.target.closest("button[data-action]"); if (!button) return; changeCartItem(button.dataset.id, button.dataset.action); });
+
+els.buyNow.addEventListener("click", () => {
+  if (addCurrentToCart()) {
+    document.querySelector("#carrinho").scrollIntoView({ behavior: "smooth" });
+  }
+});
+
+els.clearCart.addEventListener("click", () => {
+  state.cart = [];
+  renderCart();
+});
+
+els.cartItems.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  changeCartItem(button.dataset.id, button.dataset.action);
+});
+
 els.sendWhatsApp.addEventListener("click", finish);
