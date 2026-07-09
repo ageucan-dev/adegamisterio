@@ -5,6 +5,14 @@
       position: relative !important;
     }
 
+    .custom-form {
+      overflow-anchor: none !important;
+    }
+
+    .custom-form fieldset {
+      contain: layout style !important;
+    }
+
     .more-options-notice {
       margin: -2px 0 22px !important;
       padding: 0 !important;
@@ -105,14 +113,16 @@
 
     .custom-form.is-selecting-option .option-card,
     .custom-form.is-selecting-option fieldset,
-    .custom-form.is-selecting-option .option-grid {
+    .custom-form.is-selecting-option .option-grid,
+    .custom-form.is-selecting-option .step-summary {
       transition: none !important;
       animation: none !important;
+      scroll-behavior: auto !important;
     }
   `;
   document.head.appendChild(style);
 
-  let rafId = 0;
+  const fieldsetFrames = new WeakMap();
   let selectionTimer = 0;
 
   function selectedLabel(input) {
@@ -138,25 +148,45 @@
     if (!fieldset) return;
     fieldset.querySelectorAll(".option-card").forEach((card) => {
       const input = card.querySelector('input[type="radio"]');
-      card.classList.toggle("is-checked", !!input?.checked);
+      const isChecked = !!input?.checked;
+      if (card.classList.contains("is-checked") !== isChecked) {
+        card.classList.toggle("is-checked", isChecked);
+      }
     });
   }
 
   function updateFieldsetSummary(fieldset) {
+    if (!fieldset || !fieldset.isConnected) return;
     const checked = fieldset.querySelector('input[type="radio"]:checked');
     const summary = ensureSummary(fieldset);
     if (!summary) return;
 
     const nextText = checked ? selectedLabel(checked) : "";
     if (summary.textContent !== nextText) summary.textContent = nextText;
-    summary.hidden = !checked;
+    const shouldHide = !checked;
+    if (summary.hidden !== shouldHide) summary.hidden = shouldHide;
     updateCheckedClasses(fieldset);
   }
 
   function queueFieldsetUpdate(fieldset) {
     if (!fieldset) return;
-    window.cancelAnimationFrame(rafId);
-    rafId = window.requestAnimationFrame(() => updateFieldsetSummary(fieldset));
+    const previousFrame = fieldsetFrames.get(fieldset);
+    if (previousFrame) window.cancelAnimationFrame(previousFrame);
+
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+
+    const frame = window.requestAnimationFrame(() => {
+      updateFieldsetSummary(fieldset);
+      fieldsetFrames.delete(fieldset);
+      window.requestAnimationFrame(() => {
+        if (Math.abs(window.scrollY - scrollY) > 2 || Math.abs(window.scrollX - scrollX) > 2) {
+          window.scrollTo({ left: scrollX, top: scrollY, behavior: "auto" });
+        }
+      });
+    });
+
+    fieldsetFrames.set(fieldset, frame);
   }
 
   function markSelecting(form) {
@@ -165,7 +195,7 @@
     window.clearTimeout(selectionTimer);
     selectionTimer = window.setTimeout(() => {
       form.classList.remove("is-selecting-option");
-    }, 180);
+    }, 110);
   }
 
   function syncAllSummaries() {
@@ -261,7 +291,10 @@
     const form = event.target.closest(".custom-form");
     markSelecting(form);
     queueFieldsetUpdate(fieldset);
-  });
+    window.setTimeout(() => {
+      if (document.activeElement === event.target) event.target.blur();
+    }, 0);
+  }, true);
 
   document.addEventListener("click", (event) => {
     if (!event.target.matches("#showBuilder, #addToCart, #buyNow, #clearCart")) return;
@@ -276,8 +309,10 @@
     }
 
     setTimeout(() => {
-      syncAllSummaries();
-      if (event.target.matches("#addToCart")) scrollBuilderTop(420);
+      if (event.target.matches("#addToCart")) {
+        syncAllSummaries();
+        scrollBuilderTop(420);
+      }
     }, 140);
   }, true);
 
@@ -285,11 +320,11 @@
     installMoreOptionsNotice();
     installBuilderClose();
     installBottomFinishFlow();
-    syncAllSummaries();
+    window.requestAnimationFrame(syncAllSummaries);
   });
 
   installMoreOptionsNotice();
   installBuilderClose();
   installBottomFinishFlow();
-  syncAllSummaries();
+  window.requestAnimationFrame(syncAllSummaries);
 })();
