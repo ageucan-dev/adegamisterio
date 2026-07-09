@@ -165,16 +165,103 @@
     <script src="app.js?v=8"></script>
     <script>
       (function () {
-        const product = window.products && window.products['mix-gold'];
-        if (!product) return;
-        product.name = 'Gold Mix';
-        product.description = 'Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.';
-        if (product.bases && product.bases[0]) product.bases[0].label = 'Gold Mix';
+        const sharedDescription = 'Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.';
+
+        function patchGoldProduct() {
+          const product = window.products && window.products['mix-gold'];
+          if (!product) return;
+          product.name = 'Gold Mix';
+          product.description = sharedDescription;
+          if (product.bases && product.bases[0]) product.bases[0].label = 'Gold Mix';
+        }
+
+        function money(value) {
+          return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function minPrice(list) {
+          return Math.min(...list.map((item) => item.price));
+        }
+
+        function optionMarkup(groupName, item, groupItems) {
+          const additional = item.price - minPrice(groupItems);
+          const hasAdditional = additional > 0;
+          const cardClass = hasAdditional ? 'option-card option-card--with-additional' : 'option-card option-card--compact';
+          const priceLabel = hasAdditional ? `<small class="option-additional">+${money(additional)}</small>` : '';
+          return `<label class="${cardClass}"><input type="radio" name="${groupName}" value="${item.id}" /><span>${item.label}</span>${priceLabel}</label>`;
+        }
+
+        function clearOldSummaries() {
+          document.querySelectorAll('.custom-form legend .step-summary').forEach((summary) => {
+            summary.textContent = '';
+            summary.hidden = true;
+          });
+          document.querySelectorAll('.custom-form fieldset').forEach((fieldset) => {
+            fieldset.classList.remove('is-collapsed');
+          });
+        }
+
+        function renderProduct(productId) {
+          patchGoldProduct();
+          const product = window.products && window.products[productId];
+          if (!product) return;
+
+          if (window.state) {
+            window.state.selectedProductId = productId;
+            window.state.quantity = 1;
+          }
+
+          const sizeOptions = document.querySelector('#sizeOptions');
+          const baseOptions = document.querySelector('#baseOptions');
+          const energyOptions = document.querySelector('#energyOptions');
+          const iceOptions = document.querySelector('#iceOptions');
+          const builderTitle = document.querySelector('#builderTitle');
+          const notes = document.querySelector('#notes');
+          const quantityValue = document.querySelector('#quantityValue');
+          const itemTotal = document.querySelector('#itemTotal');
+          const builder = document.querySelector('#personalizacao');
+
+          if (builderTitle) builderTitle.textContent = `Monte seu copo - ${product.name}`;
+          if (notes) notes.value = '';
+          if (quantityValue) quantityValue.textContent = '1';
+          if (itemTotal) itemTotal.textContent = 'R$ 0,00';
+
+          document.querySelectorAll('input[name="intensity"]').forEach((input) => {
+            input.checked = false;
+          });
+
+          if (sizeOptions) sizeOptions.innerHTML = product.sizes.map((item) => optionMarkup('size', item, product.sizes)).join('');
+          if (baseOptions) {
+            baseOptions.innerHTML = product.bases.map((item) => optionMarkup('base', item, product.bases)).join('');
+            baseOptions.classList.toggle('option-grid--single', product.bases.length === 1);
+            if (product.bases.length === 1) {
+              const input = baseOptions.querySelector('input[name="base"]');
+              if (input) {
+                input.checked = true;
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+            }
+          }
+          if (energyOptions) energyOptions.innerHTML = product.energies.map((item) => optionMarkup('energy', item, product.energies)).join('');
+          if (iceOptions) iceOptions.innerHTML = product.ices.map((item) => optionMarkup('ice', item, product.ices)).join('');
+
+          clearOldSummaries();
+          if (builder) builder.classList.remove('is-hidden');
+        }
+
+        patchGoldProduct();
+
+        document.addEventListener('click', (event) => {
+          const button = event.target.closest('.choose-product');
+          if (!button) return;
+          const productId = button.dataset.product;
+          window.setTimeout(() => renderProduct(productId), 80);
+        }, true);
       })();
     </script>
     <script src="promo-daily-benefit-cart.js?v=3"></script>
     <script src="whatsapp-message-format.js?v=4"></script>
-    <script src="selection-summary.js?v=2"></script>
+    <script src="selection-summary.js?v=3"></script>
     <script src="product-carousel-final.js?v=1"></script>
     <script src="hero-headline-slider.js?v=2"></script>
     <script src="store-location-map.js?v=4"></script>
