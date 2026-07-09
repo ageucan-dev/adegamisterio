@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="product-carousel-final.css?v=4" />
     <link rel="stylesheet" href="product-image-fit-fix.css?v=3" />
     <link rel="stylesheet" href="hero-headline-slider.css?v=3" />
-    <link rel="stylesheet" href="option-card-spacing.css?v=1" />
+    <link rel="stylesheet" href="option-card-spacing.css?v=2" />
     <link rel="stylesheet" href="product-price-inline.css?v=1" />
     <link rel="stylesheet" href="customer-access-gate.css?v=6" />
     <link rel="stylesheet" href="customer-profile-menu.css?v=3" />
@@ -201,6 +201,21 @@
           });
         }
 
+        function keepSingleBaseOpen(product) {
+          const baseOptions = document.querySelector('#baseOptions');
+          const fieldset = baseOptions && baseOptions.closest('fieldset');
+          if (!fieldset || !product) return;
+          const isSingleBase = Array.isArray(product.bases) && product.bases.length === 1;
+          fieldset.classList.toggle('base-single-open', isSingleBase);
+          if (!isSingleBase) return;
+          fieldset.classList.remove('is-collapsed');
+          const summary = fieldset.querySelector('.step-summary');
+          if (summary) {
+            summary.textContent = '';
+            summary.hidden = true;
+          }
+        }
+
         function renderProduct(productId) {
           patchGoldProduct();
           const product = window.products && window.products[productId];
@@ -246,6 +261,7 @@
           if (iceOptions) iceOptions.innerHTML = product.ices.map((item) => optionMarkup('ice', item, product.ices)).join('');
 
           clearOldSummaries();
+          keepSingleBaseOpen(product);
           if (builder) builder.classList.remove('is-hidden');
         }
 
@@ -256,6 +272,11 @@
           if (!button) return;
           const productId = button.dataset.product;
           window.setTimeout(() => renderProduct(productId), 80);
+        }, true);
+
+        document.addEventListener('change', () => {
+          const product = window.state && window.products && window.products[window.state.selectedProductId];
+          window.setTimeout(() => keepSingleBaseOpen(product), 0);
         }, true);
       })();
     </script>
