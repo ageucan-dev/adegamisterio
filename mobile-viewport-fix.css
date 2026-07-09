@@ -49,6 +49,41 @@ body.mobile-viewport-reset #app {
   overflow-x: hidden !important;
 }
 
+.hero,
+.hero.section-card {
+  isolation: isolate !important;
+  overflow: hidden !important;
+  background: #ffffff !important;
+}
+
+.hero::before,
+.hero::after,
+.hero.section-card::before,
+.hero.section-card::after {
+  content: none !important;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  opacity: 0 !important;
+}
+
+.hero .hero-actions,
+.hero .btn,
+.hero .btn-primary,
+.hero .btn-ghost {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.hero .btn-ghost {
+  background: #ffffff !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
 @supports (-webkit-touch-callout: none) {
   input,
   textarea,
