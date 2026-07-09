@@ -1,0 +1,58 @@
+html,
+body {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+body {
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+}
+
+.app-shell {
+  width: min(100%, 540px) !important;
+  max-width: 100vw !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  overflow-x: hidden !important;
+}
+
+.customer-gate-overlay,
+.customer-gate-box {
+  max-width: 100vw !important;
+  transform: translateZ(0) !important;
+}
+
+.customer-register-form input,
+.customer-gate-box input,
+.customer-gate-box textarea,
+.customer-gate-box select,
+.customer-gate-box button,
+.customer-gate-primary,
+.customer-gate-secondary,
+.customer-gate-danger {
+  font-size: 16px !important;
+}
+
+.customer-terms-label,
+.customer-terms-label span,
+.customer-gate-user,
+.customer-gate-status {
+  font-size: 14px !important;
+}
+
+body.mobile-viewport-reset,
+body.mobile-viewport-reset #app {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+@supports (-webkit-touch-callout: none) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
