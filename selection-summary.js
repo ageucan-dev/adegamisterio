@@ -102,8 +102,18 @@
     .custom-form fieldset.is-collapsed legend {
       margin-bottom: 10px !important;
     }
+
+    .custom-form.is-selecting-option .option-card,
+    .custom-form.is-selecting-option fieldset,
+    .custom-form.is-selecting-option .option-grid {
+      transition: none !important;
+      animation: none !important;
+    }
   `;
   document.head.appendChild(style);
+
+  let rafId = 0;
+  let selectionTimer = 0;
 
   function selectedLabel(input) {
     const card = input.closest(".option-card");
@@ -124,6 +134,14 @@
     return summary;
   }
 
+  function updateCheckedClasses(fieldset) {
+    if (!fieldset) return;
+    fieldset.querySelectorAll(".option-card").forEach((card) => {
+      const input = card.querySelector('input[type="radio"]');
+      card.classList.toggle("is-checked", !!input?.checked);
+    });
+  }
+
   function updateFieldsetSummary(fieldset) {
     const checked = fieldset.querySelector('input[type="radio"]:checked');
     const summary = ensureSummary(fieldset);
@@ -132,6 +150,22 @@
     const nextText = checked ? selectedLabel(checked) : "";
     if (summary.textContent !== nextText) summary.textContent = nextText;
     summary.hidden = !checked;
+    updateCheckedClasses(fieldset);
+  }
+
+  function queueFieldsetUpdate(fieldset) {
+    if (!fieldset) return;
+    window.cancelAnimationFrame(rafId);
+    rafId = window.requestAnimationFrame(() => updateFieldsetSummary(fieldset));
+  }
+
+  function markSelecting(form) {
+    if (!form) return;
+    form.classList.add("is-selecting-option");
+    window.clearTimeout(selectionTimer);
+    selectionTimer = window.setTimeout(() => {
+      form.classList.remove("is-selecting-option");
+    }, 180);
   }
 
   function syncAllSummaries() {
@@ -224,9 +258,9 @@
   document.addEventListener("change", (event) => {
     if (!event.target.matches('.custom-form input[type="radio"]')) return;
     const fieldset = event.target.closest("fieldset");
-    if (!fieldset) return;
-
-    updateFieldsetSummary(fieldset);
+    const form = event.target.closest(".custom-form");
+    markSelecting(form);
+    queueFieldsetUpdate(fieldset);
   });
 
   document.addEventListener("click", (event) => {
