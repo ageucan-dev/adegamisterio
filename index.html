@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="product-carousel-final.css?v=4" />
     <link rel="stylesheet" href="product-image-fit-fix.css?v=3" />
     <link rel="stylesheet" href="hero-headline-slider.css?v=3" />
-    <link rel="stylesheet" href="option-card-spacing.css?v=2" />
+    <link rel="stylesheet" href="option-card-spacing.css?v=3" />
     <link rel="stylesheet" href="product-price-inline.css?v=1" />
     <link rel="stylesheet" href="customer-access-gate.css?v=6" />
     <link rel="stylesheet" href="customer-profile-menu.css?v=3" />
@@ -191,6 +191,23 @@
           return `<label class="${cardClass}"><input type="radio" name="${groupName}" value="${item.id}" /><span>${item.label}</span>${priceLabel}</label>`;
         }
 
+        function ensureSummary(fieldset) {
+          const legend = fieldset && fieldset.querySelector('legend');
+          if (!legend) return null;
+          let summary = legend.querySelector('.step-summary');
+          if (!summary) {
+            summary = document.createElement('small');
+            summary.className = 'step-summary';
+            legend.appendChild(summary);
+          }
+          return summary;
+        }
+
+        function selectedBaseLabel() {
+          const checked = document.querySelector('#baseOptions input[name="base"]:checked');
+          return checked?.closest('.option-card')?.querySelector('span')?.textContent?.trim() || '';
+        }
+
         function clearOldSummaries() {
           document.querySelectorAll('.custom-form legend .step-summary').forEach((summary) => {
             summary.textContent = '';
@@ -198,6 +215,7 @@
           });
           document.querySelectorAll('.custom-form fieldset').forEach((fieldset) => {
             fieldset.classList.remove('is-collapsed');
+            fieldset.classList.remove('base-single-selected');
           });
         }
 
@@ -208,12 +226,29 @@
           const isSingleBase = Array.isArray(product.bases) && product.bases.length === 1;
           fieldset.classList.toggle('base-single-open', isSingleBase);
           if (!isSingleBase) return;
+          fieldset.classList.remove('base-single-selected');
           fieldset.classList.remove('is-collapsed');
-          const summary = fieldset.querySelector('.step-summary');
+          const summary = ensureSummary(fieldset);
           if (summary) {
             summary.textContent = '';
             summary.hidden = true;
           }
+        }
+
+        function collapseSingleBaseAfterChoice() {
+          const baseOptions = document.querySelector('#baseOptions');
+          const fieldset = baseOptions && baseOptions.closest('fieldset');
+          if (!fieldset || !fieldset.classList.contains('base-single-open')) return;
+          const label = selectedBaseLabel();
+          if (!label) return;
+          const summary = ensureSummary(fieldset);
+          if (summary) {
+            summary.textContent = label;
+            summary.hidden = false;
+          }
+          fieldset.classList.remove('base-single-open');
+          fieldset.classList.add('base-single-selected');
+          fieldset.classList.add('is-collapsed');
         }
 
         function renderProduct(productId) {
@@ -268,13 +303,20 @@
         patchGoldProduct();
 
         document.addEventListener('click', (event) => {
+          const baseClick = event.target.closest('#baseOptions .option-card, #baseOptions input[name="base"]');
+          if (baseClick) {
+            window.setTimeout(collapseSingleBaseAfterChoice, 40);
+            return;
+          }
+
           const button = event.target.closest('.choose-product');
           if (!button) return;
           const productId = button.dataset.product;
           window.setTimeout(() => renderProduct(productId), 80);
         }, true);
 
-        document.addEventListener('change', () => {
+        document.addEventListener('change', (event) => {
+          if (event.target && event.target.matches('#baseOptions input[name="base"]')) return;
           const product = window.state && window.products && window.products[window.state.selectedProductId];
           window.setTimeout(() => keepSingleBaseOpen(product), 0);
         }, true);
