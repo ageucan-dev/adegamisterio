@@ -33,3 +33,39 @@
   font-weight: 800 !important;
   line-height: 1.1 !important;
 }
+
+.custom-form fieldset.base-single-open {
+  display: block !important;
+}
+
+.custom-form fieldset.base-single-open legend {
+  margin-bottom: 10px !important;
+}
+
+.custom-form fieldset.base-single-open .option-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.custom-form fieldset.base-single-open .option-card {
+  display: grid !important;
+  min-height: 64px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.custom-form fieldset.base-single-open .step-summary,
+.custom-form fieldset.base-single-open .fieldset-toggle,
+.custom-form fieldset.base-single-open .accordion-toggle,
+.custom-form fieldset.base-single-open [data-toggle],
+.custom-form fieldset.base-single-open legend button {
+  display: none !important;
+}
