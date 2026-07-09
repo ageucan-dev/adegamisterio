@@ -69,3 +69,11 @@
 .custom-form fieldset.base-single-open legend button {
   display: none !important;
 }
+
+.custom-form fieldset.base-single-selected .step-summary {
+  display: block !important;
+}
+
+.custom-form fieldset.base-single-selected .option-grid {
+  display: none !important;
+}
