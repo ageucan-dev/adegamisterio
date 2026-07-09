@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="product-carousel-final.css?v=4" />
     <link rel="stylesheet" href="product-image-fit-fix.css?v=3" />
     <link rel="stylesheet" href="hero-headline-slider.css?v=3" />
-    <link rel="stylesheet" href="option-card-spacing.css?v=3" />
+    <link rel="stylesheet" href="option-card-spacing.css?v=4" />
     <link rel="stylesheet" href="product-price-inline.css?v=1" />
     <link rel="stylesheet" href="customer-access-gate.css?v=6" />
     <link rel="stylesheet" href="customer-profile-menu.css?v=3" />
@@ -219,13 +219,21 @@
           });
         }
 
-        function keepSingleBaseOpen(product) {
+        function keepSingleBaseOpen(product, forceOpen = false) {
           const baseOptions = document.querySelector('#baseOptions');
           const fieldset = baseOptions && baseOptions.closest('fieldset');
           if (!fieldset || !product) return;
           const isSingleBase = Array.isArray(product.bases) && product.bases.length === 1;
-          fieldset.classList.toggle('base-single-open', isSingleBase);
-          if (!isSingleBase) return;
+          if (!isSingleBase) {
+            fieldset.classList.remove('base-single-open');
+            fieldset.classList.remove('base-single-selected');
+            return;
+          }
+          if (fieldset.classList.contains('base-single-selected') && !forceOpen) {
+            fieldset.classList.remove('base-single-open');
+            return;
+          }
+          fieldset.classList.add('base-single-open');
           fieldset.classList.remove('base-single-selected');
           fieldset.classList.remove('is-collapsed');
           const summary = ensureSummary(fieldset);
@@ -249,6 +257,23 @@
           fieldset.classList.remove('base-single-open');
           fieldset.classList.add('base-single-selected');
           fieldset.classList.add('is-collapsed');
+        }
+
+        function openSingleBaseFromPlus(event) {
+          const baseOptions = document.querySelector('#baseOptions');
+          const fieldset = baseOptions && baseOptions.closest('fieldset');
+          if (!fieldset || !fieldset.classList.contains('base-single-selected')) return false;
+          const legend = fieldset.querySelector('legend');
+          if (!legend || !legend.contains(event.target)) return false;
+          fieldset.classList.remove('base-single-selected');
+          fieldset.classList.remove('is-collapsed');
+          fieldset.classList.add('base-single-open');
+          const summary = ensureSummary(fieldset);
+          if (summary) {
+            summary.textContent = '';
+            summary.hidden = true;
+          }
+          return true;
         }
 
         function renderProduct(productId) {
@@ -296,13 +321,15 @@
           if (iceOptions) iceOptions.innerHTML = product.ices.map((item) => optionMarkup('ice', item, product.ices)).join('');
 
           clearOldSummaries();
-          keepSingleBaseOpen(product);
+          keepSingleBaseOpen(product, true);
           if (builder) builder.classList.remove('is-hidden');
         }
 
         patchGoldProduct();
 
         document.addEventListener('click', (event) => {
+          if (openSingleBaseFromPlus(event)) return;
+
           const baseClick = event.target.closest('#baseOptions .option-card, #baseOptions input[name="base"]');
           if (baseClick) {
             window.setTimeout(collapseSingleBaseAfterChoice, 40);
@@ -317,8 +344,13 @@
 
         document.addEventListener('change', (event) => {
           if (event.target && event.target.matches('#baseOptions input[name="base"]')) return;
-          const product = window.state && window.products && window.products[window.state.selectedProductId];
-          window.setTimeout(() => keepSingleBaseOpen(product), 0);
+          const baseOptions = document.querySelector('#baseOptions');
+          const fieldset = baseOptions && baseOptions.closest('fieldset');
+          if (!fieldset || !fieldset.classList.contains('base-single-selected')) return;
+          window.setTimeout(() => {
+            fieldset.classList.remove('base-single-open');
+            fieldset.classList.add('base-single-selected');
+          }, 0);
         }, true);
       })();
     </script>
