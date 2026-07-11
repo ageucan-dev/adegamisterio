@@ -2,48 +2,6 @@
   const DEFAULT_OFFSET = 92;
   const PRODUCT_OFFSET = 8;
 
-  function installPersonalizationStyles() {
-    if (document.querySelector("#copao-auto-collapse-style")) return;
-
-    const style = document.createElement("style");
-    style.id = "copao-auto-collapse-style";
-    style.textContent = `
-      .custom-form fieldset.is-collapsed > *:not(legend) {
-        display: none !important;
-      }
-
-      .custom-form fieldset.is-collapsed legend {
-        cursor: pointer !important;
-      }
-
-      .custom-form fieldset.is-collapsed .step-toggle {
-        display: inline-flex !important;
-      }
-
-      button,
-      a,
-      label,
-      input,
-      textarea,
-      select,
-      [role="button"],
-      .btn,
-      .choose-product,
-      .product-carousel-dot,
-      .item-action,
-      .bottom-bar a {
-        pointer-events: auto !important;
-        touch-action: manipulation !important;
-      }
-
-      #inicio.hero::before,
-      #inicio.hero::after {
-        pointer-events: none !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
   function absoluteTop(element) {
     return element.getBoundingClientRect().top + window.scrollY;
   }
@@ -133,7 +91,6 @@
   function installPersonalizationAutoCollapse() {
     if (window.__copaoAutoCollapseReady) return;
     window.__copaoAutoCollapseReady = true;
-    installPersonalizationStyles();
     installInteractionSafety();
 
     document.addEventListener("change", (event) => {
