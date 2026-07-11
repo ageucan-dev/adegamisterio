@@ -31,9 +31,35 @@
 }
 
 .topbar {
-  position: sticky !important;
-  top: 0 !important;
+  position: fixed !important;
+  top: env(safe-area-inset-top, 0px) !important;
+  left: 50% !important;
+  width: min(100%, 540px) !important;
+  min-height: 84px !important;
+  padding: 5px 14px 7px !important;
+  transform: translateX(-50%) !important;
   z-index: 8000 !important;
+  background: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  pointer-events: none !important;
+}
+
+.logo-wrap {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+.logo-wrap,
+.logo-symbol,
+.logo-img {
+  background: transparent !important;
+}
+
+.logo-wrap * {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
 }
 
 button,
@@ -48,12 +74,6 @@ select,
 .product-carousel-dot,
 .item-action,
 .bottom-bar a {
-  pointer-events: auto !important;
-  touch-action: manipulation !important;
-}
-
-.logo-wrap,
-.logo-wrap * {
   pointer-events: auto !important;
   touch-action: manipulation !important;
 }
