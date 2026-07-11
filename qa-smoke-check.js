@@ -13,6 +13,10 @@
     return document.querySelectorAll(selector).length;
   }
 
+  function textIncludes(value) {
+    return document.body?.textContent?.includes(value);
+  }
+
   add("Hero existe", exists("#inicio"));
   add("Produtos existe", exists("#produto"));
   add("Personalização existe", exists("#personalizacao"));
@@ -23,6 +27,11 @@
   add("Botão Ver carrinho da hero aponta para Carrinho", exists('#inicio a[href="#carrinho"]'));
   add("Existem botões Montar copo dos produtos", count(".choose-product") >= 2, `${count(".choose-product")} encontrados`);
   add("Existem dots do carrossel", count("[data-carousel-dot]") >= 2, `${count("[data-carousel-dot]")} encontrados`);
+
+  add("Nome Ether Mix aparece", textIncludes("Ether Mix"));
+  add("Nome Ballan Mix aparece", textIncludes("Ballan Mix"));
+  add("Nome antigo Ethernity Mix não aparece", !textIncludes("Ethernity Mix"));
+  add("Nome antigo Gold Mix não aparece", !textIncludes("Gold Mix"));
 
   add("Campo tamanho existe", exists("#sizeOptions"));
   add("Campo base existe", exists("#baseOptions"));
@@ -41,6 +50,8 @@
   add("Função renderCart disponível", typeof window.renderCart === "function");
   add("Estado global disponível", !!window.state && Array.isArray(window.state.cart));
   add("Catálogo global disponível", !!window.products && !!window.products["ethernity-mix"] && !!window.products["mix-gold"]);
+  add("Catálogo usa Ether Mix", window.products?.["ethernity-mix"]?.name === "Ether Mix");
+  add("Catálogo usa Ballan Mix", window.products?.["mix-gold"]?.name === "Ballan Mix");
 
   const failed = checks.filter((item) => !item.passed);
   const passed = checks.filter((item) => item.passed);
