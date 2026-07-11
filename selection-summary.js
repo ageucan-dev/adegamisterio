@@ -13,23 +13,6 @@
       contain: layout style !important;
     }
 
-    .more-options-notice {
-      margin: -2px 0 22px !important;
-      padding: 0 !important;
-      border: 0 !important;
-      border-radius: 0 !important;
-      background: transparent !important;
-      color: #0b1d3a !important;
-      font-size: .98rem !important;
-      font-weight: 900 !important;
-      text-align: center !important;
-      box-shadow: none !important;
-    }
-
-    .more-options-notice.is-hidden {
-      display: none !important;
-    }
-
     .cart-price {
       display: inline-flex !important;
       flex-direction: column !important;
@@ -240,24 +223,6 @@
     document.querySelector("#sendWhatsApp")?.click();
   }
 
-  function installMoreOptionsNotice() {
-    const product = document.querySelector("#produto");
-    if (!product || document.querySelector(".more-options-notice")) return;
-
-    const notice = document.createElement("div");
-    notice.className = "more-options-notice";
-    notice.textContent = "Mais opções em breve";
-    product.insertAdjacentElement("afterend", notice);
-  }
-
-  function hideMoreOptionsNotice() {
-    document.querySelector(".more-options-notice")?.classList.add("is-hidden");
-  }
-
-  function showMoreOptionsNotice() {
-    document.querySelector(".more-options-notice")?.classList.remove("is-hidden");
-  }
-
   function installBuilderClose() {
     const builder = document.querySelector("#personalizacao");
     if (!builder || builder.querySelector(".builder-close")) return;
@@ -270,7 +235,6 @@
 
     close.addEventListener("click", () => {
       builder.classList.add("is-hidden");
-      showMoreOptionsNotice();
       document.querySelector("#produto")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
@@ -297,16 +261,7 @@
   }, true);
 
   document.addEventListener("click", (event) => {
-    if (!event.target.matches("#showBuilder, #addToCart, #buyNow, #clearCart")) return;
-
-    if (event.target.matches("#showBuilder")) {
-      hideMoreOptionsNotice();
-      setTimeout(() => {
-        installBuilderClose();
-        scrollBuilderTop(80);
-      }, 80);
-      return;
-    }
+    if (!event.target.matches("#addToCart, #buyNow, #clearCart")) return;
 
     setTimeout(() => {
       if (event.target.matches("#addToCart")) {
@@ -317,13 +272,11 @@
   }, true);
 
   window.addEventListener("load", () => {
-    installMoreOptionsNotice();
     installBuilderClose();
     installBottomFinishFlow();
     window.requestAnimationFrame(syncAllSummaries);
   });
 
-  installMoreOptionsNotice();
   installBuilderClose();
   installBottomFinishFlow();
   window.requestAnimationFrame(syncAllSummaries);
