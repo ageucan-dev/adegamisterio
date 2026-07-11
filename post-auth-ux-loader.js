@@ -1,8 +1,4 @@
 (() => {
-  let loaded = false;
-  let attempts = 0;
-  const startedAt = Date.now();
-
   function installPersonalizationStyles() {
     if (document.querySelector("#copao-auto-collapse-style")) return;
 
@@ -52,67 +48,9 @@
     }, true);
   }
 
-  function loadStyle(href) {
-    return new Promise((resolve) => {
-      if (document.querySelector(`link[href^="${href}"]`)) return resolve();
-
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = `${href}?v=8`;
-      link.onload = resolve;
-      link.onerror = resolve;
-      document.head.appendChild(link);
-    });
-  }
-
-  function loadScript(src) {
-    return new Promise((resolve, reject) => {
-      if (document.querySelector(`script[src^="${src}"]`)) return resolve();
-
-      const script = document.createElement("script");
-      script.src = `${src}?v=8`;
-      script.onload = resolve;
-      script.onerror = reject;
-      document.body.appendChild(script);
-    });
-  }
-
-  function accessIsOpen() {
-    return document.querySelector(".customer-gate-overlay") ||
-      document.body.classList.contains("access-gate-loading");
-  }
-
-  async function tryLoad() {
-    attempts += 1;
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", installPersonalizationAutoCollapse, { once: true });
+  } else {
     installPersonalizationAutoCollapse();
-    installPersonalizationStyles();
-
-    if (loaded) return true;
-    if (accessIsOpen()) return false;
-
-    const waitedLongEnoughForAccessGate = Date.now() - startedAt > 2500;
-    if (!waitedLongEnoughForAccessGate) return false;
-
-    loaded = true;
-    try {
-      await loadStyle("ux-upgrades.css");
-      await loadStyle("promo-wheel-catraca.css");
-      await loadScript("ux-upgrades.js");
-      await loadScript("promo-wheel-catraca.js");
-    } catch (error) {
-      loaded = false;
-    }
-
-    return true;
   }
-
-  window.addEventListener("copao:customer-approved", tryLoad);
-  window.addEventListener("load", () => setTimeout(tryLoad, 2600));
-  document.addEventListener("DOMContentLoaded", installPersonalizationAutoCollapse, { once: true });
-  installPersonalizationAutoCollapse();
-
-  const timer = setInterval(async () => {
-    const done = await tryLoad();
-    if (done || attempts >= 1800) clearInterval(timer);
-  }, 1000);
 })();
