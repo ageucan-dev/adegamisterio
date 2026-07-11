@@ -17,19 +17,6 @@
     `;
   }
 
-  function loadLegalAgeGate() {
-    if (document.querySelector('script[data-legal-age-gate="true"]')) return;
-    const script = document.createElement("script");
-    script.src = "legal-age-gate.js?v=1";
-    script.defer = true;
-    script.dataset.legalAgeGate = "true";
-    document.body.appendChild(script);
-  }
-
-  window.addEventListener("load", () => {
-    installHeroHeadlineSlider();
-    loadLegalAgeGate();
-  });
-
+  window.addEventListener("load", installHeroHeadlineSlider);
   installHeroHeadlineSlider();
 })();
