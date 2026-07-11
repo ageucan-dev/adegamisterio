@@ -73,50 +73,6 @@
     document.head.appendChild(style);
   }
 
-  function installCompactOptionStyles() {
-    if (document.querySelector("#compact-option-card-style")) return;
-
-    const style = document.createElement("style");
-    style.id = "compact-option-card-style";
-    style.textContent = `
-      .option-grid {
-        align-items: start !important;
-      }
-
-      .option-card.option-card--compact {
-        align-self: start !important;
-        min-height: 68px !important;
-        padding-top: 13px !important;
-        padding-bottom: 13px !important;
-        align-content: start !important;
-        justify-content: normal !important;
-        justify-items: start !important;
-        gap: 4px !important;
-        text-align: left !important;
-      }
-
-      .option-card.option-card--compact span {
-        margin: 0 !important;
-        text-align: left !important;
-      }
-
-      .option-additional {
-        margin-top: 4px !important;
-        color: #0b1d3a !important;
-        font-size: 0.95rem !important;
-        font-weight: 700 !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  function markCompactOptionCards() {
-    document.querySelectorAll(".option-card").forEach((card) => {
-      const hasVisiblePrice = card.querySelector("small");
-      card.classList.toggle("option-card--compact", !hasVisiblePrice);
-    });
-  }
-
   function loadMapIframe() {
     const mapWrap = document.querySelector(".location-map-wrap");
     if (!mapWrap || mapWrap.querySelector("iframe")) return;
@@ -153,11 +109,7 @@
 
   function init() {
     installLocationStyles();
-    installCompactOptionStyles();
     installLocationMap();
-    markCompactOptionCards();
-    window.setTimeout(markCompactOptionCards, 300);
-    window.setTimeout(markCompactOptionCards, 900);
   }
 
   if (document.readyState === "loading") {
