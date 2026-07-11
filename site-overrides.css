@@ -1,41 +1,23 @@
 .topbar {
-  top: -18px;
-  min-height: 100px;
-  padding: 0 0 10px;
-  transition: min-height 0.22s ease, padding 0.22s ease, background 0.22s ease, backdrop-filter 0.22s ease, top 0.22s ease;
+  top: 0 !important;
+  min-height: 84px !important;
+  padding: 5px 0 7px !important;
 }
 
 .logo-symbol {
-  height: 76px;
-  transition: width 0.22s ease, height 0.22s ease, transform 0.22s ease, filter 0.22s ease;
-}
-
-.logo-wrap {
-  transform: translateY(-1px);
-  transition: transform 0.22s ease, opacity 0.22s ease;
+  height: 56px !important;
+  width: min(74vw, 300px) !important;
 }
 
 .logo-img {
-  transition: transform 0.22s ease, filter 0.22s ease;
+  max-height: 56px !important;
+  width: auto !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
 }
 
-.topbar.logo-is-scrolled {
-  top: -24px;
-  min-height: 72px;
-  padding: 0 0 6px;
-  background: linear-gradient(180deg, rgba(9, 6, 15, 0.98), rgba(9, 6, 15, 0.82), transparent) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-}
-
-.topbar.logo-is-scrolled .logo-symbol {
-  height: 54px;
-  transform: translateY(-2px) scale(0.92);
-}
-
-.topbar.logo-is-scrolled .logo-img {
-  transform: scale(0.98);
-  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.36));
+.logo-wrap {
+  transform: translateY(0) !important;
 }
 
 .product-copy .eyebrow {
