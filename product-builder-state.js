@@ -1,5 +1,6 @@
 (() => {
   const BASE_SELECTOR = '#baseOptions';
+  const BUILDER_SELECTOR = '#personalizacao';
 
   function baseFieldset() {
     return document.querySelector(BASE_SELECTOR)?.closest('fieldset') || null;
@@ -8,6 +9,24 @@
   function currentProduct() {
     const productId = window.state?.selectedProductId;
     return productId && window.products ? window.products[productId] : null;
+  }
+
+  function builderSection() {
+    return document.querySelector(BUILDER_SELECTOR);
+  }
+
+  function smoothScrollToBuilder(delay = 180) {
+    window.setTimeout(() => {
+      const builder = builderSection();
+      if (!builder || builder.classList.contains('is-hidden')) return;
+
+      const headerOffset = 92;
+      const targetTop = builder.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({
+        top: Math.max(targetTop, 0),
+        behavior: 'smooth'
+      });
+    }, delay);
   }
 
   function ensureSummary(fieldset) {
@@ -109,6 +128,8 @@
     if (!productButton) return;
 
     window.setTimeout(normalizeBaseStateAfterProductOpen, 160);
+    smoothScrollToBuilder(220);
+    smoothScrollToBuilder(420);
   }, true);
 
   document.addEventListener('change', (event) => {
