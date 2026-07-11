@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -20,7 +20,6 @@ provider.setCustomParameters({ prompt: "select_account" });
 
 let overlay;
 let activeUser;
-let redirectChecked = false;
 
 function lockPage() {
   document.body.classList.add("access-gate-loading");
@@ -31,13 +30,14 @@ function unlockPage() {
   if (overlay) overlay.remove();
 }
 
-function box(html) {
+function box(html, className = "") {
   if (!overlay) {
     overlay = document.createElement("div");
     overlay.className = "customer-gate-overlay";
     document.body.appendChild(overlay);
   }
-  overlay.innerHTML = `<div class="customer-gate-box">${html}</div>`;
+
+  overlay.innerHTML = `<div class="customer-gate-box ${className}">${html}</div>`;
 }
 
 function status(text) {
@@ -62,8 +62,8 @@ function ageFrom(dateValue) {
   const birth = new Date(`${dateValue}T00:00:00`);
   const today = new Date();
   let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age -= 1;
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) age -= 1;
   return age;
 }
 
@@ -75,6 +75,8 @@ function authHelpMessage(error) {
   if (!error?.code) return "Não foi possível entrar. Tente novamente.";
   if (error.code.includes("unauthorized-domain")) return "Domínio não autorizado no Firebase. Adicione este domínio em Authentication > Settings > Authorized domains.";
   if (error.code.includes("operation-not-allowed")) return "Login com Google ainda não está ativado no Firebase Authentication.";
+  if (error.code.includes("popup-blocked")) return "O navegador bloqueou o pop-up. Libere pop-ups para este site e tente novamente.";
+  if (error.code.includes("popup-closed-by-user")) return "Login cancelado. Toque novamente para continuar.";
   if (error.code.includes("network")) return "Falha de conexão. Confira a internet e tente novamente.";
   return `Erro no login: ${error.code}`;
 }
@@ -84,16 +86,18 @@ function showLogin() {
   box(`
     <p class="customer-gate-kicker">Acesso seguro</p>
     <h2>Entre para continuar</h2>
-    <p>Use sua conta Google para acessar o Copão na Mão.</p>
+    <p class="customer-login-description">Faça login para acessar o Copão na Mão.</p>
     <div class="customer-gate-actions">
       <button id="googleLogin" class="customer-gate-primary customer-google-button" type="button">${googleIcon()}<span>Entrar com Google</span></button>
       <p class="customer-gate-status"></p>
     </div>
-  `);
+  `, "customer-login-box");
+
   overlay.querySelector("#googleLogin").onclick = async () => {
     try {
-      status("Redirecionando para o Google...");
-      await signInWithRedirect(auth, provider);
+      status("Abrindo login do Google...");
+      await signInWithPopup(auth, provider);
+      status("Login realizado. Validando cadastro...");
     } catch (error) {
       console.error(error);
       status(authHelpMessage(error));
@@ -109,6 +113,7 @@ function showDenied() {
     <p>Este acesso não atende aos critérios necessários para navegar neste site.</p>
     <button id="logoutGate" class="customer-gate-danger" type="button">Sair</button>
   `);
+
   overlay.querySelector("#logoutGate").onclick = async () => {
     await signOut(auth);
     showLogin();
@@ -121,7 +126,7 @@ function showRegister(user) {
     <p class="customer-gate-kicker">Cadastro obrigatório</p>
     <h2>Complete seu cadastro</h2>
     <p>Preencha seus dados para liberar o acesso.</p>
-    <div class="customer-gate-user">Conta: ${user.email || "Google"}</div>
+    <div class="customer-gate-user">E-mail: ${user.email || "Google"}</div>
     <form id="gateForm" class="customer-register-form">
       <label>Nome completo<input id="gateName" type="text" value="${user.displayName || ""}" required></label>
       <label>Telefone<input id="gatePhone" type="tel" inputmode="numeric" required></label>
@@ -132,7 +137,7 @@ function showRegister(user) {
       <button id="changeAccount" class="customer-gate-secondary" type="button">Trocar conta</button>
       <p class="customer-gate-status"></p>
     </form>
-  `);
+  `, "customer-register-box");
 
   overlay.querySelector("#changeAccount").onclick = async () => {
     await signOut(auth);
@@ -141,6 +146,7 @@ function showRegister(user) {
 
   overlay.querySelector("#gateForm").onsubmit = async (event) => {
     event.preventDefault();
+
     const name = overlay.querySelector("#gateName").value.trim();
     const phone = onlyNumbers(overlay.querySelector("#gatePhone").value, 13);
     const cpf = onlyNumbers(overlay.querySelector("#gateCpf").value, 11);
@@ -155,6 +161,7 @@ function showRegister(user) {
     if (!terms) return status("Confirme os dados antes de continuar.");
 
     const approved = age >= 18;
+
     try {
       status("Salvando cadastro...");
       await setDoc(doc(db, "customers", user.uid), {
@@ -186,13 +193,16 @@ function showRegister(user) {
 async function validateUser(user) {
   activeUser = user;
   if (!user) return showLogin();
+
   try {
     lockPage();
     const snap = await getDoc(doc(db, "customers", user.uid));
     if (!snap.exists()) return showRegister(user);
+
     const data = snap.data();
     if (data.status === "blocked" || data.approved === false) return showDenied();
     if (data.status === "approved" && data.approved === true) return unlockPage();
+
     return showRegister(user);
   } catch (error) {
     console.error(error);
@@ -207,24 +217,5 @@ async function validateUser(user) {
   }
 }
 
-async function checkRedirect() {
-  try {
-    await getRedirectResult(auth);
-  } catch (error) {
-    console.error(error);
-    showLogin();
-    status(authHelpMessage(error));
-  } finally {
-    redirectChecked = true;
-  }
-}
-
 lockPage();
-checkRedirect();
-onAuthStateChanged(auth, (user) => {
-  if (!redirectChecked) {
-    setTimeout(() => validateUser(user), 250);
-    return;
-  }
-  validateUser(user);
-});
+onAuthStateChanged(auth, validateUser);
