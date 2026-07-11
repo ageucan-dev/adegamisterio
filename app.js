@@ -29,7 +29,7 @@ const sharedIces = [
 const products = {
   "ethernity-mix": {
     id: "ethernity-mix",
-    name: "Ethernity Mix",
+    name: "Ether Mix",
     description: "Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.",
     sizes: sharedSizes,
     bases: [
@@ -46,11 +46,11 @@ const products = {
 
   "mix-gold": {
     id: "mix-gold",
-    name: "Gold Mix",
+    name: "Ballan Mix",
     description: "Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.",
     sizes: sharedSizes,
     bases: [
-      { id: "mix-gold", label: "Gold Mix", price: 11.9 }
+      { id: "mix-gold", label: "Ballan Mix", price: 11.9 }
     ],
     energies: sharedEnergies,
     ices: sharedIces
