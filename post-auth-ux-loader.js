@@ -1,5 +1,6 @@
 (() => {
-  const HEADER_OFFSET = 92;
+  const DEFAULT_OFFSET = 92;
+  const PRODUCT_OFFSET = 8;
 
   function installPersonalizationStyles() {
     if (document.querySelector("#copao-auto-collapse-style")) return;
@@ -43,6 +44,16 @@
     document.head.appendChild(style);
   }
 
+  function absoluteTop(element) {
+    return element.getBoundingClientRect().top + window.scrollY;
+  }
+
+  function bottomBarSpace() {
+    const bar = document.querySelector(".bottom-bar");
+    if (!bar) return 24;
+    return Math.ceil(bar.getBoundingClientRect().height) + 24;
+  }
+
   function scrollTargetFromTrigger(trigger) {
     if (!trigger) return null;
 
@@ -55,11 +66,30 @@
     return document.getElementById(href.slice(1));
   }
 
+  function productPreviewScrollTop(target) {
+    const targetTop = absoluteTop(target) - PRODUCT_OFFSET;
+    const activeSlide = target.querySelector(".product-slide.is-active") || target.querySelector(".product-slide");
+    const buildButton = activeSlide?.querySelector(".product-build-btn");
+
+    if (!buildButton) return Math.max(targetTop, 0);
+
+    const buttonBottom = buildButton.getBoundingClientRect().bottom + window.scrollY;
+    const visibleBottom = window.innerHeight - bottomBarSpace();
+    const minScrollToShowButton = buttonBottom - visibleBottom;
+
+    if (minScrollToShowButton <= targetTop) return Math.max(targetTop, 0);
+    return Math.max(minScrollToShowButton, 0);
+  }
+
+  function regularScrollTop(target) {
+    return Math.max(absoluteTop(target) - DEFAULT_OFFSET, 0);
+  }
+
   function smoothScrollTo(target, delay = 0) {
     if (!target) return;
 
     window.setTimeout(() => {
-      const targetTop = target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+      const targetTop = target.id === "produto" ? productPreviewScrollTop(target) : regularScrollTop(target);
       window.scrollTo({
         top: Math.max(targetTop, 0),
         behavior: "smooth"
