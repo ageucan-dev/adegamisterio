@@ -46,11 +46,11 @@ const products = {
 
   "mix-gold": {
     id: "mix-gold",
-    name: "Mix Gold",
-    description: "Base fixa Mix Gold com a mesma montagem rápida: escolha tamanho, intensidade, energético, gelo e quantidade.",
+    name: "Gold Mix",
+    description: "Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.",
     sizes: sharedSizes,
     bases: [
-      { id: "mix-gold", label: "Mix Gold", price: 11.9 }
+      { id: "mix-gold", label: "Gold Mix", price: 11.9 }
     ],
     energies: sharedEnergies,
     ices: sharedIces
@@ -301,7 +301,7 @@ function resetCustomization() {
     input.checked = false;
   });
   document.querySelectorAll(".custom-form fieldset").forEach((fieldset) => {
-    fieldset.classList.remove("is-collapsed");
+    fieldset.classList.remove("is-collapsed", "base-single-open", "base-single-selected");
   });
   updateLiveTotal();
 }
