@@ -46,6 +46,12 @@ select,
   touch-action: manipulation !important;
 }
 
+.logo-wrap,
+.logo-wrap * {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
 .promo-benefit-row span,
 .promo-benefit-row strong {
   color: #ff7a00 !important;
