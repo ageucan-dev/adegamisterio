@@ -140,21 +140,6 @@
     updateSummaryRows();
   }
 
-  function installBenefitStyles() {
-    if (document.querySelector("#promo-benefit-row-style")) return;
-
-    const style = document.createElement("style");
-    style.id = "promo-benefit-row-style";
-    style.textContent = `
-      .promo-benefit-row span,
-      .promo-benefit-row strong {
-        color: #ff7a00 !important;
-        font-weight: 950 !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
   function scrollToCartSoft(delay = 360) {
     window.setTimeout(() => {
       const cart = document.querySelector("#carrinho");
@@ -181,12 +166,10 @@
     // Se o navegador bloquear localStorage, o site continua funcionando normalmente.
   }
 
-  installBenefitStyles();
   patchRenderCart();
   installBuyNowSoftScroll();
 
   window.addEventListener("load", () => {
-    installBenefitStyles();
     patchRenderCart();
     installBuyNowSoftScroll();
     updateSummaryRows();
