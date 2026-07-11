@@ -7,6 +7,29 @@
     return card?.querySelector("span")?.textContent?.trim() || input.value || "";
   }
 
+  function fieldsetRadios(fieldset) {
+    return [...fieldset.querySelectorAll('input[type="radio"]')];
+  }
+
+  function isSingleOptionFieldset(fieldset) {
+    return fieldsetRadios(fieldset).length === 1;
+  }
+
+  function markFieldsetTouched(fieldset) {
+    if (!fieldset) return;
+    fieldset.dataset.selectionTouched = "true";
+  }
+
+  function clearFieldsetTouched(fieldset) {
+    if (!fieldset) return;
+    delete fieldset.dataset.selectionTouched;
+  }
+
+  function shouldShowSelection(fieldset, checked) {
+    if (!checked) return false;
+    return fieldset.dataset.selectionTouched === "true" || isSingleOptionFieldset(fieldset);
+  }
+
   function ensureSummary(fieldset) {
     const legend = fieldset.querySelector("legend");
     if (!legend) return null;
@@ -21,28 +44,26 @@
     return summary;
   }
 
-  function updateCheckedClasses(fieldset) {
+  function updateCheckedClasses(fieldset, allowChecked = true) {
     if (!fieldset) return;
     fieldset.querySelectorAll(".option-card").forEach((card) => {
       const input = card.querySelector('input[type="radio"]');
-      const isChecked = !!input?.checked;
-      if (card.classList.contains("is-checked") !== isChecked) {
-        card.classList.toggle("is-checked", isChecked);
-      }
+      const isChecked = allowChecked && !!input?.checked;
+      card.classList.toggle("is-checked", isChecked);
     });
   }
 
   function updateFieldsetSummary(fieldset) {
     if (!fieldset || !fieldset.isConnected) return;
     const checked = fieldset.querySelector('input[type="radio"]:checked');
+    const canShow = shouldShowSelection(fieldset, checked);
     const summary = ensureSummary(fieldset);
     if (!summary) return;
 
-    const nextText = checked ? selectedLabel(checked) : "";
+    const nextText = canShow ? selectedLabel(checked) : "";
     if (summary.textContent !== nextText) summary.textContent = nextText;
-    const shouldHide = !checked;
-    if (summary.hidden !== shouldHide) summary.hidden = shouldHide;
-    updateCheckedClasses(fieldset);
+    if (summary.hidden !== !canShow) summary.hidden = !canShow;
+    updateCheckedClasses(fieldset, canShow);
   }
 
   function queueFieldsetUpdate(fieldset) {
@@ -73,6 +94,34 @@
     selectionTimer = window.setTimeout(() => {
       form.classList.remove("is-selecting-option");
     }, 110);
+  }
+
+  function resetPristineSelections() {
+    document.querySelectorAll(".custom-form fieldset").forEach((fieldset) => {
+      const radios = fieldsetRadios(fieldset);
+      if (!radios.length) return;
+
+      const isSingle = radios.length === 1;
+      if (isSingle && radios[0].checked) {
+        markFieldsetTouched(fieldset);
+      } else {
+        radios.forEach((input) => {
+          input.checked = false;
+          input.defaultChecked = false;
+          input.removeAttribute("checked");
+        });
+        clearFieldsetTouched(fieldset);
+      }
+
+      const summary = fieldset.querySelector(".step-summary");
+      if (summary && !fieldset.dataset.selectionTouched) {
+        summary.textContent = "";
+        summary.hidden = true;
+      }
+
+      fieldset.classList.remove("is-collapsed");
+      updateFieldsetSummary(fieldset);
+    });
   }
 
   function syncAllSummaries() {
@@ -147,6 +196,11 @@
     if (!event.target.matches('.custom-form input[type="radio"]')) return;
     const fieldset = event.target.closest("fieldset");
     const form = event.target.closest(".custom-form");
+
+    if (event.isTrusted || isSingleOptionFieldset(fieldset)) {
+      markFieldsetTouched(fieldset);
+    }
+
     markSelecting(form);
     queueFieldsetUpdate(fieldset);
     window.setTimeout(() => {
@@ -155,6 +209,12 @@
   }, true);
 
   document.addEventListener("click", (event) => {
+    if (event.target.closest(".choose-product")) {
+      window.setTimeout(resetPristineSelections, 120);
+      window.setTimeout(resetPristineSelections, 320);
+      return;
+    }
+
     if (!event.target.matches("#addToCart, #buyNow, #clearCart")) return;
 
     setTimeout(() => {
@@ -165,13 +225,24 @@
     }, 140);
   }, true);
 
+  window.addEventListener("pageshow", () => {
+    const builder = document.querySelector("#personalizacao");
+    if (!builder || builder.classList.contains("is-hidden")) resetPristineSelections();
+  });
+
   window.addEventListener("load", () => {
     installBuilderClose();
     installBottomFinishFlow();
-    window.requestAnimationFrame(syncAllSummaries);
+    window.requestAnimationFrame(() => {
+      resetPristineSelections();
+      syncAllSummaries();
+    });
   });
 
   installBuilderClose();
   installBottomFinishFlow();
-  window.requestAnimationFrame(syncAllSummaries);
+  window.requestAnimationFrame(() => {
+    resetPristineSelections();
+    syncAllSummaries();
+  });
 })();
