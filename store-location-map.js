@@ -8,7 +8,7 @@
 
     const iframe = document.createElement("iframe");
     iframe.title = "Mapa - Copão na Mão";
-    iframe.loading = "lazy";
+    iframe.loading = "eager";
     iframe.referrerPolicy = "no-referrer-when-downgrade";
     iframe.src = `https://www.google.com/maps?q=${MAP_QUERY}&output=embed`;
 
@@ -33,7 +33,7 @@
     `;
 
     finishCard.insertAdjacentElement("afterend", section);
-    window.setTimeout(loadMapIframe, 1200);
+    loadMapIframe();
   }
 
   if (document.readyState === "loading") {
