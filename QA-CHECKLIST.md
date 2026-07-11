@@ -19,12 +19,12 @@ Nenhuma limpeza, consolidação ou refatoração deve ser considerada finalizada
 
 ### 2. Card de produto
 
-- [ ] O carrossel deve mostrar Ethernity Mix.
-- [ ] O botão **Montar copo** do Ethernity Mix deve abrir a personalização.
-- [ ] O botão **Montar copo** do Gold Mix deve abrir a personalização.
+- [ ] O carrossel deve mostrar **Ether Mix**.
+- [ ] O botão **Montar copo** do **Ether Mix** deve abrir a personalização.
+- [ ] O botão **Montar copo** do **Ballan Mix** deve abrir a personalização.
 - [ ] Os dots do carrossel devem trocar o produto corretamente.
 
-### 3. Personalização — Ethernity Mix
+### 3. Personalização — Ether Mix
 
 - [ ] Ao abrir, nenhuma opção deve aparecer marcada automaticamente.
 - [ ] Nenhum resumo laranja deve aparecer antes da seleção manual.
@@ -35,9 +35,9 @@ Nenhuma limpeza, consolidação ou refatoração deve ser considerada finalizada
 - [ ] Ao selecionar gelo, deve aparecer o resumo apenas do gelo.
 - [ ] Os blocos podem recolher, mas devem reabrir ao clicar no título.
 
-### 4. Personalização — Gold Mix
+### 4. Personalização — Ballan Mix
 
-- [ ] Ao abrir Gold Mix, a base única pode aparecer como Gold Mix.
+- [ ] Ao abrir **Ballan Mix**, a base única pode aparecer como **Ballan Mix**.
 - [ ] Tamanho, intensidade, energético e gelo não devem aparecer como selecionados antes do toque do cliente.
 - [ ] Trocar de produto não deve manter escolhas antigas presas.
 
@@ -49,6 +49,7 @@ Nenhuma limpeza, consolidação ou refatoração deve ser considerada finalizada
 - [ ] Remover item deve funcionar.
 - [ ] Limpar carrinho deve funcionar.
 - [ ] Desconto progressivo deve aparecer quando houver mais de 1 copo.
+- [ ] O carrinho deve exibir **Ether Mix** ou **Ballan Mix** conforme o produto escolhido.
 
 ### 6. Barra inferior
 
@@ -63,8 +64,15 @@ Nenhuma limpeza, consolidação ou refatoração deve ser considerada finalizada
 - [ ] Usuário aprovado deve liberar o site.
 - [ ] Usuário novo deve ver cadastro.
 - [ ] Campos do cadastro não devem travar a tela no mobile.
+- [ ] Nome e telefone do cadastro devem preencher os dados de envio.
 
-### 8. Mobile/iPhone
+### 8. Checkout e recompra
+
+- [ ] Nome e telefone devem vir do cadastro quando disponíveis.
+- [ ] Rua, número, bairro, complemento, referência e observação devem ser salvos após preenchimento.
+- [ ] Ao atualizar a página, os últimos dados de entrega devem voltar preenchidos.
+
+### 9. Mobile/iPhone
 
 - [ ] Não deve haver zoom preso depois de preencher campos.
 - [ ] Não deve haver rolagem horizontal.
@@ -80,9 +88,10 @@ Alterações nesses arquivos exigem teste completo:
 - `product-builder-state.js`
 - `selection-summary.js`
 - `post-auth-ux-loader.js`
+- `checkout-customer-prefill.js`
+- `customer-access-gate.js`
 - `product-card.css`
 - `option-card-spacing.css`
-- `customer-access-gate.js`
 - `mobile-viewport-fix.css`
 - `mobile-viewport-fix.js`
 
@@ -95,10 +104,15 @@ Alterações nesses arquivos exigem teste completo:
 
 ## Status atual
 
-Última correção aplicada antes deste checklist:
+Últimas correções relevantes:
 
+- Produtos renomeados para **Ether Mix** e **Ballan Mix**.
 - Resumo laranja não deve aparecer antes da seleção manual.
 - Botão **Montar meu copo** deve descer até Produtos com o botão **Montar copo** visível.
+- Checkout deve preencher dados do cadastro e reaproveitar o último endereço.
 - Versões atuais relevantes:
+  - `app.js?v=10`
   - `selection-summary.js?v=6`
-  - `post-auth-ux-loader.js?v=11`
+  - `checkout-customer-prefill.js?v=2`
+  - `customer-access-gate.js?v=5`
+  - `post-auth-ux-loader.js?v=12`
