@@ -34,11 +34,34 @@
     <link rel="stylesheet" href="customer-access-gate.css?v=6" />
     <link rel="stylesheet" href="customer-profile-menu.css?v=3" />
     <link rel="stylesheet" href="mobile-viewport-fix.css?v=3" />
-    <link rel="stylesheet" href="site-overrides.css?v=12" />
+    <link rel="stylesheet" href="site-overrides.css?v=13" />
     <style>
-      .topbar { top: -18px; min-height: 100px; padding: 0 0 10px; }
-      .logo-symbol { height: 76px; }
-      .logo-wrap { transform: translateY(-1px); }
+      .app-shell {
+        padding-top: calc(106px + env(safe-area-inset-top, 0px)) !important;
+      }
+      .topbar {
+        position: fixed !important;
+        top: env(safe-area-inset-top, 0px) !important;
+        left: 50% !important;
+        width: min(100%, 540px) !important;
+        min-height: 96px !important;
+        padding: 8px 14px 10px !important;
+        transform: translateX(-50%) !important;
+        z-index: 9500 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: rgba(255, 253, 242, 0.78) !important;
+        background-image: none !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        box-sizing: border-box !important;
+      }
+      .logo-symbol { height: 76px !important; width: min(74vw, 300px) !important; }
+      .logo-img { max-height: 76px !important; width: auto !important; max-width: 100% !important; object-fit: contain !important; }
+      .logo-wrap { transform: translateY(0) !important; pointer-events: auto !important; touch-action: manipulation !important; }
       .product-copy .eyebrow { display: none; }
       .product-copy { padding: 18px 22px 20px !important; }
       .product-copy p { margin-bottom: 14px; }
@@ -177,7 +200,6 @@
     <script src="selection-summary.js?v=6"></script>
     <script src="checkout-customer-prefill.js?v=2"></script>
     <script src="hero-headline-slider.js?v=3"></script>
-    <script src="logo-scroll-follow.js?v=1"></script>
     <script type="module" src="customer-access-gate.js?v=5"></script>
     <script type="module" src="customer-profile-menu.js?v=2"></script>
     <script src="mobile-viewport-fix.js?v=2"></script>
