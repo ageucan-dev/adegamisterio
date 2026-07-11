@@ -60,6 +60,12 @@ select,
   touch-action: manipulation !important;
 }
 
+.promo-benefit-row span,
+.promo-benefit-row strong {
+  color: #ff7a00 !important;
+  font-weight: 950 !important;
+}
+
 #inicio.hero,
 #inicio.hero.section-card {
   isolation: isolate !important;
