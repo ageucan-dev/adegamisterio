@@ -1,0 +1,101 @@
+.builder-card {
+  position: relative !important;
+}
+
+.custom-form {
+  overflow-anchor: none !important;
+}
+
+.custom-form fieldset {
+  contain: layout style !important;
+}
+
+.cart-price {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  justify-content: flex-start !important;
+  gap: 2px !important;
+  color: #0b1d3a !important;
+  font-weight: 900 !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+  text-align: right !important;
+}
+
+.cart-old-price {
+  color: #7a879c !important;
+  font-size: .72rem !important;
+  font-weight: 900 !important;
+  text-decoration: line-through !important;
+  text-decoration-thickness: 2px !important;
+  line-height: 1 !important;
+}
+
+.cart-current-price {
+  color: #0b1d3a !important;
+  font-size: 1rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+.builder-close {
+  position: absolute !important;
+  top: 18px !important;
+  right: 18px !important;
+  z-index: 5 !important;
+  width: 34px !important;
+  height: 34px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(11,29,58,.14) !important;
+  background: #fff4cc !important;
+  color: #0b1d3a !important;
+  font-size: 1.2rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  box-shadow: 0 8px 18px rgba(11,29,58,.08) !important;
+  cursor: pointer !important;
+}
+
+.builder-card .section-title {
+  padding-right: 44px !important;
+}
+
+.custom-form legend {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  align-items: center !important;
+  column-gap: 10px !important;
+  row-gap: 2px !important;
+  width: 100% !important;
+}
+
+.custom-form legend .step-summary {
+  grid-column: 1 / -1 !important;
+  display: block !important;
+  margin-top: 2px !important;
+  color: #ff7a00 !important;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+}
+
+.custom-form legend .step-summary[hidden] {
+  display: none !important;
+}
+
+.custom-form fieldset.is-collapsed legend {
+  margin-bottom: 10px !important;
+}
+
+.custom-form.is-selecting-option .option-card,
+.custom-form.is-selecting-option fieldset,
+.custom-form.is-selecting-option .option-grid,
+.custom-form.is-selecting-option .step-summary {
+  transition: none !important;
+  animation: none !important;
+  scroll-behavior: auto !important;
+}
