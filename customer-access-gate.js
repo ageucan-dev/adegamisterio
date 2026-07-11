@@ -18,6 +18,8 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });
 
+const CUSTOMER_PROFILE_KEY = "copaoCustomerProfileV1";
+
 let overlay;
 let activeUser;
 
@@ -28,6 +30,33 @@ function lockPage() {
 function unlockPage() {
   document.body.classList.remove("access-gate-loading");
   if (overlay) overlay.remove();
+}
+
+function cacheCustomerProfile(user, data = {}) {
+  const profile = {
+    uid: user?.uid || data.uid || "",
+    name: String(data.name || user?.displayName || "").trim(),
+    phone: String(data.phone || "").trim(),
+    email: String(data.email || user?.email || "").trim(),
+    updatedAt: new Date().toISOString()
+  };
+
+  try {
+    window.localStorage.setItem(CUSTOMER_PROFILE_KEY, JSON.stringify(profile));
+  } catch (error) {
+    // Se o navegador bloquear localStorage, o acesso segue funcionando normalmente.
+  }
+
+  window.dispatchEvent(new CustomEvent("copao:customer-profile", { detail: profile }));
+  return profile;
+}
+
+function clearCustomerProfile() {
+  try {
+    window.localStorage.removeItem(CUSTOMER_PROFILE_KEY);
+  } catch (error) {
+    // Se o navegador bloquear localStorage, o logout segue funcionando normalmente.
+  }
 }
 
 function box(html, className = "") {
@@ -83,6 +112,7 @@ function authHelpMessage(error) {
 
 function showLogin() {
   lockPage();
+  clearCustomerProfile();
   box(`
     <p class="customer-gate-kicker">Acesso seguro</p>
     <h2>Entre para continuar</h2>
@@ -107,6 +137,7 @@ function showLogin() {
 
 function showDenied() {
   lockPage();
+  clearCustomerProfile();
   box(`
     <p class="customer-gate-kicker">Acesso encerrado</p>
     <h2>Não foi possível continuar</h2>
@@ -140,6 +171,7 @@ function showRegister(user) {
   `, "customer-register-box");
 
   overlay.querySelector("#changeAccount").onclick = async () => {
+    clearCustomerProfile();
     await signOut(auth);
     showLogin();
   };
@@ -182,6 +214,7 @@ function showRegister(user) {
       }, { merge: true });
 
       if (!approved) return showDenied();
+      cacheCustomerProfile(user, { name, phone, email: user.email || "" });
       unlockPage();
     } catch (error) {
       console.error(error);
@@ -201,7 +234,10 @@ async function validateUser(user) {
 
     const data = snap.data();
     if (data.status === "blocked" || data.approved === false) return showDenied();
-    if (data.status === "approved" && data.approved === true) return unlockPage();
+    if (data.status === "approved" && data.approved === true) {
+      cacheCustomerProfile(user, data);
+      return unlockPage();
+    }
 
     return showRegister(user);
   } catch (error) {
