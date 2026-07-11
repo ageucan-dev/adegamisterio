@@ -30,6 +30,12 @@
   display: inline-flex !important;
 }
 
+.topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 8000 !important;
+}
+
 button,
 a,
 label,
