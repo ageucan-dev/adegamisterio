@@ -2,7 +2,7 @@
   position: fixed;
   top: calc(env(safe-area-inset-top, 0px) + 38px);
   left: 18px;
-  z-index: 9000;
+  z-index: 10050;
   opacity: 0;
   transform: translateY(-8px) scale(0.96);
   pointer-events: none;
