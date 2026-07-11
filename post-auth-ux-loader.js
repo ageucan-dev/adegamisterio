@@ -50,8 +50,8 @@
 
   function bottomBarSpace() {
     const bar = document.querySelector(".bottom-bar");
-    if (!bar) return 24;
-    return Math.ceil(bar.getBoundingClientRect().height) + 24;
+    const barHeight = bar ? Math.ceil(bar.getBoundingClientRect().height) : 0;
+    return barHeight + 104;
   }
 
   function scrollTargetFromTrigger(trigger) {
@@ -85,16 +85,23 @@
     return Math.max(absoluteTop(target) - DEFAULT_OFFSET, 0);
   }
 
+  function scrollNow(target) {
+    const targetTop = target.id === "produto" ? productPreviewScrollTop(target) : regularScrollTop(target);
+    window.scrollTo({
+      top: Math.max(targetTop, 0),
+      behavior: "smooth"
+    });
+  }
+
   function smoothScrollTo(target, delay = 0) {
     if (!target) return;
 
-    window.setTimeout(() => {
-      const targetTop = target.id === "produto" ? productPreviewScrollTop(target) : regularScrollTop(target);
-      window.scrollTo({
-        top: Math.max(targetTop, 0),
-        behavior: "smooth"
-      });
-    }, delay);
+    window.setTimeout(() => scrollNow(target), delay);
+
+    if (target.id === "produto") {
+      window.setTimeout(() => scrollNow(target), delay + 420);
+      window.setTimeout(() => scrollNow(target), delay + 920);
+    }
   }
 
   function installInteractionSafety() {
@@ -135,6 +142,8 @@
 
       const fieldset = input.closest("fieldset");
       if (!fieldset) return;
+
+      if (!event.isTrusted && fieldset.querySelectorAll('input[type="radio"]').length > 1) return;
 
       window.setTimeout(() => {
         fieldset.classList.add("is-collapsed");
