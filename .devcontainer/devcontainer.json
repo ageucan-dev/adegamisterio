@@ -1,12 +1,16 @@
 {
   "name": "Copão na Mão Preview",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
   "forwardPorts": [5500],
   "portsAttributes": {
     "5500": {
       "label": "Prévia do Copão na Mão",
-      "onAutoForward": "openPreview"
+      "onAutoForward": "openPreview",
+      "protocol": "http"
     }
   },
-  "postStartCommand": "nohup python3 -m http.server 5500 --bind 0.0.0.0 > /tmp/copao-preview.log 2>&1 &"
+  "postStartCommand": "bash .devcontainer/start-preview.sh"
 }
