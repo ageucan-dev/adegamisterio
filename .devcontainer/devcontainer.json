@@ -1,16 +1,4 @@
 {
-  "name": "Copão na Mão Preview",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  },
-  "forwardPorts": [5500],
-  "portsAttributes": {
-    "5500": {
-      "label": "Prévia do Copão na Mão",
-      "onAutoForward": "openPreview",
-      "protocol": "http"
-    }
-  },
-  "postStartCommand": "bash .devcontainer/start-preview.sh"
+  "name": "Copão na Mão - ambiente manual",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu"
 }
