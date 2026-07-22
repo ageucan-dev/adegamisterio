@@ -135,6 +135,12 @@
       product.ices = Array.isArray(product.ices)
         ? product.ices.filter((item) => item.id !== "gelo-melancia")
         : [];
+      product.energies = Array.isArray(product.energies)
+        ? product.energies.filter((item) => !item.id.startsWith("monster-"))
+        : [];
+      product.bases = Array.isArray(product.bases)
+        ? product.bases.filter((item) => item.id !== "sevilla")
+        : [];
     });
 
     window.__copaoCatalogFixesApplied = true;
