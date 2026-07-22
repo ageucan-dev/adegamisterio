@@ -1,0 +1,4 @@
+{
+  "name": "Copão na Mão - ambiente manual",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu"
+}
