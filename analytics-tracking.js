@@ -5,6 +5,7 @@
     "age_gate_view",
     "age_gate_result",
     "navigation_click",
+    "whatsapp_open",
     "form_start",
     "form_error",
     "site_error"
@@ -72,6 +73,14 @@
   }
 
   function track(eventName, parameters = {}) {
+    if (eventName === "navigation_click" && parameters.button_name === "open_whatsapp") {
+      eventName = "whatsapp_open";
+      parameters = {
+        channel: "whatsapp",
+        section_name: parameters.section_name || "finish"
+      };
+    }
+
     if (!ALLOWED_EVENTS.has(eventName)) return false;
 
     const safeParameters = cleanParameters(parameters);
