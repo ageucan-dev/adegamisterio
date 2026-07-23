@@ -137,6 +137,12 @@
     const url = new URL("https://api.whatsapp.com/send");
     url.searchParams.set("phone", WHATSAPP_NUMBER);
     url.searchParams.set("text", message);
+
+    window.copaoAnalytics?.track?.("navigation_click", {
+      button_name: "open_whatsapp",
+      section_name: "finish"
+    });
+
     window.open(url.toString(), "_blank", "noopener,noreferrer");
   }
 
