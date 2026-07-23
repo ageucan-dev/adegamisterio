@@ -10,7 +10,37 @@
     "site_error"
   ]);
 
-  const BLOCKED_PARAMETER = /(name|nome|email|mail|phone|telefone|cpf|document|birth|nascimento|address|endereco|street|rua|district|bairro|number|numero|complement|reference|notes|observacao|message|mensagem|uid|user_id)/i;
+  const BLOCKED_PARAMETERS = new Set([
+    "name",
+    "full_name",
+    "nome",
+    "email",
+    "mail",
+    "phone",
+    "telefone",
+    "cpf",
+    "document",
+    "document_number",
+    "birth_date",
+    "nascimento",
+    "address",
+    "endereco",
+    "street",
+    "rua",
+    "district",
+    "bairro",
+    "number",
+    "numero",
+    "complement",
+    "reference",
+    "notes",
+    "observacao",
+    "message",
+    "mensagem",
+    "uid",
+    "user_id"
+  ]);
+
   const recentEvents = new Map();
   const startedForms = new WeakSet();
   const statusValues = new WeakMap();
@@ -33,7 +63,7 @@
 
   function cleanParameters(parameters = {}) {
     return Object.entries(parameters).reduce((safe, [key, value]) => {
-      if (BLOCKED_PARAMETER.test(key)) return safe;
+      if (BLOCKED_PARAMETERS.has(String(key).toLowerCase())) return safe;
       const cleaned = cleanValue(value);
       if (cleaned === "") return safe;
       safe[key] = cleaned;
