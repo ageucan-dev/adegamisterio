@@ -2,6 +2,7 @@
   const PLAYED_KEY = "copaoPromoWheelPlayedV1";
   const PLAYED_DATE_KEY = "copaoPromoWheelPlayedDateV1";
   const PRIZE_KEY = "copaoPromoWheelPrizeV1";
+  const CONSUMED_PRIZE_KEY = "copaoConsumedRoulettePrizeV1";
 
   function todayKey() {
     const now = new Date();
@@ -51,18 +52,43 @@
     return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
-  function getPrize() {
+  function readJson(key) {
     try {
-      const raw = localStorage.getItem(PRIZE_KEY);
+      const raw = localStorage.getItem(key);
       if (!raw) return null;
-      const prize = JSON.parse(raw);
-      const day = prize.day || localStorage.getItem(PLAYED_DATE_KEY);
-      if (day && day !== todayKey()) return null;
-      if (!prize.type || prize.type === "none") return null;
-      return prize;
+      const value = JSON.parse(raw);
+      return value && typeof value === "object" ? value : null;
     } catch (error) {
       return null;
     }
+  }
+
+  function prizeWasConsumed(prize) {
+    const consumed = readJson(CONSUMED_PRIZE_KEY);
+    if (!prize || !consumed) return false;
+    if (prize.prizeId && consumed.prizeId) return prize.prizeId === consumed.prizeId;
+    if (prize.savedAt && consumed.prizeSavedAt) return prize.savedAt === consumed.prizeSavedAt;
+    return false;
+  }
+
+  function getPrize() {
+    const prize = readJson(PRIZE_KEY);
+    if (!prize) return null;
+
+    const day = prize.day || localStorage.getItem(PLAYED_DATE_KEY);
+    const valid = (!day || day === todayKey()) &&
+      prize.type === "discount" &&
+      Number(prize.value || 0) === 5 &&
+      !prizeWasConsumed(prize);
+
+    if (valid) return prize;
+
+    try {
+      localStorage.removeItem(PRIZE_KEY);
+    } catch (error) {
+      // A interface continuará sem aplicar o benefício inválido.
+    }
+    return null;
   }
 
   function getTotals() {
@@ -90,13 +116,8 @@
       summaryBox.insertBefore(row, totalRow);
     }
 
-    if (prize.type === "discount") {
-      const discountValue = Number(totals.promoDiscount || prize.value || 0);
-      row.innerHTML = `<span>Benefício da roleta</span><strong>-${brl(discountValue)}</strong>`;
-      return;
-    }
-
-    row.innerHTML = `<span>Benefício da roleta</span><strong>${prize.label || "Prêmio ativo"}</strong>`;
+    const discountValue = Math.min(5, Number(totals.promoDiscount || prize.value || 0));
+    row.innerHTML = `<span>Benefício da roleta</span><strong>-${brl(discountValue)}</strong>`;
   }
 
   function patchRenderCart() {
@@ -137,6 +158,8 @@
   patchRenderCart();
   installBuyNowSoftScroll();
   window.addEventListener("copao:cart-updated", updateBenefitRow);
+  window.addEventListener("copao:roulette-prize-consumed", updateBenefitRow);
+  window.addEventListener("copao:order-state-reset", updateBenefitRow);
   window.addEventListener("load", () => {
     patchRenderCart();
     installBuyNowSoftScroll();
