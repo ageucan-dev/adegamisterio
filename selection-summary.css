@@ -91,6 +91,32 @@
   margin-bottom: 10px !important;
 }
 
+.custom-form fieldset.fixed-size-fieldset {
+  margin-bottom: 12px !important;
+  padding-bottom: 0 !important;
+}
+
+.custom-form fieldset.fixed-size-fieldset legend,
+.custom-form fieldset.fixed-size-fieldset.is-collapsed legend {
+  margin-bottom: 0 !important;
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
+.custom-form fieldset.fixed-size-fieldset #sizeOptions {
+  display: none !important;
+}
+
+.custom-form fieldset.fixed-size-fieldset .step-toggle {
+  display: none !important;
+}
+
+.custom-form fieldset.fixed-size-fieldset .step-summary,
+.custom-form fieldset.fixed-size-fieldset .step-summary[hidden] {
+  display: block !important;
+  margin-top: 3px !important;
+}
+
 .custom-form.is-selecting-option .option-card,
 .custom-form.is-selecting-option fieldset,
 .custom-form.is-selecting-option .option-grid,
