@@ -1,6 +1,7 @@
 (() => {
   const PROFILE_KEY = "copaoCustomerProfileV1";
   const DELIVERY_KEY = "copaoCheckoutDeliveryV1";
+  const EDITED_FLAG = "customerEdited";
 
   const FIELD_SELECTORS = {
     name: "#customerName",
@@ -12,6 +13,8 @@
     reference: "#reference",
     deliveryNotes: "#deliveryNotes"
   };
+
+  let saveTimer = null;
 
   function readJson(key) {
     try {
@@ -67,6 +70,9 @@
   }
 
   function saveCurrentDelivery() {
+    window.clearTimeout(saveTimer);
+    saveTimer = null;
+
     const profile = readJson(PROFILE_KEY);
     const previous = readJson(DELIVERY_KEY);
     const current = currentDeliveryData();
@@ -84,26 +90,30 @@
     writeJson(DELIVERY_KEY, next);
   }
 
-  function fillInput(key, value, force = false) {
+  function scheduleSave() {
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(saveCurrentDelivery, 180);
+  }
+
+  function fillInput(key, value) {
     const input = getField(FIELD_SELECTORS[key]);
     const nextValue = normalizeText(value);
     if (!input || !nextValue) return;
-    if (!force && normalizeText(input.value)) return;
+
+    // Nunca altera o campo ativo nem um campo que o usuário já editou manualmente.
+    if (document.activeElement === input) return;
+    if (input.dataset[EDITED_FLAG] === "true") return;
+    if (normalizeText(input.value)) return;
 
     input.value = nextValue;
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-    input.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
-  function prefillCheckoutFields(forceProfile = false) {
+  function prefillCheckoutFields() {
     const profile = readJson(PROFILE_KEY);
     const delivery = readJson(DELIVERY_KEY);
     const data = mergeDeliveryWithProfile(delivery, profile);
 
-    Object.entries(data).forEach(([key, value]) => {
-      const force = forceProfile && (key === "name" || key === "phone");
-      fillInput(key, value, force);
-    });
+    Object.entries(data).forEach(([key, value]) => fillInput(key, value));
   }
 
   function installAutosave() {
@@ -112,8 +122,11 @@
       if (!input || input.dataset.customerAutosave === "true") return;
 
       input.dataset.customerAutosave = "true";
-      input.addEventListener("input", saveCurrentDelivery);
-      input.addEventListener("change", saveCurrentDelivery);
+      input.addEventListener("input", (event) => {
+        if (event.isTrusted) input.dataset[EDITED_FLAG] = "true";
+        scheduleSave();
+      });
+      input.addEventListener("change", scheduleSave);
       input.addEventListener("blur", saveCurrentDelivery);
     });
 
@@ -138,8 +151,8 @@
   }
 
   window.addEventListener("copao:customer-profile", () => {
-    prefillCheckoutFields(true);
-    saveCurrentDelivery();
+    prefillCheckoutFields();
+    scheduleSave();
   });
 
   window.addEventListener("pageshow", () => {
