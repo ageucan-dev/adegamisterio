@@ -7,15 +7,11 @@
     cart: String.fromCodePoint(0x1F6D2),
     money: String.fromCodePoint(0x1F4B0),
     pin: String.fromCodePoint(0x1F4CD),
-    check: String.fromCodePoint(0x2705),
-    gift: String.fromCodePoint(0x1F381)
+    check: String.fromCodePoint(0x2705)
   };
 
   function brl(value) {
-    return Number(value || 0).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL"
-    });
+    return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
   function getCart() {
@@ -28,19 +24,15 @@
 
   function getTotals() {
     if (typeof window.cartTotals === "function") return window.cartTotals();
-
     const cart = getCart();
     const subtotal = cart.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
     const totalCups = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const discount = Math.max(totalCups - 1, 0) * 9;
-    const total = Math.max(subtotal - discount, 0);
-
-    return { subtotal, totalCups, discount, total };
+    const delivery = totalCups > 0 && totalCups < 3 ? 5 : 0;
+    return { subtotal, totalCups, delivery, total: subtotal + delivery };
   }
 
   function getDeliveryData() {
     if (typeof window.deliveryData === "function") return window.deliveryData();
-
     return {
       name: document.querySelector("#customerName")?.value.trim() || "",
       phone: document.querySelector("#customerPhone")?.value.trim() || "",
@@ -65,16 +57,11 @@
   function getPromoLine(totals) {
     const prize = getPromoPrize();
     if (!prize || prize.type === "none") return "";
-
     if (prize.type === "discount") {
       const value = Number(totals?.promoDiscount || prize.value || 0);
       return `• Roleta do Copão: -${brl(value)} (${prize.label})`;
     }
-
-    if (prize.type === "free_cup") {
-      return `• Roleta do Copão: ${prize.label}`;
-    }
-
+    if (prize.type === "free_cup") return `• Roleta do Copão: ${prize.label}`;
     return "";
   }
 
@@ -98,10 +85,11 @@
     const data = getDeliveryData();
     const promoLine = getPromoLine(totals);
     const items = cart.map(itemBlock).join("\n\n");
+    const deliveryText = Number(totals.delivery || 0) > 0 ? brl(totals.delivery) : "Grátis";
 
     const summaryLines = [
       `• Subtotal: ${brl(totals.subtotal)}`,
-      Number(totals.discount || 0) > 0 ? `• Desconto progressivo: -${brl(totals.discount)}` : "",
+      `• Entrega: ${deliveryText}`,
       promoLine,
       `• Total: ${brl(totals.total)}`
     ].filter(Boolean);
@@ -137,12 +125,7 @@
     const url = new URL("https://api.whatsapp.com/send");
     url.searchParams.set("phone", WHATSAPP_NUMBER);
     url.searchParams.set("text", message);
-
-    window.copaoAnalytics?.track?.("navigation_click", {
-      button_name: "open_whatsapp",
-      section_name: "finish"
-    });
-
+    window.copaoAnalytics?.track?.("navigation_click", { button_name: "open_whatsapp", section_name: "finish" });
     window.open(url.toString(), "_blank", "noopener,noreferrer");
   }
 
@@ -152,21 +135,14 @@
       alert(error);
       return;
     }
-
     openWhatsAppWithMessage(buildCleanWhatsAppMessage());
   }
 
   function installCleanSender() {
     const button = document.querySelector("#sendWhatsApp");
-
-    if (button && typeof window.finish === "function") {
-      button.removeEventListener("click", window.finish);
-    }
-
     window.buildCleanWhatsAppMessage = buildCleanWhatsAppMessage;
     window.sendCleanWhatsAppMessage = sendCleanWhatsAppMessage;
     window.finish = sendCleanWhatsAppMessage;
-
     if (!button || button.dataset.cleanWhatsappReady === "true") return;
 
     button.dataset.cleanWhatsappReady = "true";
@@ -183,6 +159,5 @@
   } else {
     installCleanSender();
   }
-
   window.addEventListener("load", installCleanSender);
 })();
