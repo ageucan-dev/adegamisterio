@@ -54,7 +54,7 @@ function cacheCustomerProfile(user, data = {}) {
     uid: user?.uid || data.uid || "",
     name: String(data.name || user?.displayName || "").trim(),
     phone: String(data.phone || "").trim(),
-    email: String(data.email || user?.email || "").trim(),
+    email: normalizeEmail(data.email || user?.email || ""),
     birthDate: String(data.birthDate || "").trim(),
     approved: data.approved === true,
     status: data.status || (data.approved === true ? "approved" : "pending"),
@@ -102,6 +102,23 @@ function onlyNumbers(value, limit) {
   return String(value || "").replace(/\D/g, "").slice(0, limit);
 }
 
+function normalizeEmail(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function validEmail(value) {
+  const email = normalizeEmail(value);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function escapeAttribute(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 function showDenied() {
   lockPage();
   box(`
@@ -133,9 +150,10 @@ function showRegister(user, previousData = {}) {
     <h2>Complete seu cadastro</h2>
     <p>Preencha os dados abaixo para validar sua idade e liberar o acesso.</p>
     <form id="gateForm" class="customer-register-form" novalidate>
-      <label>Nome completo<input id="gateName" type="text" autocomplete="name" value="${String(previousData.name || user?.displayName || "").replace(/"/g, "&quot;")}" required></label>
-      <label>Telefone<input id="gatePhone" type="tel" inputmode="numeric" autocomplete="tel" value="${String(previousData.phone || "").replace(/"/g, "&quot;")}" required></label>
-      <label>Data de nascimento<input id="gateBirth" type="date" autocomplete="bday" value="${String(previousData.birthDate || "").replace(/"/g, "&quot;")}" required></label>
+      <label>Nome completo<input id="gateName" type="text" autocomplete="name" value="${escapeAttribute(previousData.name || user?.displayName || "")}" required></label>
+      <label>Telefone<input id="gatePhone" type="tel" inputmode="numeric" autocomplete="tel" value="${escapeAttribute(previousData.phone || "")}" required></label>
+      <label>E-mail<input id="gateEmail" type="email" inputmode="email" autocomplete="email" placeholder="nome@email.com" value="${escapeAttribute(normalizeEmail(previousData.email || user?.email || ""))}" required></label>
+      <label>Data de nascimento<input id="gateBirth" type="date" autocomplete="bday" value="${escapeAttribute(previousData.birthDate || "")}" required></label>
       <label class="customer-terms-label"><input id="gateAdult" type="checkbox" required><span>Confirmo que possuo 18 anos ou mais.</span></label>
       <label class="customer-terms-label"><input id="gateTerms" type="checkbox" required><span>Li e aceito os termos de uso e a política de privacidade.</span></label>
       <p class="customer-age-notice">Entrega realizada somente para maiores de 18 anos. Poderá ser solicitado documento com foto no momento da entrega.</p>
@@ -149,6 +167,7 @@ function showRegister(user, previousData = {}) {
 
     const name = overlay.querySelector("#gateName").value.trim();
     const phone = onlyNumbers(overlay.querySelector("#gatePhone").value, 13);
+    const email = normalizeEmail(overlay.querySelector("#gateEmail").value);
     const birthDate = overlay.querySelector("#gateBirth").value;
     const adultConfirmed = overlay.querySelector("#gateAdult").checked;
     const termsAccepted = overlay.querySelector("#gateTerms").checked;
@@ -156,6 +175,7 @@ function showRegister(user, previousData = {}) {
 
     if (name.length < 3) return status("Informe seu nome completo.");
     if (phone.length < 10) return status("Informe um telefone válido.");
+    if (!validEmail(email)) return status("Informe um e-mail válido.");
     if (!birthDate || age < 0) return status("Informe sua data de nascimento.");
     if (!adultConfirmed) return status("Confirme que você possui 18 anos ou mais.");
     if (!termsAccepted) return status("Aceite os termos e a política de privacidade.");
@@ -168,6 +188,7 @@ function showRegister(user, previousData = {}) {
         uid: user.uid,
         name,
         phone,
+        email,
         birthDate,
         age,
         approved,
@@ -184,7 +205,7 @@ function showRegister(user, previousData = {}) {
       }));
 
       if (!approved) return showDenied();
-      cacheCustomerProfile(user, { name, phone, birthDate, approved: true, status: "approved", provider: "registration" });
+      cacheCustomerProfile(user, { name, phone, email, birthDate, approved: true, status: "approved", provider: "registration" });
       unlockPage();
     } catch (error) {
       console.error(error);
