@@ -11,11 +11,11 @@
   ]);
 
   const BLOCKED_PARAMETERS = new Set([
-    "name", "full_name", "nome", "email", "mail", "phone", "telefone", "cpf",
-    "document", "document_number", "birth_date", "nascimento", "address", "endereco",
-    "street", "rua", "district", "bairro", "number", "numero", "complement", "reference",
-    "notes", "observacao", "message", "mensagem", "uid", "user_id", "items", "item",
-    "cart", "contents", "content_ids", "content_name", "value", "order_value", "total"
+    "name", "full_name", "nome", "email", "e_mail", "mail", "email_address", "user_email",
+    "phone", "telefone", "cpf", "document", "document_number", "birth_date", "nascimento",
+    "address", "endereco", "street", "rua", "district", "bairro", "number", "numero",
+    "complement", "reference", "notes", "observacao", "message", "mensagem", "uid", "user_id",
+    "items", "item", "cart", "contents", "content_ids", "content_name", "value", "order_value", "total"
   ]);
 
   const recentEvents = new Map();
@@ -100,6 +100,7 @@
   function statusErrorType(text) {
     if (/nome completo/i.test(text)) return "invalid_name";
     if (/telefone válido/i.test(text)) return "invalid_phone";
+    if (/e-mail válido/i.test(text)) return "invalid_email";
     if (/data de nascimento/i.test(text)) return "missing_birth_date";
     if (/18 anos ou mais/i.test(text)) return "adult_confirmation_missing";
     if (/termos e a política/i.test(text)) return "terms_not_confirmed";
@@ -169,6 +170,10 @@
     }
   }
 
+  function emailIsValid(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim().toLowerCase());
+  }
+
   document.addEventListener("focusin", (event) => {
     const form = event.target.closest("form");
     if (!form || startedForms.has(form)) return;
@@ -182,6 +187,7 @@
 
     const nameIsValid = form.querySelector("#gateName")?.value.trim().length >= 3;
     const phoneIsValid = (form.querySelector("#gatePhone")?.value || "").replace(/\D/g, "").length >= 10;
+    const emailIsFilledAndValid = emailIsValid(form.querySelector("#gateEmail")?.value);
     const birthIsValid = Boolean(form.querySelector("#gateBirth")?.value);
     const adultIsValid = Boolean(form.querySelector("#gateAdult")?.checked);
     const termsAreValid = Boolean(form.querySelector("#gateTerms")?.checked);
@@ -189,6 +195,7 @@
     let errorType = "";
     if (!nameIsValid) errorType = "invalid_name";
     else if (!phoneIsValid) errorType = "invalid_phone";
+    else if (!emailIsFilledAndValid) errorType = "invalid_email";
     else if (!birthIsValid) errorType = "missing_birth_date";
     else if (!adultIsValid) errorType = "adult_confirmation_missing";
     else if (!termsAreValid) errorType = "terms_not_confirmed";
