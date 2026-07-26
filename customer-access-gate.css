@@ -1,11 +1,11 @@
 body.access-gate-loading {
-  overflow: auto !important;
-  overscroll-behavior: auto !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
 }
 
 body.access-gate-loading #app {
-  opacity: 1 !important;
-  pointer-events: auto !important;
+  pointer-events: none !important;
+  user-select: none;
 }
 
 .customer-gate-overlay {
@@ -16,99 +16,36 @@ body.access-gate-loading #app {
   align-items: center;
   justify-content: center;
   padding: 18px;
-  overflow: hidden;
-  background: rgba(255, 253, 242, 0.92);
+  overflow: auto;
+  background: rgba(255, 253, 242, 0.94);
   backdrop-filter: blur(18px);
-  overscroll-behavior: none;
-  touch-action: none;
+  -webkit-backdrop-filter: blur(18px);
+  overscroll-behavior: contain;
 }
 
 .customer-gate-box {
-  width: min(100%, 420px);
+  width: min(100%, 430px);
   max-height: calc(100svh - 36px);
-  overflow: hidden;
+  overflow: auto;
   padding: 22px 20px 20px;
   border: 1px solid rgba(11, 29, 58, 0.12);
   border-radius: 30px;
   background: #ffffff;
   color: #0b1d3a;
   box-shadow: 0 28px 90px rgba(11, 29, 58, 0.18);
+  box-sizing: border-box;
   overscroll-behavior: contain;
-  touch-action: manipulation;
 }
 
-.customer-login-box {
-  padding: 28px 26px 24px !important;
-  text-align: center !important;
-}
-
-.customer-login-box .customer-gate-kicker {
-  display: none !important;
-}
-
-.customer-login-box h2 {
-  margin: 0 0 10px !important;
-  text-align: center !important;
-  font-size: 1.72rem !important;
-  line-height: 1.06 !important;
-  letter-spacing: -0.055em !important;
-}
-
-.customer-login-box .customer-login-description,
-.customer-login-box p:not(.customer-gate-status) {
-  display: block !important;
-  max-width: 300px !important;
-  margin: 0 auto 22px !important;
-  text-align: center !important;
-  color: #5c6a80 !important;
-  font-size: 0.92rem !important;
-  font-weight: 750 !important;
-  line-height: 1.35 !important;
-}
-
-.customer-login-box .customer-gate-actions {
-  gap: 12px !important;
-}
-
-.customer-login-box .customer-google-button {
-  margin-top: 0 !important;
-}
-
-.customer-register-box h2 {
-  margin-bottom: 15px !important;
-  line-height: 1.04 !important;
-}
-
-.customer-register-box .customer-gate-user {
-  margin-bottom: 14px !important;
-}
-
-.customer-register-box .customer-register-form {
-  gap: 11px !important;
-}
-
-.customer-register-box .customer-terms-label {
-  display: grid !important;
-  grid-template-columns: 20px 1fr !important;
-  align-items: start !important;
-  column-gap: 11px !important;
-  row-gap: 0 !important;
-  margin: 2px 0 5px !important;
-}
-
-.customer-register-box .customer-terms-label input {
-  width: 18px !important;
-  height: 18px !important;
-  min-height: 18px !important;
-  margin: 2px 0 0 !important;
-  padding: 0 !important;
-}
-
-.customer-register-box .customer-terms-label span {
-  display: block !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: 1.22 !important;
+.customer-register-box h2,
+.customer-denied-box h2,
+.customer-error-box h2 {
+  margin: 0 0 9px;
+  color: #0b1d3a;
+  font-size: 1.78rem;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -0.055em;
 }
 
 .customer-gate-kicker {
@@ -120,39 +57,31 @@ body.access-gate-loading #app {
   text-transform: uppercase;
 }
 
-.customer-gate-box h2 {
-  margin: 0 0 8px;
-  color: #0b1d3a;
-  font-size: 1.86rem;
-  font-weight: 950;
-  line-height: 0.98;
-  letter-spacing: -0.06em;
-}
-
-.customer-gate-box p {
+.customer-gate-box > p,
+.customer-gate-box form > p {
   margin: 0 0 14px;
   color: #5c6a80;
-  font-size: 0.94rem;
+  font-size: 0.92rem;
   font-weight: 700;
-  line-height: 1.34;
+  line-height: 1.35;
 }
 
-.customer-gate-actions,
 .customer-register-form {
   display: grid;
-  gap: 10px;
+  gap: 11px;
 }
 
-.customer-register-form label,
-.customer-terms-label {
+.customer-register-form > label:not(.customer-terms-label) {
   display: grid;
   gap: 6px;
   color: #0b1d3a;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 850;
 }
 
-.customer-register-form input {
+.customer-register-form input[type="text"],
+.customer-register-form input[type="tel"],
+.customer-register-form input[type="date"] {
   width: 100%;
   min-height: 46px;
   padding: 11px 13px;
@@ -162,6 +91,7 @@ body.access-gate-loading #app {
   background: #ffffff;
   color: #0b1d3a;
   font: inherit;
+  box-sizing: border-box;
 }
 
 .customer-register-form input:focus {
@@ -170,28 +100,44 @@ body.access-gate-loading #app {
 }
 
 .customer-terms-label {
+  display: grid;
   grid-template-columns: 20px 1fr;
   align-items: start;
-  gap: 9px;
+  gap: 10px;
+  margin: 1px 0;
   color: #5c6a80;
-  font-size: 0.8rem;
-  font-weight: 750;
-  line-height: 1.24;
+  font-size: 0.79rem;
+  font-weight: 760;
+  line-height: 1.26;
 }
 
 .customer-terms-label input {
-  width: 17px;
-  min-height: 17px;
-  margin-top: 1px;
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin: 1px 0 0;
+  padding: 0;
+  accent-color: #ffb800;
+}
+
+.customer-age-notice {
+  margin: 2px 0 4px !important;
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 15px;
+  background: #fff8dd;
+  color: #4c5870 !important;
+  font-size: 0.76rem !important;
+  font-weight: 790 !important;
+  line-height: 1.3 !important;
 }
 
 .customer-gate-primary,
-.customer-gate-secondary,
 .customer-gate-danger {
   width: 100%;
   min-height: 50px;
   border-radius: 17px;
-  font-size: 0.96rem;
+  font-size: 0.94rem;
   font-weight: 950;
   cursor: pointer;
 }
@@ -203,39 +149,6 @@ body.access-gate-loading #app {
   box-shadow: 0 14px 30px rgba(255, 209, 0, 0.28);
 }
 
-.customer-google-button {
-  position: relative;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 12px !important;
-  border: 2px solid #0b1d3a !important;
-  background: #ffffff !important;
-  color: #0b1d3a !important;
-  box-shadow: 0 12px 26px rgba(11, 29, 58, 0.08) !important;
-}
-
-.customer-google-icon {
-  width: 24px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-}
-
-.customer-google-icon svg {
-  width: 24px;
-  height: 24px;
-  display: block;
-}
-
-.customer-gate-secondary {
-  border: 1px solid rgba(11, 29, 58, 0.12);
-  background: #ffffff;
-  color: #0b1d3a;
-}
-
 .customer-gate-danger {
   border: 0;
   background: #0b1d3a;
@@ -244,28 +157,21 @@ body.access-gate-loading #app {
 
 .customer-gate-status {
   min-height: 16px;
-  margin: 2px 0 0;
-  color: #ff7a00;
-  font-size: 0.82rem;
-  font-weight: 900;
-  line-height: 1.25;
+  margin: 1px 0 0 !important;
+  color: #ff7a00 !important;
+  font-size: 0.8rem !important;
+  font-weight: 900 !important;
+  line-height: 1.25 !important;
 }
 
-.customer-gate-user {
-  margin: 0 0 10px;
-  padding: 10px 12px;
-  border: 1px solid rgba(255, 122, 0, 0.18);
-  border-radius: 16px;
-  background: #fff8dd;
-  color: #0b1d3a;
-  font-size: 0.84rem;
-  font-weight: 900;
-  line-height: 1.2;
-  overflow-wrap: anywhere;
+.customer-denied-box,
+.customer-error-box {
+  text-align: center;
 }
 
-.customer-gate-hidden {
-  display: none !important;
+.customer-denied-box .customer-age-notice,
+.customer-error-box .customer-age-notice {
+  text-align: left;
 }
 
 @media (max-width: 480px) {
@@ -278,105 +184,41 @@ body.access-gate-loading #app {
     width: 100%;
     max-height: calc(100svh - 24px);
     padding: 18px 18px 16px;
-    border-radius: 26px;
+    border-radius: 25px;
   }
 
-  .customer-login-box {
-    padding: 24px 24px 22px !important;
-  }
-
-  .customer-login-box h2 {
-    margin-bottom: 9px !important;
-    font-size: 1.48rem !important;
-  }
-
-  .customer-login-box .customer-login-description,
-  .customer-login-box p:not(.customer-gate-status) {
-    display: block !important;
-    margin-bottom: 20px !important;
-    font-size: 0.84rem !important;
-  }
-
-  .customer-register-box h2 {
-    margin-bottom: 12px !important;
-    font-size: 1.54rem !important;
-  }
-
-  .customer-register-box .customer-register-form {
-    gap: 9px !important;
-  }
-
-  .customer-register-box .customer-terms-label {
-    grid-template-columns: 18px 1fr !important;
-    column-gap: 10px !important;
-    margin: 2px 0 5px !important;
-    font-size: 0.74rem !important;
-    line-height: 1.2 !important;
-  }
-
-  .customer-register-box .customer-terms-label input {
-    width: 16px !important;
-    height: 16px !important;
-    min-height: 16px !important;
-    margin-top: 1px !important;
-  }
-
-  .customer-gate-kicker {
-    margin-bottom: 5px;
-    font-size: 0.7rem;
-    letter-spacing: 0.11em;
-  }
-
-  .customer-gate-box h2 {
-    margin-bottom: 7px;
-    font-size: 1.58rem;
-    line-height: 0.98;
-  }
-
-  .customer-gate-box p {
-    margin-bottom: 10px;
-    font-size: 0.84rem;
-    line-height: 1.28;
+  .customer-register-box h2,
+  .customer-denied-box h2,
+  .customer-error-box h2 {
+    font-size: 1.5rem;
   }
 
   .customer-register-form {
-    gap: 8px;
+    gap: 9px;
   }
 
-  .customer-register-form label,
-  .customer-terms-label {
-    gap: 5px;
-    font-size: 0.78rem;
-  }
-
-  .customer-register-form input {
-    min-height: 40px;
+  .customer-register-form input[type="text"],
+  .customer-register-form input[type="tel"],
+  .customer-register-form input[type="date"] {
+    min-height: 41px;
     padding: 9px 11px;
     border-radius: 13px;
     font-size: 0.9rem;
   }
 
-  .customer-gate-user {
-    margin-bottom: 8px;
-    padding: 8px 10px;
-    border-radius: 14px;
-    font-size: 0.76rem;
-  }
-
   .customer-terms-label {
     grid-template-columns: 18px 1fr;
-    gap: 8px;
-    font-size: 0.72rem;
-    line-height: 1.18;
+    gap: 9px;
+    font-size: 0.73rem;
   }
 
   .customer-terms-label input {
     width: 16px;
+    height: 16px;
     min-height: 16px;
   }
 
   .customer-gate-primary,
-  .customer-gate-secondary,
   .customer-gate-danger {
     min-height: 44px;
     border-radius: 15px;
@@ -385,32 +227,8 @@ body.access-gate-loading #app {
 }
 
 @media (max-height: 680px) {
-  .customer-gate-box:not(.customer-login-box) {
-    padding-top: 14px;
-    padding-bottom: 14px;
-  }
-
-  .customer-gate-box:not(.customer-login-box) h2 {
-    font-size: 1.42rem;
-  }
-
-  .customer-gate-box:not(.customer-login-box) p {
-    display: none;
-  }
-
-  .customer-register-form {
-    gap: 7px;
-  }
-
-  .customer-register-form input {
-    min-height: 38px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
-
-  .customer-gate-primary,
-  .customer-gate-secondary,
-  .customer-gate-danger {
-    min-height: 42px;
+  .customer-gate-box {
+    align-self: flex-start;
+    margin-block: 8px;
   }
 }
