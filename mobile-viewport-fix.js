@@ -1,8 +1,7 @@
 (() => {
-  const DEFAULT_VIEWPORT = "width=device-width, initial-scale=1.0";
-  const RESET_VIEWPORT = "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover";
+  const VIEWPORT_CONTENT = "width=device-width, initial-scale=1.0, viewport-fit=cover";
   let lastOverlayVisible = false;
-  let resetTimer = null;
+  let normalizeTimer = null;
 
   function viewportMeta() {
     let meta = document.querySelector('meta[name="viewport"]');
@@ -14,70 +13,77 @@
     return meta;
   }
 
-  function blurActiveField() {
-    const active = document.activeElement;
-    if (active && /INPUT|TEXTAREA|SELECT/.test(active.tagName)) {
-      active.blur();
-    }
+  function isEditable(element) {
+    return Boolean(element && /INPUT|TEXTAREA|SELECT/.test(element.tagName));
   }
 
-  function resetViewport() {
-    window.clearTimeout(resetTimer);
-    resetTimer = window.setTimeout(() => {
-      blurActiveField();
+  function lockHorizontalAxis() {
+    document.documentElement.style.overflowX = "hidden";
+    document.body.style.overflowX = "hidden";
+    if (document.scrollingElement) document.scrollingElement.scrollLeft = 0;
+  }
+
+  function normalizeViewport(delay = 80) {
+    window.clearTimeout(normalizeTimer);
+    normalizeTimer = window.setTimeout(() => {
+      lockHorizontalAxis();
+
+      // A abertura do teclado no Android dispara resize. Nunca altera foco ou viewport
+      // enquanto um campo está ativo, evitando que o teclado seja fechado.
+      if (isEditable(document.activeElement)) return;
 
       const meta = viewportMeta();
-      meta.setAttribute("content", RESET_VIEWPORT);
+      if (meta.getAttribute("content") !== VIEWPORT_CONTENT) {
+        meta.setAttribute("content", VIEWPORT_CONTENT);
+      }
 
       document.body.classList.add("mobile-viewport-reset");
-      document.documentElement.style.overflowX = "hidden";
-      document.body.style.overflowX = "hidden";
-
-      window.scrollTo({ left: 0, top: Math.max(window.scrollY, 0), behavior: "auto" });
-
-      window.setTimeout(() => {
-        meta.setAttribute("content", DEFAULT_VIEWPORT);
-        document.body.classList.remove("mobile-viewport-reset");
-        window.scrollTo({ left: 0, top: Math.max(window.scrollY, 0), behavior: "auto" });
-      }, 450);
-    }, 80);
+      window.setTimeout(() => document.body.classList.remove("mobile-viewport-reset"), 120);
+    }, delay);
   }
 
   function checkGateState() {
-    const overlayVisible = !!document.querySelector(".customer-gate-overlay");
+    const overlayVisible = Boolean(document.querySelector(".customer-gate-overlay"));
 
     if (lastOverlayVisible && !overlayVisible) {
-      resetViewport();
+      normalizeViewport(120);
     }
 
     lastOverlayVisible = overlayVisible;
   }
 
-  document.addEventListener("focusout", (event) => {
-    if (event.target && event.target.closest && event.target.closest(".customer-gate-overlay")) {
-      resetViewport();
-    }
+  document.addEventListener("focusin", (event) => {
+    if (!isEditable(event.target)) return;
+    document.body.classList.add("mobile-keyboard-active");
+    lockHorizontalAxis();
   }, true);
 
-  document.addEventListener("submit", (event) => {
-    if (event.target && event.target.closest && event.target.closest(".customer-gate-overlay")) {
-      resetViewport();
-    }
-  }, true);
-
-  document.addEventListener("click", (event) => {
-    const button = event.target && event.target.closest && event.target.closest(".customer-gate-primary, .customer-gate-secondary, .customer-gate-danger");
-    if (button) resetViewport();
+  document.addEventListener("focusout", () => {
+    window.setTimeout(() => {
+      if (isEditable(document.activeElement)) return;
+      document.body.classList.remove("mobile-keyboard-active");
+      normalizeViewport(40);
+    }, 80);
   }, true);
 
   const observer = new MutationObserver(checkGateState);
-  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
-
-  window.addEventListener("pageshow", resetViewport);
-  window.addEventListener("orientationchange", resetViewport);
-  window.addEventListener("resize", () => {
-    if (!document.querySelector(".customer-gate-overlay")) resetViewport();
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["class"]
   });
 
+  window.addEventListener("pageshow", () => normalizeViewport(0));
+  window.addEventListener("orientationchange", () => normalizeViewport(220));
+
+  // No Android, o teclado virtual altera a altura da viewport e dispara resize.
+  // Aqui apenas bloqueamos o eixo horizontal; não usamos blur, focus ou scroll forçado.
+  window.addEventListener("resize", lockHorizontalAxis, { passive: true });
+  window.visualViewport?.addEventListener("resize", lockHorizontalAxis, { passive: true });
+  window.visualViewport?.addEventListener("scroll", lockHorizontalAxis, { passive: true });
+
+  lockHorizontalAxis();
+  normalizeViewport(0);
   checkGateState();
 })();
