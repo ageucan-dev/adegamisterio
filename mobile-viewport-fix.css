@@ -18,10 +18,30 @@ body {
   overflow-x: hidden !important;
 }
 
-.customer-gate-overlay,
+.customer-gate-overlay {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  transform: none !important;
+  touch-action: pan-y !important;
+}
+
 .customer-gate-box {
-  max-width: 100vw !important;
-  transform: translateZ(0) !important;
+  min-width: 0 !important;
+  max-width: min(430px, calc(100vw - 24px)) !important;
+  overflow-x: hidden !important;
+  transform: none !important;
+  will-change: auto !important;
+  touch-action: pan-y !important;
+}
+
+.customer-register-form,
+.customer-register-form > label,
+.customer-register-form input,
+.customer-register-form button {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .customer-register-form input,
