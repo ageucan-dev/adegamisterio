@@ -4,7 +4,7 @@
     if (!title || title.dataset.sliderReady === "true") return;
 
     const firstMessage = title.textContent.trim() || "Receba seu copão em até 25 minutos.";
-    const secondMessage = "Frete Grátis para Barretos-SP";
+    const secondMessage = "Frete Grátis para Barretos-SP acima de 2 copos";
 
     title.classList.add("hero-headline-slider");
     title.dataset.sliderReady = "true";
