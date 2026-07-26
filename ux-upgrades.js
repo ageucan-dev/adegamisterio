@@ -16,15 +16,22 @@
 
   const wheelStorageKey = "copaoPromoWheelPlayedV1";
   const wheelPrizeKey = "copaoPromoWheelPrizeV1";
+  const consumedPrizeKey = "copaoConsumedRoulettePrizeV1";
+  const customerProfileKey = "copaoCustomerProfileV1";
+  let initialized = false;
 
+  // Todos os setores continuam visíveis. Somente R$ 5 está habilitado como prêmio real.
   const wheelPrizes = [
-    { label: "Tente na próxima", shortLabel: "Tente na próxima", chance: 80, type: "none", rotation: 30 },
-    { label: "R$ 5 de desconto", shortLabel: "R$5 OFF", chance: 10, type: "discount", value: 5, rotation: 90 },
-    { label: "R$ 10 de desconto", shortLabel: "R$10 OFF", chance: 6, type: "discount", value: 10, rotation: 150 },
-    { label: "R$ 25 de desconto", shortLabel: "R$25 OFF", chance: 3, type: "discount", value: 25, rotation: 210 },
-    { label: "1 copo Ethernity", shortLabel: "1 copo", chance: 1, type: "free_cup", value: 1, rotation: 270 },
-    { label: "3 copos Ethernity", shortLabel: "3 copos", chance: 0, type: "free_cup", value: 3, rotation: 330 }
+    { id: "no_prize", label: "Tente na próxima", shortLabel: "Tente na próxima", type: "none", rotation: 30, enabled: true },
+    { id: "discount_5", label: "R$ 5 de desconto", shortLabel: "R$5 OFF", type: "discount", value: 5, rotation: 90, enabled: true },
+    { id: "discount_10", label: "R$ 10 de desconto", shortLabel: "R$10 OFF", type: "discount", value: 10, rotation: 150, enabled: false },
+    { id: "discount_25", label: "R$ 25 de desconto", shortLabel: "R$25 OFF", type: "discount", value: 25, rotation: 210, enabled: false },
+    { id: "free_cup_1", label: "1 copo Ethernity", shortLabel: "1 copo", type: "free_cup", value: 1, rotation: 270, enabled: false },
+    { id: "free_cup_3", label: "3 copos Ethernity", shortLabel: "3 copos", type: "free_cup", value: 3, rotation: 330, enabled: false }
   ];
+
+  const noPrizeSector = wheelPrizes.find((prize) => prize.id === "no_prize");
+  const fiveOffPrize = wheelPrizes.find((prize) => prize.id === "discount_5");
 
   function fixText(value = "") {
     return spellingMap[value] || value;
@@ -32,6 +39,35 @@
 
   function safeMoney(value) {
     return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+
+  function readJsonStorage(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const value = JSON.parse(raw);
+      return value && typeof value === "object" ? value : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function prizeWasConsumed(prize) {
+    if (!prize) return false;
+    const consumed = readJsonStorage(consumedPrizeKey);
+    if (!consumed) return false;
+    if (prize.prizeId && consumed.prizeId) return prize.prizeId === consumed.prizeId;
+    if (prize.savedAt && consumed.prizeSavedAt) return prize.savedAt === consumed.prizeSavedAt;
+    return false;
+  }
+
+  function validFiveOffPrize(prize) {
+    return Boolean(
+      prize &&
+      prize.type === "discount" &&
+      Number(prize.value || 0) === 5 &&
+      !prizeWasConsumed(prize)
+    );
   }
 
   function getCartQuantity() {
@@ -119,21 +155,33 @@
   }
 
   function getSavedWheelPrize() {
+    const prize = readJsonStorage(wheelPrizeKey);
+    if (!validFiveOffPrize(prize)) return null;
+    return prize;
+  }
+
+  function removeInvalidSavedPrize() {
+    const prize = readJsonStorage(wheelPrizeKey);
+    if (!prize || validFiveOffPrize(prize)) return;
     try {
-      const raw = localStorage.getItem(wheelPrizeKey);
-      return raw ? JSON.parse(raw) : null;
+      localStorage.removeItem(wheelPrizeKey);
     } catch (error) {
-      return null;
+      // A roleta continua funcionando sem armazenamento persistente.
     }
   }
 
-  function saveWheelPrize(prize) {
+  function saveWheelPrize(prize, claim = {}) {
     try {
+      const savedAt = new Date().toISOString();
       localStorage.setItem(wheelPrizeKey, JSON.stringify({
-        label: prize.label,
-        type: prize.type,
-        value: prize.value || 0,
-        savedAt: new Date().toISOString()
+        prizeId: `discount_5_${claim.cycleNumber || "fallback"}_${claim.cyclePosition || Date.now()}`,
+        label: fiveOffPrize.label,
+        type: "discount",
+        value: 5,
+        source: claim.source || "fallback_2_percent",
+        cycleNumber: Number(claim.cycleNumber || 0),
+        cyclePosition: Number(claim.cyclePosition || 0),
+        savedAt
       }));
     } catch (error) {
       return;
@@ -142,8 +190,8 @@
 
   function getPromoDiscount(baseTotal = 0) {
     const prize = getSavedWheelPrize();
-    if (!prize || prize.type !== "discount") return 0;
-    return Math.min(Number(prize.value || 0), Math.max(baseTotal, 0));
+    if (!prize) return 0;
+    return Math.min(5, Math.max(baseTotal, 0));
   }
 
   function patchPromoTotals() {
@@ -166,12 +214,15 @@
 
   function installPromoBadge() {
     const prize = getSavedWheelPrize();
-    if (!prize || prize.type === "none") return;
-
     const cartCard = document.querySelector("#carrinho");
     if (!cartCard) return;
 
     let badge = cartCard.querySelector(".promo-wheel-badge");
+    if (!prize) {
+      badge?.remove();
+      return;
+    }
+
     if (!badge) {
       badge = document.createElement("div");
       badge.className = "promo-wheel-badge";
@@ -181,16 +232,27 @@
     badge.textContent = `🎁 Benefício ativo: ${prize.label}`;
   }
 
-  function pickWheelPrize() {
-    const totalChance = wheelPrizes.reduce((sum, prize) => sum + prize.chance, 0);
-    let draw = Math.random() * totalChance;
+  function fallbackClaim() {
+    const won = Math.random() < 0.02;
+    return {
+      status: "created",
+      result: won ? "win_5_off" : "no_prize",
+      cycleNumber: 0,
+      cyclePosition: 0,
+      source: "fallback_2_percent"
+    };
+  }
 
-    for (const prize of wheelPrizes) {
-      draw -= prize.chance;
-      if (draw <= 0) return prize;
+  async function claimWheelResult() {
+    const control = window.copaoRouletteControl;
+    if (control?.claimSpin) {
+      try {
+        return await control.claimSpin();
+      } catch (error) {
+        console.warn("Controle global da roleta indisponível; usando contingência de 2%.", error);
+      }
     }
-
-    return wheelPrizes[0];
+    return fallbackClaim();
   }
 
   function createPromoWheel() {
@@ -238,25 +300,47 @@
       document.querySelector("#produto")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
-    spin.addEventListener("click", () => {
+    spin.addEventListener("click", async () => {
       if (spin.disabled) return;
 
-      const prize = pickWheelPrize();
-      const finalRotation = 360 * 6 + (360 - prize.rotation);
-
       spin.disabled = true;
-      spin.textContent = "Girando...";
+      spin.textContent = "Validando giro...";
       result.textContent = "";
-      disc.style.transform = `rotate(${finalRotation}deg)`;
+
+      const claim = await claimWheelResult();
 
       try {
         localStorage.setItem(wheelStorageKey, "true");
       } catch (error) {
+        // O giro continua mesmo quando o navegador bloqueia o armazenamento.
+      }
+
+      if (claim.status === "already_played") {
+        const activePrize = getSavedWheelPrize();
+        result.textContent = activePrize
+          ? "Seu giro de hoje já foi registrado. O benefício ativo continua disponível para este pedido."
+          : "Seu giro de hoje já foi registrado.";
+        spin.textContent = "Giro realizado";
+        useButton.textContent = activePrize ? "Usar no pedido" : "Continuar pedido";
+        useButton.hidden = false;
         return;
       }
 
+      const prize = claim.result === "win_5_off" ? fiveOffPrize : noPrizeSector;
+      const finalRotation = 360 * 6 + (360 - prize.rotation);
+
+      spin.textContent = "Girando...";
+      disc.style.transform = `rotate(${finalRotation}deg)`;
+
       window.setTimeout(() => {
         if (prize.type === "none") {
+          try {
+            localStorage.removeItem(wheelPrizeKey);
+          } catch (error) {
+            // Sem ação necessária.
+          }
+          installPromoBadge();
+          if (typeof renderCart === "function") renderCart();
           result.textContent = "Quase! Continue montando seu copo e tente em uma próxima oportunidade.";
           spin.textContent = "Giro realizado";
           useButton.textContent = "Continuar pedido";
@@ -264,9 +348,10 @@
           return;
         }
 
-        saveWheelPrize(prize);
+        saveWheelPrize(prize, claim);
         patchPromoTotals();
         installPromoBadge();
+        if (typeof renderCart === "function") renderCart();
         result.textContent = `Você ganhou: ${prize.label}! O benefício será enviado junto com seu pedido.`;
         spin.textContent = "Prêmio liberado";
         useButton.textContent = "Usar no pedido";
@@ -284,6 +369,7 @@
       alreadyPlayed = false;
     }
 
+    removeInvalidSavedPrize();
     patchPromoTotals();
     installPromoBadge();
     if (alreadyPlayed) return;
@@ -292,20 +378,50 @@
     setTimeout(() => document.querySelector(".promo-wheel-overlay")?.classList.add("is-visible"), 1200);
   }
 
+  function syncConsumedPrizeUi() {
+    removeInvalidSavedPrize();
+    installPromoBadge();
+    if (typeof renderCart === "function") renderCart();
+  }
+
+  function approvedAccessAvailable() {
+    try {
+      const hasProfile = Boolean(localStorage.getItem(customerProfileKey));
+      const gateOpen = document.body.classList.contains("access-gate-loading") ||
+        Boolean(document.querySelector(".customer-gate-overlay"));
+      return hasProfile && !gateOpen;
+    } catch (error) {
+      return false;
+    }
+  }
+
   function init() {
+    if (initialized || !approvedAccessAvailable()) return false;
+    initialized = true;
     fixStaticVisibleText();
     installCartToast();
     installStepCollapse();
     maybeOpenPromoWheel();
+    return true;
+  }
+
+  function scheduleInit(delay = 0) {
+    window.setTimeout(init, delay);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init, { once: true });
+    document.addEventListener("DOMContentLoaded", () => scheduleInit(0), { once: true });
   } else {
-    init();
+    scheduleInit(0);
   }
 
+  window.addEventListener("copao:customer-profile", () => scheduleInit(80));
+  window.addEventListener("copao:customer-approved", () => scheduleInit(80));
+  window.addEventListener("pageshow", () => scheduleInit(150));
+  window.addEventListener("copao:roulette-prize-consumed", syncConsumedPrizeUi);
   window.addEventListener("load", () => {
+    scheduleInit(300);
+    removeInvalidSavedPrize();
     patchPromoTotals();
     installPromoBadge();
   });
