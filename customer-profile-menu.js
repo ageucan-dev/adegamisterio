@@ -4,6 +4,8 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12
 
 const auth = getAuth(getApp());
 const db = getFirestore(getApp());
+const PROFILE_KEY = "copaoCustomerProfileV1";
+
 let widget;
 let currentData = null;
 let scrollTimer;
@@ -16,6 +18,16 @@ function value(text) {
   return text || "Não informado";
 }
 
+function readCachedProfile() {
+  try {
+    const raw = window.localStorage.getItem(PROFILE_KEY);
+    const data = raw ? JSON.parse(raw) : null;
+    return data && typeof data === "object" ? data : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 function createWidget() {
   if (widget) return widget;
   widget = document.createElement("div");
@@ -26,7 +38,7 @@ function createWidget() {
       <h3>Meu cadastro</h3>
       <p>Dados salvos para validação. Alterações devem ser solicitadas ao atendimento.</p>
       <div class="customer-profile-list"></div>
-      <button class="customer-profile-logout" type="button">Sair da conta</button>
+      <button class="customer-profile-logout" type="button">Fechar perfil</button>
     </div>
   `;
   document.body.appendChild(widget);
@@ -37,12 +49,16 @@ function createWidget() {
   });
 
   widget.querySelector(".customer-profile-logout").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.reload();
+    if (auth.currentUser && !auth.currentUser.isAnonymous) {
+      await signOut(auth);
+      window.location.reload();
+      return;
+    }
+    widget.classList.remove("is-open");
   });
 
   document.addEventListener("click", (event) => {
-    if (!widget.contains(event.target)) widget.classList.remove("is-open");
+    if (widget && !widget.contains(event.target)) widget.classList.remove("is-open");
   });
 
   return widget;
@@ -52,14 +68,17 @@ function renderData() {
   if (!widget) return;
   const list = widget.querySelector(".customer-profile-list");
   const data = currentData || {};
+
   list.innerHTML = `
     <div class="customer-profile-item"><small>Nome</small><strong>${value(data.name)}</strong></div>
-    <div class="customer-profile-item"><small>E-mail</small><strong>${value(data.email || auth.currentUser?.email)}</strong></div>
     <div class="customer-profile-item"><small>Telefone</small><strong>${value(data.phone)}</strong></div>
-    <div class="customer-profile-item"><small>CPF</small><strong>${value(data.cpf)}</strong></div>
+    <div class="customer-profile-item"><small>E-mail</small><strong>${value(data.email)}</strong></div>
     <div class="customer-profile-item"><small>Nascimento</small><strong>${value(data.birthDate)}</strong></div>
     <div class="customer-profile-item"><small>Status</small><strong>${data.approved ? "Aprovado" : "Pendente"}</strong></div>
   `;
+
+  const action = widget.querySelector(".customer-profile-logout");
+  if (action) action.textContent = auth.currentUser && !auth.currentUser.isAnonymous ? "Sair da conta" : "Fechar perfil";
 }
 
 function shouldShowAtTop() {
@@ -79,29 +98,35 @@ function handleScroll() {
   scrollTimer = setTimeout(updateVisibility, 180);
 }
 
+function useProfile(data) {
+  if (!data || data.approved !== true) return;
+  currentData = data;
+  createWidget();
+  renderData();
+  updateVisibility();
+}
+
 async function loadCustomer(user) {
-  if (!user) {
-    currentData = null;
-    widget?.remove();
-    widget = null;
-    return;
-  }
+  const cached = readCachedProfile();
+  if (cached?.approved) useProfile(cached);
+  if (!user) return;
 
   try {
     const snap = await getDoc(doc(db, "customers", user.uid));
     if (!snap.exists()) return;
     const data = snap.data();
     if (data.status !== "approved" || data.approved !== true) return;
-    currentData = data;
-    createWidget();
-    renderData();
-    updateVisibility();
+    useProfile(data);
   } catch (error) {
-    console.error(error);
+    if (!cached?.approved) console.error(error);
   }
 }
 
+window.addEventListener("copao:customer-profile", (event) => useProfile(event.detail));
 window.addEventListener("scroll", handleScroll, { passive: true });
 window.addEventListener("resize", updateVisibility);
 onAuthStateChanged(auth, loadCustomer);
 setInterval(updateVisibility, 1200);
+
+const cached = readCachedProfile();
+if (cached?.approved) useProfile(cached);

@@ -1,0 +1,134 @@
+:root {
+  --bottom-bar-height: 64px;
+  --bottom-bar-offset: 14px;
+  --freight-progress-height: 46px;
+  --freight-progress-gap: 6px;
+}
+
+.freight-progress[hidden] {
+  display: none !important;
+}
+
+.bottom-bar {
+  bottom: calc(var(--bottom-bar-offset) + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+}
+
+.freight-progress {
+  position: fixed;
+  left: 50%;
+  bottom: calc(
+    var(--bottom-bar-offset) +
+    var(--bottom-bar-height) +
+    var(--freight-progress-gap) +
+    env(safe-area-inset-bottom, 0px)
+  );
+  z-index: 9390;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(calc(100% - 28px), 520px);
+  height: var(--freight-progress-height);
+  min-height: var(--freight-progress-height);
+  padding: 6px 12px;
+  overflow: hidden;
+  transform: translateX(-50%);
+  border: 1px solid rgba(11, 29, 58, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 253, 242, 0.98);
+  box-shadow: 0 8px 22px rgba(11, 29, 58, 0.11);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.freight-progress-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  width: 100%;
+  margin-bottom: 4px;
+  color: #0b1d3a;
+  font-size: clamp(0.66rem, 2.7vw, 0.76rem);
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  white-space: nowrap;
+}
+
+.freight-progress-copy strong {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.freight-progress-copy span {
+  flex: 0 0 auto;
+  color: #5c6a80;
+  font-size: clamp(0.64rem, 2.5vw, 0.72rem);
+  font-weight: 850;
+  line-height: 1.02;
+  white-space: nowrap;
+}
+
+.freight-progress-track {
+  flex: 0 0 4px;
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(11, 29, 58, 0.12);
+}
+
+.freight-progress-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: #20a464;
+  transition: width 260ms ease;
+}
+
+.freight-progress.is-complete {
+  border-color: rgba(32, 164, 100, 0.24);
+}
+
+.freight-progress.is-complete .freight-progress-copy strong,
+.freight-progress.is-complete .freight-progress-copy span {
+  color: #168653;
+}
+
+body.has-freight-progress .app-shell {
+  padding-bottom: calc(
+    var(--bottom-bar-offset) +
+    var(--bottom-bar-height) +
+    var(--freight-progress-gap) +
+    var(--freight-progress-height) +
+    env(safe-area-inset-bottom, 0px) +
+    24px
+  ) !important;
+}
+
+@media (max-width: 360px) {
+  .freight-progress {
+    padding-inline: 10px;
+  }
+
+  .freight-progress-copy {
+    gap: 4px;
+    font-size: 0.62rem;
+    letter-spacing: -0.022em;
+  }
+
+  .freight-progress-copy span {
+    font-size: 0.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .freight-progress-track span {
+    transition: none;
+  }
+}
