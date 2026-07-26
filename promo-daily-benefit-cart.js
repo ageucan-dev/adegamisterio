@@ -14,28 +14,22 @@
   function resetExpiredWheel() {
     const today = todayKey();
     const playedDate = localStorage.getItem(PLAYED_DATE_KEY);
-
     if (playedDate !== today) {
       localStorage.removeItem(PLAYED_KEY);
       localStorage.removeItem(PRIZE_KEY);
       localStorage.removeItem(PLAYED_DATE_KEY);
       return;
     }
-
     localStorage.setItem(PLAYED_KEY, "true");
   }
 
   function patchPromoStorage() {
     if (window.__copaoDailyWheelStoragePatched || !window.Storage?.prototype?.setItem) return;
-
     const originalSetItem = Storage.prototype.setItem;
 
     Storage.prototype.setItem = function patchedSetItem(key, value) {
       const today = todayKey();
-
-      if (key === PLAYED_KEY && value === "true") {
-        originalSetItem.call(this, PLAYED_DATE_KEY, today);
-      }
+      if (key === PLAYED_KEY && value === "true") originalSetItem.call(this, PLAYED_DATE_KEY, today);
 
       if (key === PRIZE_KEY) {
         try {
@@ -47,7 +41,6 @@
           return originalSetItem.call(this, key, value);
         }
       }
-
       return originalSetItem.call(this, key, value);
     };
 
@@ -55,22 +48,17 @@
   }
 
   function brl(value) {
-    return Number(value || 0).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL"
-    });
+    return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
   function getPrize() {
     try {
       const raw = localStorage.getItem(PRIZE_KEY);
       if (!raw) return null;
-
       const prize = JSON.parse(raw);
       const day = prize.day || localStorage.getItem(PLAYED_DATE_KEY);
       if (day && day !== todayKey()) return null;
       if (!prize.type || prize.type === "none") return null;
-
       return prize;
     } catch (error) {
       return null;
@@ -79,18 +67,7 @@
 
   function getTotals() {
     if (typeof cartTotals === "function") return cartTotals();
-    return { subtotal: 0, discount: 0, total: 0, promoDiscount: 0 };
-  }
-
-  function updateProgressiveDiscountRow() {
-    const discountValue = document.querySelector("#discountValue");
-    const row = discountValue?.parentElement;
-    if (!row) return;
-
-    const totals = getTotals();
-    const shouldShow = Number(totals.discount || 0) > 0;
-    row.hidden = !shouldShow;
-    row.style.display = shouldShow ? "" : "none";
+    return { subtotal: 0, delivery: 0, total: 0, promoDiscount: 0 };
   }
 
   function updateBenefitRow() {
@@ -115,38 +92,30 @@
 
     if (prize.type === "discount") {
       const discountValue = Number(totals.promoDiscount || prize.value || 0);
-      row.innerHTML = `<span>Benefício</span><strong>-${brl(discountValue)}</strong>`;
+      row.innerHTML = `<span>Benefício da roleta</span><strong>-${brl(discountValue)}</strong>`;
       return;
     }
 
-    row.innerHTML = `<span>Benefício</span><strong>${prize.label || "Prêmio ativo"}</strong>`;
-  }
-
-  function updateSummaryRows() {
-    updateProgressiveDiscountRow();
-    updateBenefitRow();
+    row.innerHTML = `<span>Benefício da roleta</span><strong>${prize.label || "Prêmio ativo"}</strong>`;
   }
 
   function patchRenderCart() {
     if (window.__copaoBenefitRowPatched || typeof renderCart !== "function") return;
-
     const originalRenderCart = renderCart;
     renderCart = function patchedRenderCart() {
       originalRenderCart();
-      window.setTimeout(updateSummaryRows, 0);
+      window.setTimeout(updateBenefitRow, 0);
     };
-
+    window.renderCart = renderCart;
     window.__copaoBenefitRowPatched = true;
-    updateSummaryRows();
+    updateBenefitRow();
   }
 
   function scrollToCartSoft(delay = 360) {
     window.setTimeout(() => {
       const cart = document.querySelector("#carrinho");
       if (!cart) return;
-
-      const headerOffset = 88;
-      const targetTop = cart.getBoundingClientRect().top + window.scrollY - headerOffset;
+      const targetTop = cart.getBoundingClientRect().top + window.scrollY - 88;
       window.scrollTo({ top: Math.max(targetTop, 0), behavior: "smooth" });
     }, delay);
   }
@@ -154,7 +123,6 @@
   function installBuyNowSoftScroll() {
     const buyNow = document.querySelector("#buyNow");
     if (!buyNow || buyNow.dataset.softCartScroll === "true") return;
-
     buyNow.dataset.softCartScroll = "true";
     buyNow.addEventListener("click", () => scrollToCartSoft(430), true);
   }
@@ -168,10 +136,10 @@
 
   patchRenderCart();
   installBuyNowSoftScroll();
-
+  window.addEventListener("copao:cart-updated", updateBenefitRow);
   window.addEventListener("load", () => {
     patchRenderCart();
     installBuyNowSoftScroll();
-    updateSummaryRows();
+    updateBenefitRow();
   });
 })();
