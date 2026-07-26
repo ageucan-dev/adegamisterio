@@ -68,14 +68,11 @@ function renderData() {
   if (!widget) return;
   const list = widget.querySelector(".customer-profile-list");
   const data = currentData || {};
-  const emailRow = data.email
-    ? `<div class="customer-profile-item"><small>E-mail</small><strong>${value(data.email)}</strong></div>`
-    : "";
 
   list.innerHTML = `
     <div class="customer-profile-item"><small>Nome</small><strong>${value(data.name)}</strong></div>
-    ${emailRow}
     <div class="customer-profile-item"><small>Telefone</small><strong>${value(data.phone)}</strong></div>
+    <div class="customer-profile-item"><small>E-mail</small><strong>${value(data.email)}</strong></div>
     <div class="customer-profile-item"><small>Nascimento</small><strong>${value(data.birthDate)}</strong></div>
     <div class="customer-profile-item"><small>Status</small><strong>${data.approved ? "Aprovado" : "Pendente"}</strong></div>
   `;
