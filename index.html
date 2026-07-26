@@ -27,10 +27,11 @@
     <link rel="stylesheet" href="hero-headline-slider.css?v=3" />
     <link rel="stylesheet" href="option-card-spacing.css?v=4" />
     <link rel="stylesheet" href="selection-summary.css?v=1" />
-    <link rel="stylesheet" href="customer-access-gate.css?v=6" />
+    <link rel="stylesheet" href="customer-access-gate.css?v=7" />
     <link rel="stylesheet" href="customer-profile-menu.css?v=4" />
     <link rel="stylesheet" href="mobile-viewport-fix.css?v=3" />
     <link rel="stylesheet" href="site-overrides.css?v=13" />
+    <link rel="stylesheet" href="freight-progress.css?v=1" />
     <style>
       .app-shell {
         padding-top: calc(106px + env(safe-area-inset-top, 0px)) !important;
@@ -83,17 +84,14 @@
       <section id="inicio" class="hero section-card">
         <p class="eyebrow">Fácil, Rápido e Digital</p>
         <h1>Receba seu copão em até 25 minutos.</h1>
-        <p class="hero-text">⚠️ Cada copo adicionado acima de 1 receberá <strong>R$9,00</strong> de desconto.</p>
+        <p class="hero-text">Peça <strong>3 copos ou mais</strong> e ganhe frete grátis.</p>
         <div class="hero-actions"><a class="btn btn-primary" href="#produto">Montar meu copo</a><a class="btn btn-ghost" href="#carrinho">Ver carrinho</a></div>
         <div class="trust-row" aria-label="Destaques"><span>⚡ Rápido</span><span>📲 Pelo celular</span><span>🥤 Personalizado</span></div>
       </section>
 
       <section id="produto" class="section-card product-carousel-wrap">
         <div class="section-title product-carousel-title">
-          <div>
-            <p class="eyebrow">Produtos</p>
-            <h2>Escolha seu copo</h2>
-          </div>
+          <div><p class="eyebrow">Produtos</p><h2>Escolha seu copo</h2></div>
         </div>
 
         <div class="product-carousel" id="productCarousel" aria-label="Carrossel de produtos">
@@ -104,18 +102,10 @@
               <div class="cup-shape"></div>
             </div>
             <div class="product-copy">
-              <div class="product-title-row">
-                <h2>Ether Mix</h2>
-                <span class="delivery-badge">Entrega grátis</span>
-              </div>
+              <div class="product-title-row"><h2>Ether Mix</h2><span class="delivery-badge">Frete grátis com 3+</span></div>
               <p>Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.</p>
-              <div class="price-inline">
-                <span class="price-prefix">A partir</span>
-                <strong class="price-main" data-product-price="ethernity-mix">/ R$25,20</strong>
-              </div>
-              <button class="btn btn-primary btn-wide product-build-btn choose-product" type="button" data-product="ethernity-mix">
-                Montar copo
-              </button>
+              <div class="price-inline"><span class="price-prefix">A partir</span><strong class="price-main" data-product-price="ethernity-mix">/ R$16,00</strong></div>
+              <button class="btn btn-primary btn-wide product-build-btn choose-product" type="button" data-product="ethernity-mix">Montar copo</button>
             </div>
           </article>
 
@@ -127,18 +117,10 @@
               <div class="cup-shape"></div>
             </div>
             <div class="product-copy">
-              <div class="product-title-row">
-                <h2>Ballan Mix</h2>
-                <span class="delivery-badge">Entrega grátis</span>
-              </div>
+              <div class="product-title-row"><h2>Ballan Mix</h2><span class="delivery-badge">Frete grátis com 3+</span></div>
               <p>Monte seu copo do seu jeito: escolha tamanho, sabor da base, intensidade, energético, gelo e quantidade.</p>
-              <div class="price-inline">
-                <span class="price-prefix">A partir</span>
-                <strong class="price-main" data-product-price="mix-gold">/ R$31,20</strong>
-              </div>
-              <button class="btn btn-primary btn-wide product-build-btn choose-product" type="button" data-product="mix-gold">
-                Montar copo
-              </button>
+              <div class="price-inline"><span class="price-prefix">A partir</span><strong class="price-main" data-product-price="mix-gold">/ R$21,00</strong></div>
+              <button class="btn btn-primary btn-wide product-build-btn choose-product" type="button" data-product="mix-gold">Montar copo</button>
             </div>
           </article>
         </div>
@@ -150,10 +132,7 @@
       </section>
 
       <section id="personalizacao" class="section-card builder-card is-hidden">
-        <div class="section-title">
-          <p class="eyebrow">Personalização</p>
-          <h2 id="builderTitle">Monte seu copo</h2>
-        </div>
+        <div class="section-title"><p class="eyebrow">Personalização</p><h2 id="builderTitle">Monte seu copo</h2></div>
         <form id="customForm" class="custom-form">
           <fieldset><legend>Tamanho</legend><div id="sizeOptions" class="option-grid"></div></fieldset>
           <fieldset><legend>Sabor da base</legend><div id="baseOptions" class="option-grid"></div></fieldset>
@@ -170,7 +149,11 @@
       <section id="carrinho" class="section-card cart-card">
         <div class="section-title split-title"><div><p class="eyebrow">Carrinho</p><h2>Resumo</h2></div><button id="clearCart" class="mini-btn" type="button">Limpar</button></div>
         <div id="cartItems" class="cart-items empty-state">Seu carrinho ainda está vazio.</div>
-        <div class="summary-box"><div><span>Subtotal</span><strong id="subtotalValue">R$ 0,00</strong></div><div><span>Desconto progressivo</span><strong id="discountValue">-R$ 0,00</strong></div><div class="summary-total"><span>Total</span><strong id="orderTotal">R$ 0,00</strong></div><small>Cada copo adicional após o primeiro recebe R$ 9,00 de desconto.</small></div>
+        <div class="summary-box">
+          <div><span>Subtotal</span><strong id="subtotalValue">R$ 0,00</strong></div>
+          <div id="deliveryRow" hidden><span>Entrega</span><strong id="deliveryValue">R$ 0,00</strong></div>
+          <div class="summary-total"><span>Total</span><strong id="orderTotal">R$ 0,00</strong></div>
+        </div>
       </section>
 
       <section class="section-card checkout-card">
@@ -179,27 +162,30 @@
       </section>
       <section id="finalizar" class="section-card finish-card"><p class="eyebrow">Finalização</p><h2>Enviar ficha</h2><p>A ficha será organizada para facilitar preparo, conferência e atendimento.</p><button id="sendWhatsApp" class="btn btn-primary btn-wide" type="button">Finalizar compra</button></section>
       <section id="localizacao" class="section-card location-card">
-        <p class="eyebrow">Localização</p>
-        <h2>Onde estamos</h2>
+        <p class="eyebrow">Localização</p><h2>Onde estamos</h2>
         <p class="location-address">📍 R. Umberto de Campos Sarti, 24 - Barretos, SP</p>
-        <div class="location-map-wrap" aria-label="Mapa da localização do Copão na Mão">
-          <iframe title="Mapa - Copão na Mão" loading="eager" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=R.%20Umberto%20de%20Campos%20Sarti%2C%2024%20-%20Barretos%2C%20SP&output=embed"></iframe>
-        </div>
+        <div class="location-map-wrap" aria-label="Mapa da localização do Copão na Mão"><iframe title="Mapa - Copão na Mão" loading="eager" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=R.%20Umberto%20de%20Campos%20Sarti%2C%2024%20-%20Barretos%2C%20SP&output=embed"></iframe></div>
         <p class="location-warning"><strong>Atenção:</strong> somos uma operação digital. Este endereço não é ponto físico para retirada de pedidos.</p>
       </section>
+
+      <aside id="freightProgress" class="freight-progress" aria-live="polite" hidden>
+        <div class="freight-progress-copy"><strong id="freightProgressText"></strong><span id="freightProgressAux"></span></div>
+        <div class="freight-progress-track" aria-hidden="true"><span id="freightProgressFill"></span></div>
+      </aside>
       <nav class="bottom-bar" aria-label="Ações rápidas"><a class="bottom-cart-link" href="#carrinho">🛒 <span id="bottomCartCount">0</span></a><a class="bottom-finish-link" href="#finalizar"><span id="bottomTotalValue">R$ 0,00</span><span class="bottom-separator">|</span><strong>Finalizar</strong></a></nav>
     </main>
-    <script src="analytics-tracking.js?v=2"></script>
-    <script src="app.js?v=10"></script>
+    <script src="analytics-tracking.js?v=3"></script>
+    <script src="app.js?v=11"></script>
     <script src="product-builder-state.js?v=2"></script>
-    <script src="promo-daily-benefit-cart.js?v=4"></script>
-    <script src="whatsapp-message-format.js?v=5"></script>
+    <script src="promo-daily-benefit-cart.js?v=5"></script>
+    <script src="whatsapp-message-format.js?v=6"></script>
     <script src="selection-summary.js?v=6"></script>
     <script src="checkout-customer-prefill.js?v=2"></script>
-    <script src="hero-headline-slider.js?v=4"></script>
-    <script type="module" src="customer-access-gate.js?v=5"></script>
-    <script type="module" src="customer-profile-menu.js?v=2"></script>
+    <script src="hero-headline-slider.js?v=5"></script>
+    <script type="module" src="customer-access-gate.js?v=6"></script>
+    <script type="module" src="customer-profile-menu.js?v=3"></script>
     <script src="mobile-viewport-fix.js?v=2"></script>
     <script src="post-auth-ux-loader.js?v=14"></script>
+    <script src="final-state-sync.js?v=1"></script>
   </body>
 </html>
