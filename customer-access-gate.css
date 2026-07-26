@@ -1,4 +1,6 @@
 body.access-gate-loading {
+  width: 100% !important;
+  max-width: 100% !important;
   overflow: hidden !important;
   overscroll-behavior: none !important;
 }
@@ -15,18 +17,27 @@ body.access-gate-loading #app {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  max-width: 100%;
   padding: 18px;
-  overflow: auto;
+  overflow: hidden;
   background: rgba(255, 253, 242, 0.94);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  overscroll-behavior: contain;
+  box-sizing: border-box;
+  overscroll-behavior: none;
+  touch-action: pan-y;
+  contain: layout paint;
 }
 
 .customer-gate-box {
+  flex: 0 1 430px;
   width: min(100%, 430px);
+  min-width: 0;
+  max-width: 430px;
   max-height: calc(100svh - 36px);
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 22px 20px 20px;
   border: 1px solid rgba(11, 29, 58, 0.12);
   border-radius: 30px;
@@ -35,6 +46,10 @@ body.access-gate-loading #app {
   box-shadow: 0 28px 90px rgba(11, 29, 58, 0.18);
   box-sizing: border-box;
   overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  transform: none !important;
+  will-change: auto !important;
 }
 
 .customer-register-box h2,
@@ -68,7 +83,13 @@ body.access-gate-loading #app {
 
 .customer-register-form {
   display: grid;
+  min-width: 0;
   gap: 11px;
+}
+
+.customer-register-form > label {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .customer-register-form > label:not(.customer-terms-label) {
@@ -84,6 +105,8 @@ body.access-gate-loading #app {
 .customer-register-form input[type="email"],
 .customer-register-form input[type="date"] {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 46px;
   padding: 11px 13px;
   border: 1px solid rgba(11, 29, 58, 0.14);
@@ -102,7 +125,7 @@ body.access-gate-loading #app {
 
 .customer-terms-label {
   display: grid;
-  grid-template-columns: 20px 1fr;
+  grid-template-columns: 20px minmax(0, 1fr);
   align-items: start;
   gap: 10px;
   margin: 1px 0;
@@ -136,11 +159,14 @@ body.access-gate-loading #app {
 .customer-gate-primary,
 .customer-gate-danger {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 50px;
   border-radius: 17px;
   font-size: 0.94rem;
   font-weight: 950;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .customer-gate-primary {
@@ -178,14 +204,22 @@ body.access-gate-loading #app {
 @media (max-width: 480px) {
   .customer-gate-overlay {
     align-items: center;
+    width: 100%;
     padding: 12px;
   }
 
   .customer-gate-box {
     width: 100%;
+    max-width: calc(100vw - 24px);
     max-height: calc(100svh - 24px);
     padding: 18px 18px 16px;
     border-radius: 25px;
+  }
+
+  @supports (height: 100dvh) {
+    .customer-gate-box {
+      max-height: calc(100dvh - 24px);
+    }
   }
 
   .customer-register-box h2,
@@ -209,7 +243,7 @@ body.access-gate-loading #app {
   }
 
   .customer-terms-label {
-    grid-template-columns: 18px 1fr;
+    grid-template-columns: 18px minmax(0, 1fr);
     gap: 9px;
     font-size: 0.73rem;
   }
