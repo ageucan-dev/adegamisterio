@@ -81,6 +81,7 @@ body.access-gate-loading #app {
 
 .customer-register-form input[type="text"],
 .customer-register-form input[type="tel"],
+.customer-register-form input[type="email"],
 .customer-register-form input[type="date"] {
   width: 100%;
   min-height: 46px;
@@ -199,6 +200,7 @@ body.access-gate-loading #app {
 
   .customer-register-form input[type="text"],
   .customer-register-form input[type="tel"],
+  .customer-register-form input[type="email"],
   .customer-register-form input[type="date"] {
     min-height: 41px;
     padding: 9px 11px;
